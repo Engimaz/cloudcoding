@@ -1,0 +1,113 @@
+server:
+  port: 3005
+
+spring:
+  application:
+    name: cloud-coding-program
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+  redis:
+    host: 42.193.244.193
+    port: 6379
+    timeout: 15000
+    password: fred
+
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://@mysql.host@/cloud-coding-program?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: @mysql.username@
+    password: @mysql.password@
+
+dubbo:
+  cloud:
+    subscribed-services: cloud-coding-dictionary
+  protocol:
+    name: dubbo
+    port: 20893
+  registry:
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  consumer:
+    check: false
+    retries: 0
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan: cn.edu.hcnu.program
+  default-flat-param-object: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cloud-coding:
+  code-store:
+    local-root-path: C:/cloud-coding-docker/
+    container-root-path: /app/
+  docker:
+    # todo 此处记得替换端口
+    create-container: docker,run,--name,@programID@,-id,-p,18097:8080,-v,@localPath@:@containerPath@,@imageName@,bash
+    start-container: docker,start,@containerName@
+    stop-container: docker,stop,@containerName@
+    enter-container: docker,exec,@containerID@,bash,-c,
+    search-container: docker,ps,-aqf,"name=@containerName@"
+  cpp:
+    image-name: gcc:latest
+    run-command: cd @programPath@ && g++ main.cpp -o main -I header && ./main   # 这个命令不允许使用 ‘,’ 分割
+  java:
+    image-name: eclipse/centos_jdk8:latest
+    run-command: cd @programPath@ && javac Main.java && java Main
+  python:
+    image-name: python:latest
+    run-command: cd @programPath@ && python main.py
+  nodejs:
+    image-name: node:latest
+    run-command: cd @programPath@ && node main.js
+  springboot:
+    image-name: aichen517/maven-aliyun-3.9.2-jdk-8u371:1.0
+    run-command: cd  @programPath@ && mvn spring-boot:run > a.out 2>&1 &

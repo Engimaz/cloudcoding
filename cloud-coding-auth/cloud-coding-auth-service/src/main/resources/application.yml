@@ -1,0 +1,66 @@
+server:
+  port: 3002
+spring:
+  application:
+    name: cloud-coding-auth
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+  redis:
+    host: @redis.host@
+    port: @redis.port@
+    timeout: 15000
+    password: @redis.password@
+
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://@mysql.host@/cloud-coding-auth?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: @mysql.username@
+    password: @mysql.password@
+
+dubbo:
+  cloud:
+    subscribed-services: ""
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: 20902
+  registry:
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  scan:
+    base-packages: cn.edu.hcnu.auth
+
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: cn.edu.hcnu.auth
+  default-flat-param-object: false

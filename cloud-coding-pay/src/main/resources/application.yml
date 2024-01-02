@@ -1,0 +1,34 @@
+alipay:
+  appid: 2021003173689604
+  private_key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCAim3y4RLd8D/f7CGCQRDYD+dPlz6jP3xywSgT/vPOU93T4tM7A/uVCm12sNAD7HqI8zET2A85BQcQm14Uy7EMPhjiWKEp9SMoFmGCPOejJFxpA4rLrAFm0iPls5loulwMPasI5+gCrotH810I84TC6COUOFW4uolaotuJJL9AtgPqsM4WfNc27AM7+1xT7Ab/UVZQAjQBchGWayMbRR3hEEiuMe7vxSvDhsYdw3Lzq/ThZ3z79liR83FwKbkfJcUhszzpHLH6JdQEhEdiUv4kYkwgCNA3hqSrzAiEDOBE3NfsKGhE0HTY0XUV63piuHC07Td4BYsKwqazATV6RU3pAgMBAAECggEBAIBdvf9XlifdzWwpvC0AHXooJ6/sMrmEpRtUmlmduozKZDU9yASfrZbhmv91A8dnWdd6RgCzPECNLMkA36uU33KCcQdZy1jDXiCieS4+9HSP01lsGCfd1miAYyj5erKDqXjv/OYf8ir7dEyeVMKjrmmWujFDMRgR8Sl6ihMjh3tu3CjaHAdt8c/gq5DcXMIE3sXcKxllvVCJahRlTYWIyDVfjK1sA3ZE5xLViWheMvrJD3a9xbnF2HI0yMM70bcVwQ6wDYHDJtpBdPun4TPzdJu+JZqhbiWfmTVJ2xhlCL+vGhx8F3N0fU3O+HPbICr18ylv3p0z1VOxEi44IiOcmqECgYEA0C8bSRb2cu0J4JmBb+oYPB6fYDrbscr0WBcBWKmOjPMFaLubSa5+Mw0FMxjvrumE7kkJcT7P5icL06HD7mLmr23JrOYIE0ZFhOkqQQB37eONNT6urGtPXNhO+lAXw11b+VRu960TeI7FEN1Asi37AQbFfWskZ65KoVMpR4xdw3sCgYEAnhBsafyzcoj1VcqHw41mZHrD+1FiYBR7Tgyq9u4rCzntM7Jn5EyqhZcyM34V12fTL4aituBvASPp+6ajiwNwFme2Qi6C4/5JlA3wjURkRtxnz/gy9Y1D5VS+bEoMk9OqMwEnenuXXpmLcaJzkTO++hZYgsTN6jlNiOXDppmj1OsCgYAAtiiBt3JgMi82dU/b8hDjI7envIvDr83l/y4h/3JdSPdbxEhjmBUWV5UM96jaEDJEHjvKB0zunHON5Z+l0PC46McnsCGW70aNjb53OmkuhviUlgJC1JsQ1ixu7pcmM8t8rq0ya4UFhHdn91mhQkb5WeyS4Srer9nRc1dQx0oKwQKBgQCMbIzUcDNAKtrCmAabPZDc7ZAVQw1BzJBrG6f7bkYBWDoadoID+fR4cIWh538h+lRNYbBHBga4HZ7u+fFLPAelcAgkrcuNH8lgZi3yYvMvXPpBcgBb1F+gavQtom+gGSiY3YqkLw6gdYrDro47Tpx488c4jf1d/ACdAXsbFF3PdwKBgHjDgwClogQp1+oi/b2lphxhZhIxuLnf1JgWl0pKRpC8WhP8vOTNLmwGwlWEO0akx+L0Y7ojtfbC2z+o2cEb03AbG/Q4bUZ4cUP6HadlNRZF6ezx7mcRF6/9wsSjsjpCdHo9FSBlxxUoAczKXtk9t/+4k34ZmF/Vt34cOEozdhVZ
+  ali_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl9M+u8ywGhGYKKD4eB3GzvYLSFJdoHMW0roZw/ZpwIYqw+7OqNisbilOpIxdRx0dZl5AJUmIxXQhEYQYecFmuB+lTwjGTxNjVilj9x1zBkRxH6GaaviTeRsnOkZuK06lb5uTcSnlUQpOE4GYgTPq3rIfjnECA0HgN+Ttkn4OyXFH0G2uWQ76ZHQrE6JogIZtiYmAdMevizi4/nKimetLd+cXIUrP10nE3REUEzKxzRvJP6ZK6cYjlvf7omtwZ7kQQa8JfaN7HK2TS1wO8HjIJHVFHY4r3cZ1N9e5ZLoWuCrPBYMO//X+TguMNDjWRLd6TnlY1yB5p7IkXIFqoKmAwwIDAQAB
+  gateway: https://openapi.alipay.com/gateway.do
+  notify_url: http://120.78.142.242:18080/coupon/notify
+  charset: utf-8
+  signType: RSA2
+
+server:
+  port: 3010
+spring:
+  application:
+    name: cloud-coding-pay
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.cloudcoding.cc
+        username: nacos
+        password: nacos
+        namespace: cloud-coding-dev
+        # group: cloud-coding
+dubbo:
+  cloud:
+    subscribed-services: "cloud-coding-id"
+  protocol:
+    name: dubbo
+    port: 20891
+  registry:
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  consumer:
+    check: false
+    retries: 0

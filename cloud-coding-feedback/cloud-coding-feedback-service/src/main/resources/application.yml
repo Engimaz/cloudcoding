@@ -1,0 +1,28 @@
+spring:
+  redis:
+    host: @redis.host@
+    port: @redis.port@
+    timeout: 15000
+    password: @redis.password@
+
+  application:
+    name: cloud-coding-feedback
+
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+server:
+  port: 3011

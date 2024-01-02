@@ -1,0 +1,25 @@
+server:
+  port: 3005
+spring:
+  application:
+    name: cloud-coding-login
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.cloudcoding.cc
+        username: nacos
+        password: nacos
+        namespace: cloud-coding-dev
+        # group: cloud-coding
+dubbo:
+  cloud:
+    subscribed-services: "cloud-coding-auth"
+  protocol:
+    name: dubbo
+    port: 20868
+  registry:
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  consumer:
+    check: false
+    retries: 0

@@ -1,0 +1,70 @@
+server:
+  port: 3008
+
+spring:
+  redis:
+    host: @redis.host@
+    port: @redis.port@
+    timeout: 15000
+    password: @redis.password@
+  mail:
+    host: @mail.host@
+    default-encoding: utf-8
+    userName: @mail.username@
+    password: @mail.password@
+    properties:
+      mail:
+        smtp:
+          auth: true
+  application:
+    name: cloud-coding-captcha
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+
+aliyun:
+  sms:
+    access-key-id: LTAI5tG2xvEoDvcnFfzyfeaA
+    access-key-secret: FxXqd1HSIXaJHka8p37BzM4TeoifDk
+    sign-name: 云上编程
+    template-code: SMS_460935786
+    endpoint: dysmsapi.aliyuncs.com
+    region-id: cn-shenzhen
+
+rocketmq:
+  name-server:  @rocketmq.host@
+
+  producer:
+    group: cloud-coding
+    send-message-timeout: 10000
+  consumer:
+    group: cloud-coding
+    group-email-captcha: cloud-coding-email-captcha
+    group-sms-captcha: cloud-coding-sms-captcha
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: cn.edu.hcnu.captcha
+  default-flat-param-object: false

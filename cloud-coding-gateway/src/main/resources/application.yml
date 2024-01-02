@@ -1,0 +1,183 @@
+server:
+  port: 3001
+spring:
+  profiles:
+    # 环境配置
+    active: @profiles.active@
+
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: cloud-coding-gateway
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+
+    gateway:
+      ## 路由
+      routes:
+        ## id只要唯一即可，名称任意
+        - id: cloud-coding-auth-route
+          uri: lb://cloud-coding-auth
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-auth/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-program-route
+          uri: lb://cloud-coding-program
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-program/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-captcha-route
+          uri: lb://cloud-coding-captcha
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-captcha/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-resource-route
+          uri: lb://cloud-coding-resource
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-resource/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-manager-route
+          uri: lb://cloud-coding-manager
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-manager/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-dictionary-route
+          uri: lb://cloud-coding-dictionary
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-dictionary/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-forum-route
+          uri: lb://cloud-coding-forum
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-forum/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-comment-route
+          uri: lb://cloud-coding-comment
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-comment/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-feedback-route
+          uri: lb://cloud-coding-feedback
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-feedback/**
+          filters:
+            - StripPrefix=1
+        - id: cloud-coding-course-route
+          uri: lb://cloud-coding-course
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/cloud-coding-course/**
+          filters:
+            - StripPrefix=1
+
+        - id: cloud-coding-websocket-route
+          uri: lb:ws://cloud-coding-websocket
+          predicates:
+            - Path=/cloud-coding-websocket/websocket
+          filters:
+            - StripPrefix=1
+  redis:
+    host: cloudcoding.cc
+    password: fred
+    port: 6379
+    timeout: 15000
+
+oauth2:
+  cloud:
+    sys:
+      parameter:
+        ignoreUrls:
+          - /cloud-coding-program/**
+          - /cloud-coding-websocket/**
+          - /cloud-coding-feedback/**
+          - /cloud-coding-course/**
+          - /cloud-coding-im/**
+          - /cloud-coding-manager/**
+          - /cloud-coding-comment/**
+          - /cloud-coding-forum/**
+          - /cloud-coding-dictionary/**
+          - /cloud-coding-resource/**
+          - /cloud-coding-resource/resource/**
+          - /cloud-coding-auth/oauth/token
+          - /cloud-coding-auth/oauth/check_token
+          - /cloud-coding-auth/oauth/login
+          - /cloud-coding-auth/user/new
+          - /cloud-coding-auth/user/*
+          - /cloud-coding-auth/user/update
+          - /cloud-coding-auth/oauth/logout
+          - /cloud-coding-auth/oauth/refresh_token
+          - /cloud-coding-auth/oauth/authorize
+          - /cloud-coding-captcha/email/send
+          - /cloud-coding-captcha/**
+          - /cloud-coding-captcha/sms/send
+          - /doc.html
+          - /doc.html/**
+          - /swagger-resources/**
+          - /v3/api-docs/**
+          - /cloud-coding-auth/v3/**
+          - /webjars/**
+          - /**/v3/api-docs/**
+          - /favicon.ico
+knife4j:
+  gateway:
+    enabled: true
+    setttig:
+      group-enabled: false
+    strategy: discover
+    discover:
+      version: openapi3
+      enabled: true
+    routes:
+      - name: 验证码服务
+        service-name: cloud-coding-captcha
+        url: /cloud-coding-captcha/v3/api-docs
+        context-path: /cloud-coding-captcha
+      - name: 资源服务
+        service-name: cloud-coding-resource
+        url: /cloud-coding-resource/v3/api-docs
+        context-path: /cloud-coding-resource
+      - name: 管理服务
+        service-name: cloud-coding-manager
+        url: /cloud-coding-manager/v3/api-docs
+        context-path: /cloud-coding-manager
+      - name: 认证服务
+        service-name: cloud-coding-auth
+        url: /cloud-coding-auth/v3/api-docs
+        context-path: /cloud-coding-auth
+      - name: 字典服务
+        service-name: cloud-coding-dictionary
+        url: /cloud-coding-dictionary/v3/api-docs
+        context-path: /cloud-coding-dictionary
+

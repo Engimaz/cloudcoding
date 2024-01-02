@@ -1,0 +1,62 @@
+server:
+  port: 3012
+spring:
+  application:
+    name: cloud-coding-course
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+  redis:
+    host: @redis.host@
+    port: @redis.port@
+    timeout: 15000
+    password: @redis.password@
+
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://@mysql.host@/cloud-coding-course?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: @mysql.username@
+    password: @mysql.password@
+
+dubbo:
+  cloud:
+    subscribed-services: cloud-coding-dictionary, cloud-coding-auth
+  protocol:
+    name: dubbo
+    port: 20102
+  registry:
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  consumer:
+    check: false
+    retries: 0
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  packages-to-scan: cn.edu.hcnu.course
+  default-flat-param-object: false

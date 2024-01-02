@@ -1,0 +1,72 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: cn.edu.hcnu.resource
+  default-flat-param-object: false
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://@mysql.host@/cloud-coding-resource?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: @mysql.username@
+    password: @mysql.password@
+
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+
+  application:
+    name: cloud-coding-resource
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 215MB
+server:
+  port: 3006
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# minio 配置
+minio:
+  endpoint: @minio.host@
+  accessKey: @minio.access@
+  secretKey: @minio.secret@
+  bucket:
+    resource: resource
+
+#jetcache 配置
+#jetcache:
+#  areaInCacheName: false
+#  local:
+#    default:
+#      type: linkedhashmap
+#      keyConvertor: fastjson2
+#  remote:
+#    default:
+#      type: redis.lettuce
+#      keyConvertor: fastjson2
+#      broadcastChannel: projectA
+#      uri: redis://frea@redis.cloudcoding.cc/

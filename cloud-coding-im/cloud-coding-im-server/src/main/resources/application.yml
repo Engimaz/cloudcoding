@@ -1,0 +1,63 @@
+
+
+netty:
+  websocket:
+    # Websocket服务端口
+    port: 8888
+    # 消息帧最大体积
+    max-frame-size: 10240
+    # URI路径
+    path: /websocket
+    name: cloud-coding-websocket
+dubbo:
+  cloud:
+    subscribed-services: cloud-coding-comment
+  protocol:
+    name: dubbo
+    port: 20888
+  registry:
+    # 服务注册中心
+    address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
+    # group: cloud-coding
+  consumer:
+    check: false
+    retries: 0
+
+rocketmq:
+  name-server:  @rocketmq.host@
+
+  producer:
+    group: cloud-coding
+    send-message-timeout: 10000
+  consumer:
+    group: cloud-coding
+    group-websocket: cloud-coding-websocket
+
+spring:
+  redis:
+    host: @redis.host@
+    port: @redis.port@
+    timeout: 15000
+    password: @redis.password@
+
+  application:
+    name: cloud-coding-im
+
+  cloud:
+    nacos:
+      # nacos 服务地址
+      server-addr: @nacos.server@
+      username: @nacos.username@
+      password: @nacos.password@
+
+      discovery:
+        group: @nacos.discovery.group@
+        namespace: @nacos.namespace@
+
+      config:
+        # 配置组
+        group: @nacos.config.group@
+        namespace: @nacos.namespace@
+        file-extension: yml
+server:
+  port: 3010
