@@ -1,0 +1,32 @@
+.ResizeHandleOuter {
+    flex: 0 0 0.7em;
+    position: relative;
+    outline: none;
+    --background-color: rgba(24, 24, 24, 0.1);
+    --color-link: blue;
+}
+
+.ResizeHandleOuter[data-resize-handle-active] {
+    --background-color: var(--color-solid-resize-bar-handle);
+}
+
+.ResizeHandleInner {
+    position: absolute;
+    top: 0.25em;
+    bottom: 0.25em;
+    left: 0.25em;
+    right: 0.25em;
+    border-radius: 0.25em;
+    background-color: var(--background-color);
+    transition: background-color 0.2s linear;
+}
+
+
+
+
+.Link {
+    display: block;
+    color: var(--color-link);
+    margin-bottom: 0.5rem;
+}
+

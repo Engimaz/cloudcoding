@@ -1,0 +1,42 @@
+import { generateMockOrganizations } from "@/api/manager/mock.ts"
+import { useState } from "react"
+import OrganizationCard from './organization-card.tsx'
+import { OrganizationVO } from "@/api/manager/types.ts"
+import { Button } from "primereact/button"
+import CreatePanel from "./create/create-panel.tsx"
+
+export default function index() {
+  const [data, setData] = useState<Array<OrganizationVO>>(generateMockOrganizations(10))
+  const [open, setOpen] = useState(false);
+
+  return (
+
+    <main className="flex flex-wrap justify-center items-center gap-2 w-full h-screen overflow-hidden relative">
+      {
+        data.map((item: OrganizationVO) => (<OrganizationCard key={item.id} data={item}></OrganizationCard>))
+      }
+      <div className=' absolute bottom-50 right-10'>
+        <div className="flex flex-wrap justify-content-center gap-3 mb-4">
+          <Button icon="iconfont icon-plus" rounded aria-label="Filter" onClick={() => setOpen(true)} />
+        </div>
+      </div>
+      <CreatePanel open={open} setOpen={setOpen} editRecord={
+        {
+          id: "new-organization",
+          name: "",
+          avatar: "",// 组织头像
+          img: "",// 宣传图
+          description: "",//组织介绍
+          location: "",// 组织地址 省区级
+          address: "",//详细地址
+          type: "",//组织类型
+          status: "OrgAudit",//组织状态
+          positions: [],
+          features: [],
+          userPositions: []
+        }
+      } />
+
+    </main>
+  )
+}

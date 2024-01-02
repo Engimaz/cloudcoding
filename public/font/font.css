@@ -1,0 +1,14 @@
+@font-face {
+    font-family: AntonRegular;
+    src: url('./Anton/Anton-Regular.ttf');
+}
+
+@font-face {
+    font-family: NotoSansSCVariableFont;
+    src: url('./Noto_Sans_SC/NotoSansSC-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: VarelaRoundRegular;
+    src: url('./Varela_Round/VarelaRound-Regular.ttf');
+}
