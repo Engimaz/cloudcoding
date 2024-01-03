@@ -3,6 +3,8 @@ package cn.edu.hcnu.manager.infrastructure.repository;
 import cn.edu.hcnu.manager.model.po.FeatureUrlPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FeatureUrlRepository extends IService<FeatureUrlPO> {
 
+    List<FeatureUrlPO> queryByFeatureId(Long id);
 }

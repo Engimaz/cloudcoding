@@ -2,7 +2,6 @@ package cn.edu.hcnu.manager.domain.service.feature;
 
 import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.manager.domain.event.feature.FeaturePublisher;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureUrl;
 import cn.edu.hcnu.manager.domain.service.relation.factorty.FeatureUrlFactory;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureRepository;
@@ -44,6 +43,7 @@ public class Feature {
 
     @Autowired
     private FeatureOrganizationRepository featureOrganizationRepository;
+
     @DubboReference(group = "dictionary")
     private DictionaryService dictionaryService;
 

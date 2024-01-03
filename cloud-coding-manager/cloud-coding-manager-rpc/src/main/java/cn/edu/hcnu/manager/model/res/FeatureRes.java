@@ -18,6 +18,8 @@ public class FeatureRes {
     private String id;
     private String name;
     private String status;
-    private List<FeatureUrlRes> relations;
+    private String value;
+    private String description;
+    private List<String> urls;
 
 }

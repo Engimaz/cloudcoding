@@ -18,5 +18,7 @@ public class FeatureDTO {
     private String id;
     private String name;
     private String status;
-    private List<FeatureUrlDTO> relations;
+    private String value;
+    private String description;
+    private List<String> urls;
 }

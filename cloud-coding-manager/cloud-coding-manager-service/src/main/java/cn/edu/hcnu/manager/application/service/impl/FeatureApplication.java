@@ -4,18 +4,15 @@ import cn.edu.hcnu.base.model.CommonQuery;
 import cn.edu.hcnu.base.model.PageDTO;
 import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
-import cn.edu.hcnu.manager.application.assembler.AddFeatureCommandToFeatureMapping;
 import cn.edu.hcnu.manager.application.assembler.FeatureToDTOMapping;
-import cn.edu.hcnu.manager.application.assembler.UpdateFeatureCommandToFeatureMapping;
 import cn.edu.hcnu.manager.application.service.IFeatureApplication;
 import cn.edu.hcnu.manager.domain.service.feature.Feature;
-import cn.edu.hcnu.manager.domain.service.organization.Organization;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureRepository;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureUrlRepository;
 import cn.edu.hcnu.manager.model.command.AddFeatureCommand;
 import cn.edu.hcnu.manager.model.command.UpdateFeatureCommand;
 import cn.edu.hcnu.manager.model.dto.FeatureDTO;
 import cn.edu.hcnu.manager.model.po.FeaturePO;
-import cn.edu.hcnu.manager.model.po.OrganizationPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,7 +31,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class FeatureApplication implements IFeatureApplication {
-
 
 
     @Autowired
@@ -91,15 +87,20 @@ public class FeatureApplication implements IFeatureApplication {
         bean.update();
         return featureToDTOMapping.sourceToTarget(bean);
     }
+
     @DubboReference(group = "dictionary")
     private DictionaryService dictionaryService;
+
+    @Autowired
+    private FeatureUrlRepository featureUrlRepository;
+
     @Override
     public PageDTO<FeatureDTO, CommonQuery> list(CommonQuery commonQuery) {
         Page<FeaturePO> page = new Page<>(commonQuery.getPage(), commonQuery.getSize());
 
         LambdaQueryWrapper<FeaturePO> featurePOLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
-        Page<FeaturePO> res = featureRepository.page(page,featurePOLambdaQueryWrapper );
+        Page<FeaturePO> res = featureRepository.page(page, featurePOLambdaQueryWrapper);
 
         List<Feature> collect = res.getRecords().stream().map(po -> {
             Feature bean = applicationContext.getBean(Feature.class);
@@ -108,6 +109,7 @@ public class FeatureApplication implements IFeatureApplication {
             bean.setStatus(dictionaryService.getDictionaryById(po.getStatus()).getValue());
             bean.setDescription(po.getDescription());
             bean.setValue(po.getValue());
+            bean.setUrls(featureUrlRepository.queryByFeatureId(po.getId()).stream().map(item -> item.getUrlId().toString()).collect(Collectors.toList()));
             return bean;
         }).collect(Collectors.toList());
         return new PageDTO<>(featureToDTOMapping.sourceToTarget(collect), res.getTotal(), commonQuery);
