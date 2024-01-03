@@ -24,6 +24,12 @@ const data: Array<MenuItem> = [
                 path: "/setting/api",
                 type: "leaf",
             },
+            {
+                label: <span className='w-full h-full !p-2'>功能管理</span>,
+                id: "4",
+                path: "/setting/feature",
+                type: "leaf",
+            },
             // {
             //     label: <span className='w-full h-full !p-2'>Submenu</span>,
             //     id: "sub1-2",

@@ -138,8 +138,11 @@ export default () => {
                         {
                             path: "api",
                             element: LazyLoad("../pages/setting/api-manager/index.tsx")
+                        },
+                        {
+                            path: "feature",
+                            element: LazyLoad("../pages/setting/feature-manager/index.tsx")
                         }
-
                     ]
                 },
             ]

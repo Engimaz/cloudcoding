@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 're
 import { InputTextarea } from 'primereact/inputtextarea';
 import { PickList, PickListChangeEvent } from 'primereact/picklist';
 import { User } from '@/api/auth/types.ts';
-import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
+import { useAppSelector } from '@/hooks/useStore.ts';
 import { RootState } from '@/store/index.ts';
 import { uploadResource } from '@/api/resource/index.ts';
 import { CLOUD_CODING_GATEWAY } from '@/config/base-url.ts';
@@ -14,7 +14,7 @@ import { z } from "zod";
 import { Toast } from 'primereact/toast';
 import { generateMockUsers } from '../../../api/auth/mock.ts';
 import { Avatar } from 'primereact/avatar';
-import { Project, ProjectUser } from '@/api/project/types.ts';
+import { Project } from '@/api/project/types.ts';
 import Upload from '@/components/upload/index.tsx';
 import { ApiResponse } from '@/api/types.ts';
 import { Resource } from '@/api/resource/types.ts';

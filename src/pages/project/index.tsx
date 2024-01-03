@@ -8,10 +8,6 @@ import CreatePanel from './create/create-panel.tsx';
 import { Project } from '@/api/project/types.ts';
 import { generateMockProjects } from '@/api/project/mock.ts';
 
-
-
-
-
 const YourComponent: React.FC = () => {
     const [openClick, setOpenClick] = useState<boolean>(true);
     const slideRef = useRef<HTMLDivElement>(null);

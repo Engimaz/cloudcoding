@@ -6,7 +6,7 @@ import { Button } from "primereact/button"
 import CreatePanel from "./create/create-panel.tsx"
 
 export default function index() {
-  const [data, setData] = useState<Array<OrganizationVO>>(generateMockOrganizations(10))
+  const [data, setData] = useState<Array<OrganizationVO>>([])
   const [open, setOpen] = useState(false);
 
   return (
