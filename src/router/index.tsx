@@ -142,6 +142,10 @@ export default () => {
                         {
                             path: "feature",
                             element: LazyLoad("../pages/setting/feature-manager/index.tsx")
+                        },
+                        {
+                            path: "organization",
+                            element: LazyLoad("../pages/setting/organization-manager/index.tsx")
                         }
                     ]
                 },

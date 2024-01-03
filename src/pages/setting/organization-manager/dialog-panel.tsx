@@ -3,11 +3,11 @@ import { Dialog } from 'primereact/dialog';
 
 
 import { Button } from 'primereact/button';
-import { Organization } from '@/api/manager/types.ts';
-import { Controller, useForm } from 'react-hook-form';
+import { Feature, FeatureVO, Organization, UserPosition } from '@/api/manager/types.ts';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { insertOrganization, updateOrganization } from '@/api/manager/index.ts';
+import { getAllFeature, insertOrganization, updateOrganization } from '@/api/manager/index.ts';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -15,7 +15,7 @@ import { classNames } from 'primereact/utils';
 import Upload from '@/components/upload/index.tsx';
 import { uploadResource } from '@/api/resource/index.ts';
 import { Resource } from '@/api/resource/types.ts';
-import { ApiResponse } from '@/api/types.ts';
+import { ApiResponse, QueryListResult } from '@/api/types.ts';
 import { CLOUD_CODING_GATEWAY } from '@/config/base-url.ts';
 import { useAppSelector } from '@/hooks/useStore.ts';
 import { RootState } from '@/store/index.ts';
@@ -25,6 +25,11 @@ import { DictionaryGroup, Dictionary } from '@/api/dictionary/types.ts';
 import { TreeSelect } from 'primereact/treeselect';
 import axios from 'axios';
 import { TreeNode } from 'primereact/treenode';
+import { PickList, PickListChangeEvent } from 'primereact/picklist';
+import idGenerate from '@/features/id-generate/index.ts';
+import { User } from '@/api/auth/types.ts';
+import { generateMockUsers } from '@/api/auth/mock.ts';
+import { Avatar } from 'primereact/avatar';
 
 const schema = z.object({
     name: z
@@ -38,12 +43,25 @@ const schema = z.object({
     status: z.string().nonempty({ message: "状态值不能为空" }),
     location: z.string().nonempty({ message: "组织地址省区不能为空" }),
     address: z.string().nonempty({ message: "详细地址不能为空" }),
-
+    features: z.array(z.object({
+        name: z.string().nonempty({ message: "功能名称不能为空" }),
+        value: z.string().nonempty({ message: "功能值不能为空" }),
+        status: z.string().nonempty({ message: "状态值不能为空" })
+    })),
+    positions: z.array(z.object({
+        name: z.string().nonempty({ message: "职位名称不能为空" }),
+        value: z.string().nonempty({ message: "职位值不能为空" }),
+        status: z.string().nonempty({ message: "状态值不能为空" })
+    })),
+    userPositions: z.array(z.object({
+        userId: z.string().nonempty({ message: "用户不能为空" }),
+        position: z.string().nonempty({ message: "职位不能为空" })
+    }))
 });
 
 
 
-const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, editRecord: Organization }> = ({ open, setOpen, editRecord }) => {
+const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }> = ({ onSussess, editRecord }) => {
 
 
     // 更新或者新建字典组
@@ -85,7 +103,7 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
         }
 
         if (res.code >= 200) {
-            setOpen(false)
+            onSussess()
         }
 
     };
@@ -93,10 +111,15 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
         return formState.errors[name] ? <small className="p-error">{formState.errors[name]?.message}</small> : <small className="p-error">&nbsp;</small>;
     };
 
-    const { control, handleSubmit, formState, setValue } = useForm({
+    const { control, handleSubmit, formState, getValues, setValue } = useForm({
         defaultValues: editRecord,
         resolver: zodResolver(schema)
     });
+
+
+
+
+
 
 
     const [isHovered, setHovered] = useState(false);
@@ -135,18 +158,24 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
         })
 
     }
-    interface LocationData {
-        [key: string]: string;
-    }
-    interface ProvinceData {
-        [key: string]: LocationData
-    }
+
     const [type, setType] = useState<Array<Dictionary>>([])
     const [status, setStatus] = useState<Array<Dictionary>>([])
+    const [positionStatus, setPositionStatus] = useState<Array<Dictionary>>([])
+
 
     const [nodes, setNodes] = useState<Array<TreeNode>>([]);
 
+    const [userSource, setUserSource] = useState<Array<UserPosition>>([]);
+    const [userTarget, setUserTarget] = useState<Array<UserPosition>>([]);
+
     useEffect(() => {
+
+        queryGroupDictionaryByName("PositionStatus").then((res: ApiResponse<DictionaryGroup>) => {
+            if (res.code >= 200) {
+                setPositionStatus(res.result.list)
+            }
+        })
 
         queryGroupDictionaryByName("OrgType").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
@@ -159,6 +188,17 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
             }
         })
         initCity()
+        getAllFeature().then((res: ApiResponse<QueryListResult<FeatureVO>>) => {
+            if (res.code >= 200) {
+                setFeatureSource(res.result.list.filter(f => !editRecord.features.map(i => i.id).includes(f.id)))
+                setFeatureTarget(res.result.list.filter(f => editRecord.features.map(i => i.id).includes(f.id)))
+            }
+        })
+
+        const _d = generateMockUsers(4)
+        console.log(_d)
+        setUsers(_d)
+        setUserSource(_d.map(u => ({ userId: u.id, position: "" } as UserPosition)))
     }, [])
 
 
@@ -216,9 +256,91 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
 
     }
 
+    const [featureSource, setFeatureSource] = useState<Array<Feature>>([]);
+    const [featureTarget, setFeatureTarget] = useState<Array<Feature>>([]);
+    const onChange = (event: PickListChangeEvent) => {
+        setFeatureSource(event.source);
+        setFeatureTarget(event.target);
+        setValue("features", event.target)
+    };
+
+    const onMemberChange = (event: PickListChangeEvent) => {
+        setUserSource(event.source);
+        setUserTarget(event.target);
+        setValue("userPositions", event.target)
+    };
+
+    const featureItemTemplate = (item: Feature) => {
+        return (
+            <div className="flex  p-2 align-items-center gap-3">
+                <div className="flex-1 flex flex-col gap-2">
+                    <span className="font-bold">{item.name}</span>
+                    <div className="flex align-items-center gap-2">
+                        <i className="iconfont icon-youxiang text-sm"></i>
+                        <span>{item.value}</span>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'positions',
+    });
+
+    const sourceMemberTemplate = (dd: UserPosition) => {
+        const item = users.find(u => u.id == dd.userId) || {} as User
+
+        return (
+            <div className="flex  p-2 align-items-center gap-3">
+                <Avatar image={item.avatar} size="large" shape="circle" pt={{ root: { alt: item.nickname } }} />
+                <div className="flex-1 flex flex-col gap-2">
+                    <span className="font-bold">{item.nickname}</span>
+                    <div className="flex align-items-center gap-2">
+                        <i className="iconfont icon-youxiang text-sm"></i>
+                        <span>{item.email}</span>
+                    </div>
+                </div>
+
+            </div>
+        );
+    };
+    const [users, setUsers] = useState<Array<User>>([])
+
+    const targetMemberTemplate = (dd: UserPosition) => {
+        const item = users.find(u => u.id == dd.userId) || {} as User
+
+        return (
+            <div className="flex  p-2 align-items-center gap-3">
+                <Avatar image={item.avatar} size="large" shape="circle" pt={{ root: { alt: item.nickname } }} />
+                <div className="flex-1 flex flex-col gap-2">
+                    <span className="font-bold">{item.nickname}</span>
+                    <div className="flex align-items-center gap-2">
+                        <i className="iconfont icon-youxiang text-sm"></i>
+                        <span>{item.email}</span>
+                    </div>
+                </div>
+                <div>
+                    <Dropdown value={dd.position} onChange={(e) => {
+                        console.log(e.target.value)
+                        const arr = userTarget.filter(it => it.userId != dd.userId)
+                        arr.push({ userId: dd.userId, position: e.target.value })
+                        setUserTarget(arr)
+                        setValue("userPositions", arr)
+                    }} options={getValues("positions").map(item => {
+                        return {
+                            code: item.value,
+                            name: item.name
+                        }
+                    })} optionLabel="name"
+                        placeholder="选择角色" className="w-full" />
+                </div>
+            </div>
+        );
+    };
 
     return (
-        <Dialog header="新建组织" visible={open} style={{ width: '80vw' }} onHide={() => setOpen(false)}>
+        <Dialog header="新建组织" visible={editRecord.id != "-1"} onHide={() => onSussess()} style={{ width: '80vw' }} >
             <Toast ref={toast} />
 
             <form onSubmit={handleSubmit(onFinish)} className="flex flex-col gap-2  !px-10 py-5">
@@ -349,7 +471,7 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
                 <Controller
                     name="location"
                     control={control}
-                    render={({ field, fieldState }) => (
+                    render={({ field }) => (
                         <>
                             <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.type })}>
                                 选择街道
@@ -364,6 +486,7 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
                         </>
                     )}
                 />
+                
                 <Controller
                     name="address"
                     control={control}
@@ -374,6 +497,110 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void, edit
                             </label>
                             <InputText id={field.name} {...field} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
                             {getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
+
+                <Controller
+                    name='features'
+                    control={control}
+                    render={({ field }) => (
+                        <>
+                            <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.features })}>
+                                组织功能
+                            </label>
+                            <div id={field.name} {...field} ref={field.ref} className='w-full overflow-auto' >
+                                <PickList
+                                    source={featureSource}
+                                    target={featureTarget}
+                                    onChange={onChange}
+                                    sourceItemTemplate={featureItemTemplate}
+                                    targetItemTemplate={featureItemTemplate}
+                                    filter
+                                    filterBy="name"
+                                    showSourceControls={false}  // 取消源列表的上下按钮组
+                                    showTargetControls={false}  // 取消目标列表的上下按钮组
+                                    sourceHeader="候选功能" targetHeader="已选功能" sourceStyle={{ height: '24rem' }} targetStyle={{ height: '24rem' }}
+                                    sourceFilterPlaceholder="搜索功能" targetFilterPlaceholder="搜索功能" />
+                            </div>
+                            {formState.errors.features && getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
+
+                <>
+                    <label htmlFor='positions' className={classNames({ 'p-error': formState.errors.positions })}>
+                        职位
+                    </label>
+                    <div id='positions'>
+                        {fields.map((item, index) => (
+
+                            <div key={item.id} className='flex justify-around mt-2 w-full'>
+                                <Controller
+                                    name={`positions.${index}.name`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputText {...field} placeholder="职位名称" />
+                                    )}
+                                />
+                                <Controller
+                                    name={`positions.${index}.value`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <InputText id={field.name} {...field} placeholder="职位代码" />
+                                    )}
+                                />
+
+                                <Controller
+                                    name={`positions.${index}.status`}
+                                    control={control}
+                                    render={({ field, fieldState }) => (
+                                        <Dropdown
+                                            id={field.name}
+                                            {...field}
+                                            ref={field.ref}
+                                            value={field.value}
+                                            placeholder="选择职位状态"
+                                            options={positionStatus}
+                                            onChange={(e) => { field.onChange(e.value); }}
+                                            className={classNames({ 'p-invalid': fieldState.error })}
+                                        />
+                                    )}
+                                />
+
+                                <Button icon="iconfont icon-guanbi" rounded text severity="danger" aria-label="Cancel" onClick={() => remove(index)} />
+                            </div>
+                        ))}
+
+                        <div className='w-full flex justify-center items-center  mt-8'>
+                            <Button type="button" severity='help' pt={{ root: { className: "w-full" } }} onClick={() => append({ name: '', value: '', id: idGenerate(), status: "" })} label="添加一个新职位" />
+                        </div>
+                    </div>
+                    {getFormErrorMessage('positions')}
+                </>
+                <Controller
+                    name='userPositions'
+                    control={control}
+                    render={({ field }) => (
+                        <>
+                            <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.userPositions })}>
+                                项目成员
+                            </label>
+                            <div id={field.name} {...field} ref={field.ref} className='w-full overflow-auto' >
+                                <PickList
+                                    source={userSource}
+                                    target={userTarget}
+                                    onChange={onMemberChange}
+                                    sourceItemTemplate={sourceMemberTemplate}
+                                    targetItemTemplate={targetMemberTemplate}
+                                    filter
+                                    filterBy="name"
+                                    showSourceControls={false}  // 取消源列表的上下按钮组
+                                    showTargetControls={false}  // 取消目标列表的上下按钮组
+                                    sourceHeader="候选成员" targetHeader="项目成员" sourceStyle={{ height: '24rem' }} targetStyle={{ height: '24rem' }}
+                                    sourceFilterPlaceholder="搜索昵称" targetFilterPlaceholder="搜索昵称" />
+                            </div>
+                            {formState.errors.userPositions && getFormErrorMessage(field.name)}
                         </>
                     )}
                 />

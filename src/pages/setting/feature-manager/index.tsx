@@ -9,7 +9,7 @@ import { ConfirmPopup } from 'primereact/confirmpopup';
 
 import DialogPanel from './dialog-panel.tsx'
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
-import { FeatureVO, UrlVO } from '@/api/manager/types.ts';
+import { FeatureVO } from '@/api/manager/types.ts';
 import { deleteFeature, getFeatureList } from '@/api/manager/index.ts';
 import { DictionaryGroup, Dictionary } from '@/api/dictionary/types.ts';
 import { ApiResponse } from '@/api/types.ts';
@@ -48,17 +48,11 @@ const App: React.FC = () => {
 
 
     const [status, setStatus] = useState<Array<Dictionary>>([])
-    const [scope, setScope] = useState<Array<Dictionary>>([])
 
     useEffect(() => {
-        queryGroupDictionaryByName("ApiStatus").then((res: ApiResponse<DictionaryGroup>) => {
+        queryGroupDictionaryByName("FeatureStatus").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
                 setStatus(res.result.list)
-            }
-        })
-        queryGroupDictionaryByName("ApiScope").then((res: ApiResponse<DictionaryGroup>) => {
-            if (res.code >= 200) {
-                setScope(res.result.list)
             }
         })
     }, [])
@@ -68,14 +62,9 @@ const App: React.FC = () => {
         return res
     }
 
-    const statusStatusTemplate = (rowData: UrlVO) => {
-
+    const statusStatusTemplate = (rowData: FeatureVO) => {
         return (
             <Tag value={getLabel(status, rowData.status)?.label} key={rowData.id} />
-        )
-    }; const statusScopeTemplate = (rowData: UrlVO) => {
-        return (
-            <Tag value={getLabel(scope, rowData.scope)?.label} key={rowData.id} />
         )
     };
 
@@ -88,7 +77,7 @@ const App: React.FC = () => {
             <section className='flex w-full  justify-center items-center gap-2'>
                 <Button label="编辑" severity="info" text onClick={() => setEditRecord(rowData)} />
                 <ConfirmPopup target={buttonEl.current || undefined} visible={deleteId == rowData.id} onHide={() => setDeleteId("")}
-                    message="确定删除这个字典吗?" accept={() => confirm(deleteId)} />
+                    message="确定删除这个功能吗?" accept={() => confirm(deleteId)} />
                 <Button ref={buttonEl} onClick={() => setDeleteId(rowData.id ? rowData.id : "")} severity="danger" label="删除" text />
             </section>
         )
@@ -114,7 +103,7 @@ const App: React.FC = () => {
                     value: "",
                     description: "",
                     urls: [] as Array<string>
-                } as FeatureVO as FeatureVO)}>添加接口</Button>
+                } as FeatureVO as FeatureVO)}>添加功能</Button>
                 <div className="card flex flex-wrap justify-content-center gap-3 hover:cursor-pointer">
                     <span className="p-input-icon-left">
                         <i className="iconfont icon-sousuo" onClick={fetchData} />
@@ -139,20 +128,15 @@ const App: React.FC = () => {
             <DataTable value={data} tableStyle={{ minWidth: '50rem' }}  >
                 <Column field="id" header="ID" align="center"></Column>
                 <Column field="name" header="名称" align="center"></Column>
+                <Column field="value" align="center" header="功能代号"></Column>
                 <Column field="description" align="center" header="接口描述"></Column>
-                <Column field="value" align="center" header="接口地址"></Column>
-                <Column field="status" align="center" header="接口状态" body={statusStatusTemplate} />
-                <Column field="scope" align="center" header="接口可见性" body={statusScopeTemplate} />
+                <Column field="status" align="center" header="功能状态" body={statusStatusTemplate} />
                 <Column header="操作" align="center" body={actionBodyTemplate} />
             </DataTable>
             <Paginator first={first} rows={pageSize} totalRecords={count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
-
             {
                 editRecord && editRecord.id && <DialogPanel editRecord={editRecord as FeatureVO} onSussess={() => { fetchData(); setEditRecord({ id: "-1" } as FeatureVO); }} key={editRecord.id} />
             }
-
-
-
         </main >
     );
 }

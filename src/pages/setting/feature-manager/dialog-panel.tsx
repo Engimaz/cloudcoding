@@ -68,12 +68,14 @@ const DialogPanel: React.FC<{ editRecord: Feature, onSussess: () => void }> = ({
     const [status, setStatus] = useState<Array<Dictionary>>([])
 
     useEffect(() => {
+
         queryGroupDictionaryByName("FeatureStatus").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
                 setStatus(res.result.list)
             }
         })
         fetchData()
+        setTarget(editRecord.urls)
     }, [])
 
     const [data, setData] = useState<UrlVO[]>([]);
@@ -81,7 +83,7 @@ const DialogPanel: React.FC<{ editRecord: Feature, onSussess: () => void }> = ({
         const res = await getAllUrl();
         if (res.code >= 200) {
             setData(res.result.list)
-            setSource(res.result.list.map(item => item.id + ""))
+            setSource(res.result.list.map(item => item.id + "").filter(item => !editRecord.urls.includes(item)))
         }
     }
 
@@ -113,7 +115,7 @@ const DialogPanel: React.FC<{ editRecord: Feature, onSussess: () => void }> = ({
     };
 
     return (
-        <Dialog header={editRecord.id === 'new-dictionary' ? "新增功能" : "调整功能"} visible={editRecord.id != "-1"} style={{ width: '50vw' }} onHide={() => onSussess()} footer={null}>
+        <Dialog header={editRecord.id === 'new-feature' ? "新增功能" : "调整功能"} visible={editRecord.id != "-1"} style={{ width: '50vw' }} onHide={() => onSussess()} footer={null}>
             <form onSubmit={handleSubmit(onFinish)} className="flex flex-col gap-2  !px-10 py-5">
                 <Controller
                     name="name"

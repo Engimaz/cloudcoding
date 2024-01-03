@@ -30,6 +30,12 @@ const data: Array<MenuItem> = [
                 path: "/setting/feature",
                 type: "leaf",
             },
+            {
+                label: <span className='w-full h-full !p-2'>组织管理</span>,
+                id: "5",
+                path: "/setting/organization",
+                type: "leaf",
+            },
             // {
             //     label: <span className='w-full h-full !p-2'>Submenu</span>,
             //     id: "sub1-2",

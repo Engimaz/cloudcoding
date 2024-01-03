@@ -102,6 +102,13 @@ export const getFeatureList = (page: number, size: number, keyword: string) => {
   });
 };
 
+export const getAllFeature = () => {
+  const url = `${context}/feature/all`;
+  const method = "get";
+  return request<QueryListResult<FeatureVO>>(url, method);
+};
+
+
 // 删除一个功能
 export const deleteFeature = (id: string) => {
   const url = `${context}/feature/${id}`;

@@ -7,12 +7,13 @@ import { Column } from 'primereact/column';
 import { Tag } from 'primereact/tag';
 import { ConfirmPopup } from 'primereact/confirmpopup';
 
-import DialogPanel from '../../organization/create/create-panel.tsx'
+import DialogPanel from './dialog-panel.tsx'
 import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
 import { Organization, OrganizationVO } from '@/api/manager/types.ts';
 import { deleteOrganizationById, getOrganizationList } from '@/api/manager/index.ts';
 import { DictionaryGroup, Dictionary } from '@/api/dictionary/types.ts';
 import { ApiResponse } from '@/api/types.ts';
+import axios from 'axios';
 
 
 
@@ -21,7 +22,7 @@ const App: React.FC = () => {
 
 
     const [editRecord, setEditRecord] = useState<Organization>({
-        id: "",
+        id: "-1",
         name: "",
         avatar: "",// 组织头像
         img: "",// 宣传图
@@ -63,19 +64,36 @@ const App: React.FC = () => {
 
 
     const [status, setStatus] = useState<Array<Dictionary>>([])
-    const [scope, setScope] = useState<Array<Dictionary>>([])
+    const [type, setType] = useState<Array<Dictionary>>([])
+    const [streets, setStreets] = useState<Array<{ code: string, name: string, areaCode: string, cityCode: string, provinceCode: string }>>([])
+    const [cities, setCities] = useState<Array<{ code: string, name: string, provinceCode: string }>>([])
+    const [provinces, setProvinces] = useState<Array<{ code: string, name: string }>>([])
+    const [areas, setAreas] = useState<Array<{ code: string, name: string, cityCode: string, provinceCode: string }>>([])
 
     useEffect(() => {
-        queryGroupDictionaryByName("ApiStatus").then((res: ApiResponse<DictionaryGroup>) => {
+        queryGroupDictionaryByName("OrgStatus").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
                 setStatus(res.result.list)
             }
         })
-        queryGroupDictionaryByName("ApiScope").then((res: ApiResponse<DictionaryGroup>) => {
+        queryGroupDictionaryByName("OrgType").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
-                setScope(res.result.list)
+                setType(res.result.list)
             }
         })
+        axios.get("/json/streets.json").then((res) => {
+            setStreets(res.data)
+        })
+        axios.get("/json/cities.json").then((res) => {
+            setCities(res.data)
+        })
+        axios.get("/json/provinces.json").then((res) => {
+            setProvinces(res.data)
+        })
+        axios.get("/json/areas.json").then((res) => {
+            setAreas(res.data)
+        })
+
     }, [])
 
     const getLabel = (arr: Array<Dictionary>, value: string) => {
@@ -88,11 +106,48 @@ const App: React.FC = () => {
         return (
             <Tag value={getLabel(status, rowData.status)?.label} key={rowData.id} />
         )
-    }; const statusScopeTemplate = (rowData: OrganizationVO) => {
+    };
+
+    const statusTypeTemplate = (rowData: OrganizationVO) => {
+
         return (
-            <Tag value={getLabel(scope, rowData.status)?.label} key={rowData.id} />
+            <Tag value={getLabel(type, rowData.type)?.label} key={rowData.id} />
         )
     };
+
+    const locationTemplate = (rowData: OrganizationVO) => {
+        let street: string = ""
+        streets.forEach((item: { code: string, name: string, areaCode: string, cityCode: string, provinceCode: string }) => {
+            if ([item.areaCode, item.cityCode, item.provinceCode, item.code].includes(rowData.location)) {
+                street = item.name
+            }
+        })
+
+        let city: string = ""
+        cities.forEach((item: { code: string, name: string, provinceCode: string }) => {
+            if ([item.provinceCode, item.code].includes(rowData.location.substring(0, 4))) {
+                city = item.name
+            }
+        })
+
+        let province: string = ""
+        provinces.forEach((item: { code: string, name: string }) => {
+            if ([item.code].includes(rowData.location.substring(0, 2))) {
+                province = item.name
+            }
+        })
+
+        let area: string = ""
+        areas.forEach((item: { code: string, name: string, cityCode: string, provinceCode: string }) => {
+            if ([item.cityCode, item.provinceCode, item.code].includes(rowData.location.substring(0, 6))) {
+                area = item.name
+            }
+        })
+
+        return (
+            <Tag value={province + city + area + street + rowData.address} key={rowData.id} />
+        )
+    }
 
     const [deleteId, setDeleteId] = useState<string | number>("");
 
@@ -149,13 +204,14 @@ const App: React.FC = () => {
                 <Column field="name" header="名称" align="center"></Column>
                 <Column field="description" align="center" header="接口描述"></Column>
                 <Column field="value" align="center" header="接口地址"></Column>
-                <Column field="status" align="center" header="接口状态" body={statusStatusTemplate} />
-                <Column field="scope" align="center" header="接口可见性" body={statusScopeTemplate} />
+                <Column field="location" align="center" header="组织地址" body={locationTemplate} />
+                <Column field="status" align="center" header="组织状态" body={statusStatusTemplate} />
+                <Column field="type" align="center" header="接口可见性" body={statusTypeTemplate} />
                 <Column header="操作" align="center" body={actionBodyTemplate} />
             </DataTable>
             <Paginator first={first} rows={pageSize} totalRecords={count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
 
-            {/* <DialogPanel editRecord={editRecord as OrganizationVO} onSussess={() => { fetchData(); setEditRecord({ id: "-1" } as OrganizationVO); }} key={editRecord.id} /> */}
+            <DialogPanel editRecord={editRecord as OrganizationVO} onSussess={() => { fetchData(); setEditRecord({ id: "-1" } as OrganizationVO); }} key={editRecord.id} />
 
 
         </main >
