@@ -114,4 +114,22 @@ public class FeatureApplication implements IFeatureApplication {
         }).collect(Collectors.toList());
         return new PageDTO<>(featureToDTOMapping.sourceToTarget(collect), res.getTotal(), commonQuery);
     }
+
+    @Override
+    public PageDTO<FeatureDTO, CommonQuery> all() {
+        LambdaQueryWrapper<FeaturePO> f = new LambdaQueryWrapper<>();
+        List<FeaturePO> res = featureRepository.list(f);
+
+        List<Feature> collect = res.stream().map(po -> {
+            Feature bean = applicationContext.getBean(Feature.class);
+            bean.setId(po.getId());
+            bean.setName(po.getName());
+            bean.setStatus(dictionaryService.getDictionaryById(po.getStatus()).getValue());
+            bean.setDescription(po.getDescription());
+            bean.setValue(po.getValue());
+            bean.setUrls(featureUrlRepository.queryByFeatureId(po.getId()).stream().map(item -> item.getUrlId().toString()).collect(Collectors.toList()));
+            return bean;
+        }).collect(Collectors.toList());
+        return new PageDTO<>(featureToDTOMapping.sourceToTarget(collect), (long) res.size(), null);
+    }
 }

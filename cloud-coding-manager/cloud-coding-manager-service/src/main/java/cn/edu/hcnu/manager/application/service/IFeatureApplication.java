@@ -44,4 +44,6 @@ public interface IFeatureApplication {
     FeatureDTO updateFeature(UpdateFeatureCommand updateFeatureCommand);
 
     PageDTO<FeatureDTO, CommonQuery> list(CommonQuery commonQuery);
+
+    PageDTO<FeatureDTO, CommonQuery> all();
 }

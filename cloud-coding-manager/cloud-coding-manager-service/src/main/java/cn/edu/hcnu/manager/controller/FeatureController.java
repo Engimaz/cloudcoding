@@ -97,4 +97,14 @@ public class FeatureController implements FeatureApi {
         PageRes<UrlRes, CommonQuery> urlVO = pageDTOToPageVOMapping.sourceToTarget(list, featureDTOToResMapping);
         return RestResponse.success(ResultCode.SUCCESS, urlVO);
     }
+    @Override
+    @GetMapping("all")
+    public RestResponse all() {
+        PageDTO<FeatureDTO, CommonQuery> list = featureApplication.all();
+        if (null == list) {
+            return RestResponse.fail(ResultCode.QUERY_ERROR);
+        }
+        PageRes<UrlRes, CommonQuery> urlVO = pageDTOToPageVOMapping.sourceToTarget(list, featureDTOToResMapping);
+        return RestResponse.success(ResultCode.SUCCESS, urlVO);
+    }
 }

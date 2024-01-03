@@ -3,6 +3,7 @@ package cn.edu.hcnu.manager.rpc;
 import cn.edu.hcnu.base.model.PageParams;
 import cn.edu.hcnu.base.model.RestResponse;
 import cn.edu.hcnu.manager.model.req.FeatureReq;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @description:
@@ -20,4 +21,7 @@ public interface FeatureApi {
     RestResponse queryById(Long id);
 
     RestResponse list(PageParams p);
+
+    @GetMapping("all")
+    RestResponse all();
 }
