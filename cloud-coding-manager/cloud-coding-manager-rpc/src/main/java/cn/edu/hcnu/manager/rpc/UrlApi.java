@@ -4,6 +4,7 @@ import cn.edu.hcnu.base.model.PageParams;
 import cn.edu.hcnu.base.model.RestResponse;
 import cn.edu.hcnu.manager.model.req.AddUrlReq;
 import cn.edu.hcnu.manager.model.req.UpdateUrlReq;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @description:
@@ -13,6 +14,9 @@ import cn.edu.hcnu.manager.model.req.UpdateUrlReq;
 public interface UrlApi {
 
     RestResponse listUrl(PageParams pageQueryUrlReq);
+
+    @GetMapping("all")
+    RestResponse all();
 
     RestResponse addUrl(AddUrlReq req);
 

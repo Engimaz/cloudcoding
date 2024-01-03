@@ -69,7 +69,16 @@ public class UrlController implements UrlApi {
         return RestResponse.success(ResultCode.SUCCESS, urlVO);
     }
 
-
+    @Override
+    @GetMapping("all")
+    public RestResponse all() {
+        PageDTO<UrlDTO, CommonQuery> list = urlApplication.all();
+        if (null == list) {
+            return RestResponse.fail(ResultCode.QUERY_ERROR);
+        }
+        PageRes<UrlRes, CommonQuery> urlVO = pageDTOToPageVOMapping.sourceToTarget(list, urlDTOToUrlResMapping);
+        return RestResponse.success(ResultCode.SUCCESS, urlVO);
+    }
 
     @Override
     @PostMapping("new")

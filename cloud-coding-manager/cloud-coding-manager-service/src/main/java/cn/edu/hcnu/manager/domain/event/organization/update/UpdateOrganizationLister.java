@@ -1,13 +1,14 @@
 package cn.edu.hcnu.manager.domain.event.organization.update;
 
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
+import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.PositionPO;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.domain.service.position.Position;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganization;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganizationDomainService;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
 import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -31,7 +32,7 @@ public class UpdateOrganizationLister {
     private UserPositionDomainService userPositionDomainService;
 
     @Autowired
-    private FeatureOrganizationDomainService featureOrganizationDomainService;
+    private FeatureOrganizationRepository featureOrganizationRepository;
 
     @Autowired
     private PositionRepository positionRepository;
@@ -84,16 +85,16 @@ public class UpdateOrganizationLister {
 
 
         //删除组织的功能
-        featureOrganizationDomainService.removeByOrganizationId(event.getOrganization().getId());
+        featureOrganizationRepository.remove(new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getOrganizationId, event.getOrganization().getId()));
         //添加组织的功能
-        List<FeatureOrganization> collect = event.getOrganization().getFeatures().stream().map(f -> {
-            FeatureOrganization q = new FeatureOrganization();
+        List<FeatureOrganizationPO> collect = event.getOrganization().getFeatures().stream().map(f -> {
+            FeatureOrganizationPO q = new FeatureOrganizationPO();
             q.setOrganizationId(event.getOrganization().getId());
             q.setFeatureId(f.getId());
             return q;
         }).collect(Collectors.toList());
 
-        featureOrganizationDomainService.batchSave(collect);
+        featureOrganizationRepository.saveBatch(collect);
     }
 
 }

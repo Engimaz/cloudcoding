@@ -27,15 +27,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-
 @Component
 @RequiredArgsConstructor
 public class UrlApplication implements IUrlApplication {
 
 
-
     private final UrlToDTOMapping urlToDTOMapping;
-
 
 
     private final ApplicationContext applicationContext;
@@ -48,6 +45,7 @@ public class UrlApplication implements IUrlApplication {
 
     @DubboReference(group = "dictionary")
     private DictionaryService dictionaryService;
+
     @Override
     public UrlDTO queryById(Long id) {
         Url bean = applicationContext.getBean(Url.class);
@@ -85,7 +83,7 @@ public class UrlApplication implements IUrlApplication {
         bean.setStatus(updateUrlCommand.getStatus());
         bean.setDescription(updateUrlCommand.getDescription());
         bean.setValue(updateUrlCommand.getValue());
-        bean.save();
+        bean.update();
         return urlToDTOMapping.sourceToTarget(bean);
     }
 
@@ -93,7 +91,7 @@ public class UrlApplication implements IUrlApplication {
     public PageDTO<UrlDTO, CommonQuery> listUrl(CommonQuery commonQuery) {
         LambdaQueryWrapper<UrlPO> like = new LambdaQueryWrapper<UrlPO>().like(StrUtil.isNotBlank(commonQuery.getKeyword()), UrlPO::getName, commonQuery.getKeyword());
 
-        Page<UrlPO> page = new Page<>(commonQuery.getPage(),commonQuery.getSize());
+        Page<UrlPO> page = new Page<>(commonQuery.getPage(), commonQuery.getSize());
         IPage<UrlPO> res = urlRepository.page(page, like);
 
         List<Url> collect = res.getRecords().stream().map(po -> {
@@ -107,6 +105,22 @@ public class UrlApplication implements IUrlApplication {
             return url;
         }).collect(Collectors.toList());
 
-        return new PageDTO<>(urlToDTOMapping.sourceToTarget(collect)  , res.getTotal(), commonQuery);
+        return new PageDTO<>(urlToDTOMapping.sourceToTarget(collect), res.getTotal(), commonQuery);
+    }
+
+    @Override
+    public PageDTO<UrlDTO, CommonQuery> all() {
+        List<UrlPO> list = urlRepository.list();
+        List<Url> collect = list.stream().map(po -> {
+            Url url = applicationContext.getBean(Url.class);
+            url.setId(po.getId());
+            url.setName(po.getName());
+            url.setValue(po.getValue());
+            url.setScope(dictionaryService.getDictionaryById(po.getScope()).getValue());
+            url.setStatus(dictionaryService.getDictionaryById(po.getStatus()).getValue());
+            url.setDescription(po.getDescription());
+            return url;
+        }).collect(Collectors.toList());
+        return new PageDTO<>(urlToDTOMapping.sourceToTarget(collect), Long.valueOf(collect.size()), null);
     }
 }

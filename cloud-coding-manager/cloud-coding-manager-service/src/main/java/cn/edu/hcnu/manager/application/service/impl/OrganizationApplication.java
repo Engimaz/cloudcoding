@@ -1,6 +1,5 @@
 package cn.edu.hcnu.manager.application.service.impl;
 
-import cn.edu.hcnu.auth.model.po.PositionPO;
 import cn.edu.hcnu.base.model.CommonQuery;
 import cn.edu.hcnu.base.model.PageDTO;
 import cn.edu.hcnu.dictionary.rpc.DictionaryService;
@@ -8,18 +7,19 @@ import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.application.assembler.*;
 import cn.edu.hcnu.manager.application.service.IOrganizationApplication;
 import cn.edu.hcnu.manager.domain.service.feature.Feature;
-import cn.edu.hcnu.manager.domain.service.feature.FeatureDomainService;
 import cn.edu.hcnu.manager.domain.service.organization.Organization;
 import cn.edu.hcnu.manager.domain.service.position.Position;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganizationDomainService;
+import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganization;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
 import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.OrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
 import cn.edu.hcnu.manager.model.command.AddOrganizationCommand;
 import cn.edu.hcnu.manager.model.command.UpdateOrganizationCommand;
 import cn.edu.hcnu.manager.model.dto.OrganizationDTO;
 import cn.edu.hcnu.manager.model.dto.PositionDTO;
+import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.OrganizationPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -47,11 +47,8 @@ public class OrganizationApplication implements IOrganizationApplication {
     private UserPositionToUserPositionDTOMapping userPositionToUserPositionDTOMapping;
 
     @Autowired
-    private FeatureOrganizationDomainService featureOrganizationDomainService;
+    private FeatureOrganizationRepository featureOrganizationRepository;
 
-
-    @Autowired
-    private FeatureDomainService featureDomainService;
 
     @Autowired
     private FeatureToDTOMapping featureToDTOMapping;
@@ -95,12 +92,25 @@ public class OrganizationApplication implements IOrganizationApplication {
                         }
 
                 );
+        LambdaQueryWrapper<FeatureOrganizationPO> eq = new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getOrganizationId, id);
+        List<FeatureOrganization> collect = featureOrganizationRepository.list(eq).stream().map(m -> {
+            FeatureOrganization bean1 = applicationContext.getBean(FeatureOrganization.class);
+            bean1.setOrganizationId(m.getOrganizationId());
+            bean1.setFeatureId(m.getFeatureId());
+            bean1.setId(m.getId());
+            return bean1;
+        }).collect(Collectors.toList());
 
         // 查询社团有的功能
-        Optional.ofNullable(featureOrganizationDomainService.queryByOrganizationId(id))
+        Optional.ofNullable(collect)
                 .ifPresent(featureOrganizations -> {
                     // 查询这个功能
-                    List<Feature> features = featureOrganizations.stream().map(featureOrganization -> featureDomainService.findById(featureOrganization.getFeatureId())).collect(Collectors.toList());
+                    List<Feature> features = featureOrganizations.stream().map(featureOrganization -> {
+                        Feature bean1 = applicationContext.getBean(Feature.class);
+                        bean1.setId(featureOrganization.getFeatureId());
+                        bean1.render();
+                        return bean1;
+                    }).collect(Collectors.toList());
                     result.setFeatures(featureToDTOMapping.sourceToTarget(features));
                 });
 

@@ -34,6 +34,9 @@ public class FeaturePO implements Serializable {
 
     private Long status;
 
+    private String value;
+    private String description;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 

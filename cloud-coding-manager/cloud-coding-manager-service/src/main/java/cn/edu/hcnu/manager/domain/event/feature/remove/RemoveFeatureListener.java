@@ -1,7 +1,10 @@
 package cn.edu.hcnu.manager.domain.event.feature.remove;
 
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganizationDomainService;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureUrlDomainService;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureUrlRepository;
+import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
+import cn.edu.hcnu.manager.model.po.FeatureUrlPO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -16,16 +19,16 @@ import org.springframework.stereotype.Service;
 public class RemoveFeatureListener {
 
     @Autowired
-    private FeatureUrlDomainService featureUrlDomainService;
+    private FeatureUrlRepository featureUrlRepository;
 
     @Autowired
-    private FeatureOrganizationDomainService featureOrganizationDomainService;
+    private FeatureOrganizationRepository featureOrganizationRepository;
 
     @EventListener
     public void handleCustomEvent(RemoveFeatureEvent event) {
         // 移除与之相关的url
-        featureUrlDomainService.removeByFeatureId(event.getFeatureId());
+        featureUrlRepository.remove(new LambdaQueryWrapper<FeatureUrlPO>().eq(FeatureUrlPO::getFeatureId, event.getFeatureId()));
         // 在对应的组织移除
-        featureOrganizationDomainService.removeByFeatureId(event.getFeatureId());
+        featureOrganizationRepository.remove(new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getFeatureId, event.getFeatureId()));
     }
 }

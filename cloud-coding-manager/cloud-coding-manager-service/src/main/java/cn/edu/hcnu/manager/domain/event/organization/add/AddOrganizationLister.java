@@ -3,11 +3,11 @@ package cn.edu.hcnu.manager.domain.event.organization.add;
 import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.domain.service.position.Position;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganization;
-import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganizationDomainService;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
 import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.PositionPO;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class AddOrganizationLister {
     private UserPositionDomainService userPositionDomainService;
 
     @Autowired
-    private FeatureOrganizationDomainService featureOrganizationDomainService;
+    private FeatureOrganizationRepository featureOrganizationRepository;
 
     @Autowired
     @Qualifier("snowflake")
@@ -79,13 +79,14 @@ public class AddOrganizationLister {
 
         if (event.getOrganization().getFeatures() != null) {
             //添加组织的功能
-            List<FeatureOrganization> collect = event.getOrganization().getFeatures().stream().map(f -> {
-                FeatureOrganization q = new FeatureOrganization();
+            List<FeatureOrganizationPO> collect = event.getOrganization().getFeatures().stream().map(f -> {
+                FeatureOrganizationPO q = new FeatureOrganizationPO();
                 q.setOrganizationId(event.getOrganization().getId());
                 q.setFeatureId(f.getId());
                 return q;
             }).collect(Collectors.toList());
-            featureOrganizationDomainService.batchSave(collect);
+            featureOrganizationRepository.saveBatch(collect);
+
         }
 
     }

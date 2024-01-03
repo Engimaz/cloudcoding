@@ -60,4 +60,6 @@ public interface IUrlApplication {
      * @time: 2023/9/25 12:56
      */
     PageDTO<UrlDTO, CommonQuery> listUrl(CommonQuery commonQuery);
+
+    PageDTO<UrlDTO, CommonQuery> all();
 }

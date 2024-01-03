@@ -1,6 +1,8 @@
 package cn.edu.hcnu.manager.domain.event.url.remove;
 
-import cn.edu.hcnu.manager.domain.service.relation.FeatureUrlDomainService;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureUrlRepository;
+import cn.edu.hcnu.manager.model.po.FeatureUrlPO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,10 @@ import org.springframework.stereotype.Service;
 public class RemoveUrlListener {
 
     @Autowired
-    private FeatureUrlDomainService featureUrlDomainService;
+    private FeatureUrlRepository featureUrlRepository;
 
     @EventListener
     public void handleCustomEvent(RemoveUrlEvent event) {
-        featureUrlDomainService.removeByUrlId(event.getUrlId());
+        featureUrlRepository.remove(new LambdaQueryWrapper<FeatureUrlPO>().eq(FeatureUrlPO::getUrlId, event.getUrlId()));
     }
 }

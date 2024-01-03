@@ -2,19 +2,30 @@ package cn.edu.hcnu.manager.application.service.impl;
 
 import cn.edu.hcnu.base.model.CommonQuery;
 import cn.edu.hcnu.base.model.PageDTO;
+import cn.edu.hcnu.dictionary.rpc.DictionaryService;
+import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.application.assembler.AddFeatureCommandToFeatureMapping;
 import cn.edu.hcnu.manager.application.assembler.FeatureToDTOMapping;
 import cn.edu.hcnu.manager.application.assembler.UpdateFeatureCommandToFeatureMapping;
 import cn.edu.hcnu.manager.application.service.IFeatureApplication;
 import cn.edu.hcnu.manager.domain.service.feature.Feature;
-import cn.edu.hcnu.manager.domain.service.feature.FeatureDomainService;
+import cn.edu.hcnu.manager.domain.service.organization.Organization;
+import cn.edu.hcnu.manager.infrastructure.repository.FeatureRepository;
 import cn.edu.hcnu.manager.model.command.AddFeatureCommand;
 import cn.edu.hcnu.manager.model.command.UpdateFeatureCommand;
 import cn.edu.hcnu.manager.model.dto.FeatureDTO;
+import cn.edu.hcnu.manager.model.po.FeaturePO;
+import cn.edu.hcnu.manager.model.po.OrganizationPO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -24,46 +35,81 @@ import java.util.List;
 @Component
 public class FeatureApplication implements IFeatureApplication {
 
-    @Autowired
-    private FeatureDomainService featureDomainService;
+
 
     @Autowired
     private FeatureToDTOMapping featureToDTOMapping;
 
-    @Autowired
-    private AddFeatureCommandToFeatureMapping addFeatureCommandToFeatureMapping;
 
     @Autowired
-    private UpdateFeatureCommandToFeatureMapping updateFeatureCommandToFeatureMapping;
+    private FeatureRepository featureRepository;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Qualifier("snowflake")
+    @Autowired
+    private IDGenerator idGenerator;
 
     @Override
     public FeatureDTO queryById(Long id) {
-        Feature byId = featureDomainService.findById(id);
-        return featureToDTOMapping.sourceToTarget(byId);
+        Feature bean = applicationContext.getBean(Feature.class);
+        bean.setId(id);
+        bean.render();
+        return featureToDTOMapping.sourceToTarget(bean);
     }
 
     @Override
     public Boolean deleteById(Long id) {
-        return featureDomainService.delete(id);
+        Feature bean = applicationContext.getBean(Feature.class);
+        bean.setId(id);
+        bean.delete();
+        return true;
     }
 
     @Override
     public FeatureDTO addFeature(AddFeatureCommand addFeatureCommand) {
-        Feature save = featureDomainService.save(addFeatureCommandToFeatureMapping.sourceToTarget(addFeatureCommand));
-        return featureToDTOMapping.sourceToTarget(save);
+        Feature bean = applicationContext.getBean(Feature.class);
+        bean.setId(Long.valueOf(idGenerator.nextID()));
+        bean.setName(addFeatureCommand.getName());
+        bean.setValue(addFeatureCommand.getValue());
+        bean.setStatus(addFeatureCommand.getStatus());
+        bean.setDescription(addFeatureCommand.getDescription());
+        bean.setUrls(addFeatureCommand.getUrls());
+        bean.save();
+        return featureToDTOMapping.sourceToTarget(bean);
     }
 
     @Override
-    public FeatureDTO updateFeature(UpdateFeatureCommand updateFeatureCommand) {
-        Feature update = featureDomainService.update(updateFeatureCommandToFeatureMapping.sourceToTarget(updateFeatureCommand));
-        return featureToDTOMapping.sourceToTarget(update);
+    public FeatureDTO updateFeature(UpdateFeatureCommand command) {
+        Feature bean = applicationContext.getBean(Feature.class);
+        bean.setId(command.getId());
+        bean.setName(command.getName());
+        bean.setValue(command.getValue());
+        bean.setDescription(command.getDescription());
+        bean.setUrls(command.getUrls());
+        bean.update();
+        return featureToDTOMapping.sourceToTarget(bean);
     }
-
+    @DubboReference(group = "dictionary")
+    private DictionaryService dictionaryService;
     @Override
     public PageDTO<FeatureDTO, CommonQuery> list(CommonQuery commonQuery) {
-        List<Feature> list = featureDomainService.list(commonQuery.getPage(), commonQuery.getSize(), commonQuery.getKeyword());
-        List<FeatureDTO> list1 = featureToDTOMapping.sourceToTarget(list);
-        Long count = featureDomainService.count(commonQuery.getPage(), commonQuery.getSize(), commonQuery.getKeyword());
-        return new PageDTO<>(list1, count, commonQuery);
+        Page<FeaturePO> page = new Page<>(commonQuery.getPage(), commonQuery.getSize());
+
+        LambdaQueryWrapper<FeaturePO> featurePOLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        Page<FeaturePO> res = featureRepository.page(page,featurePOLambdaQueryWrapper );
+
+        List<Feature> collect = res.getRecords().stream().map(po -> {
+            Feature bean = applicationContext.getBean(Feature.class);
+            bean.setId(po.getId());
+            bean.setName(po.getName());
+            bean.setStatus(dictionaryService.getDictionaryById(po.getStatus()).getValue());
+            bean.setDescription(po.getDescription());
+            bean.setValue(po.getValue());
+            return bean;
+        }).collect(Collectors.toList());
+        return new PageDTO<>(featureToDTOMapping.sourceToTarget(collect), res.getTotal(), commonQuery);
     }
 }
