@@ -13,7 +13,7 @@ services:
       - ./logs:/home/nacos/logs
     environment:
       - SPRING_DATASOURCE_PLATFORM=mysql
-      - MYSQL_SERVICE_HOST=192.168.10.30
+      - MYSQL_SERVICE_HOST=192.168.3.4
       - MYSQL_SERVICE_PORT=4006
       - MYSQL_SERVICE_DB_NAME=nacos
       - MYSQL_SERVICE_USER=root

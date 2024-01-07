@@ -82,6 +82,7 @@ public class FeatureApplication implements IFeatureApplication {
         bean.setId(command.getId());
         bean.setName(command.getName());
         bean.setValue(command.getValue());
+        bean.setStatus(command.getStatus());
         bean.setDescription(command.getDescription());
         bean.setUrls(command.getUrls());
         bean.update();

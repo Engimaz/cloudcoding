@@ -80,7 +80,7 @@
             <properties>
                 <!-- 环境标识，需要与配置文件的名称相对应 -->
                 <profiles.active>dev</profiles.active>
-                <nacos.server>192.168.10.30:8848</nacos.server>
+                <nacos.server>127.0.0.1:8848</nacos.server>
                 <nacos.discovery.group>DEFAULT_GROUP</nacos.discovery.group>
                 <nacos.config.group>DEFAULT_GROUP</nacos.config.group>
                 <nacos.username>nacos</nacos.username>
@@ -88,14 +88,14 @@
                 <nacos.namespace>cloud-coding-dev</nacos.namespace>
                 <mysql.username>root</mysql.username>
                 <mysql.password>root</mysql.password>
-                <mysql.host>192.168.10.30:4006</mysql.host>
-                <rocketmq.host>192.168.10.30:9876</rocketmq.host>
-                <redis.host>192.168.10.30</redis.host>
+                <mysql.host>127.0.0.1:4006</mysql.host>
+                <rocketmq.host>127.0.0.1:9876</rocketmq.host>
+                <redis.host>127.0.0.1</redis.host>
                 <redis.port>6379</redis.port>
                 <redis.password>123456</redis.password>
-                <minio.host>http://192.168.10.30:9000</minio.host>
-                <minio.access>1jGvQXSSYWa5oPdh</minio.access>
-                <minio.secret>T201FCL7v7k7RiOlCJRg3wZabCx1JNoz</minio.secret>
+                <minio.host>http://127.0.0.1:9000</minio.host>
+                <minio.access>wmhXy9qJfRDfxGl8</minio.access>
+                <minio.secret>vXIdKh8gbNeaQz8mfbcENqHk7tQgk92o</minio.secret>
                 <mail.host>smtp.163.com</mail.host>
                 <mail.username>15177457696@163.com</mail.username>
                 <mail.password>JBENBSKZBXIDCWSP</mail.password>

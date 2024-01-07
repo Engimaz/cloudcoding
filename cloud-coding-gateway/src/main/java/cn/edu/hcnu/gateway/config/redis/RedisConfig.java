@@ -57,16 +57,13 @@ public class RedisConfig {
 
 	@Bean
 	public KeyGenerator keyGenerator() {
-		return new KeyGenerator() {
-			@Override
-			public Object generate(Object target, Method method, Object... params) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(target.getClass().getName());
-				sb.append(method.getDeclaringClass().getName());
-				Arrays.stream(params).map(Object::toString).forEach(sb::append);
-				return sb.toString();
-			}
-		};
+		return (target, method, params) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(target.getClass().getName());
+            sb.append(method.getDeclaringClass().getName());
+            Arrays.stream(params).map(Object::toString).forEach(sb::append);
+            return sb.toString();
+        };
 	}
 
 	@Bean
@@ -75,7 +72,6 @@ public class RedisConfig {
 		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(
 				Object.class);
 		ObjectMapper mapper = new ObjectMapper();
-		// mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 		jackson2JsonRedisSerializer.setObjectMapper(mapper);

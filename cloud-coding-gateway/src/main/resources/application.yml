@@ -109,10 +109,10 @@ spring:
           filters:
             - StripPrefix=1
   redis:
-    host: cloudcoding.cc
-    password: fred
-    port: 6379
+    host: @redis.host@
+    port: @redis.port@
     timeout: 15000
+    password: @redis.password@
 
 oauth2:
   cloud:
@@ -133,6 +133,7 @@ oauth2:
           - /cloud-coding-auth/oauth/token
           - /cloud-coding-auth/oauth/check_token
           - /cloud-coding-auth/oauth/login
+          - /cloud-coding-auth/oauth/license
           - /cloud-coding-auth/user/new
           - /cloud-coding-auth/user/*
           - /cloud-coding-auth/user/update

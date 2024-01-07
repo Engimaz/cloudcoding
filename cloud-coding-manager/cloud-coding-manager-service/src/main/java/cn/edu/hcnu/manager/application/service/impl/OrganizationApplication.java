@@ -168,6 +168,11 @@ public class OrganizationApplication implements IOrganizationApplication {
             userPosition.setId(Long.valueOf(idGenerator.nextID()));
             return userPosition;
         }).collect(Collectors.toList()));
+        bean.setFeatures(command.getFeatures().stream().map(item -> {
+            Feature feature = applicationContext.getBean(Feature.class);
+            feature.setId(Long.valueOf(item.getId()));
+            return feature;
+        }).collect(Collectors.toList()));
         bean.save();
         return organizationToOrganizationDTOMapping.sourceToTarget(bean);
     }
@@ -195,12 +200,12 @@ public class OrganizationApplication implements IOrganizationApplication {
     @Override
     @GetMapping("list")
     public PageDTO<OrganizationDTO, CommonQuery> list(CommonQuery commonQuery, String status) {
-        Long id = null;
+        Long stateId = null;
         if (status != null) {
-            id = dictionaryService.getDictionaryByLabel(status).getId();
+            stateId = dictionaryService.getDictionaryByLabel(status).getId();
         }
 
-        LambdaQueryWrapper<OrganizationPO> eq = new LambdaQueryWrapper<OrganizationPO>().eq(id != null, OrganizationPO::getStatus, id);
+        LambdaQueryWrapper<OrganizationPO> eq = new LambdaQueryWrapper<OrganizationPO>().eq(stateId != null, OrganizationPO::getStatus, stateId);
 
         Page<OrganizationPO> page = new Page<>(commonQuery.getPage(), commonQuery.getSize());
 
