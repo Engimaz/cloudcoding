@@ -89,20 +89,8 @@ public class CustomCipherTextFilter implements GlobalFilter, Ordered {
 
 
     private String decryptRequest(String originalRequestBody, String encryptId, String fields) throws Exception {
-// 获得私钥
+        // 获得私钥
         String s = stringRedisTemplate.opsForValue().get(CloudCodingConstant.PRIVATE_KEY_PREFIX + encryptId);
-        String p = stringRedisTemplate.opsForValue().get(CloudCodingConstant.PUBLIC_KEY_PREFIX + encryptId);
-        String orgData = "test";
-
-        System.out.println("原数据：" + orgData);
-
-        //加密
-        byte[] bytes = RsaUtilClient.encryptByPublicKey(orgData, p);
-//        System.out.println("加密结果：" + encryptStr);
-
-        //解密
-        String decryptStr = new String(RsaUtilClient.decryptByPrivateKey(bytes, s));
-        System.out.println("解密结果：" + decryptStr);
 
         if (s != null && !s.isEmpty()) {
             String[] encryptFields = fields.split(",");
@@ -116,9 +104,6 @@ public class CustomCipherTextFilter implements GlobalFilter, Ordered {
             }
             return JSON.toJSONString(map);
         }
-
-
-        log.info("请求参数解密，原文：{}", originalRequestBody);
         return originalRequestBody;
     }
 
