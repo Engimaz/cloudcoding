@@ -18,12 +18,13 @@ const schema = z.object({
     phone: z.string().length(11, { message: "手机号必须为11位" }).refine((value) => /^\d+/.test(value), {
         message: "手机号必须是数字"
     }),
+    email: z.string().email({ message: "不是合法的邮箱" }).nonempty({ message: "邮箱不能为空" }),
     code: z.string().length(4, { message: "验证码长度为4" })
 }).refine((data) => data.repassword === data.password, {
     message: "两次的密码密码不匹配",
 });
 
-export type FormType = Pick<RegisterUser, "password" | "repassword" | "code" | "phone">;
+export type FormType = Pick<RegisterUser, "password" | "code" | "phone" | "email"> & { repassword: string };
 
 
 interface PropsType {
@@ -37,6 +38,7 @@ const defaultProps: PropsType = {
         password: "",
         repassword: "",
         code: "",
+        email: "",
         phone: "",
     },
 };
@@ -78,26 +80,25 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
         const handleClick = async () => {
 
             if (!isSending) {
-                const phoneValue = getValues('phone');
+                const emailValue = getValues('email');
                 // 如果验证通过，调用发送验证码的函数
                 try {
-                    const phoneSchema = z.object({
-                        phone: z.string().length(11, { message: "手机号必须为11位" }).refine((value) => /^\d+/.test(value), {
-                            message: "手机号必须是数字"
-                        }),
+                    const emailSchema = z.object({
+                        email: z.string().email({ message: "不是合法的邮箱" })
                     })
-                    phoneSchema.parse({ phone: phoneValue });
-                    await sendCode(phoneValue);
+                    console.log(emailValue)
+                    emailSchema.parse({ email: emailValue });
+                    await sendCode(emailValue);
 
                 } catch (error) {
-                    toast.current?.show({ severity: 'error', summary: 'Error', detail: '手机号错误', life: 3000 });
+                    toast.current?.show({ severity: 'error', summary: 'Error', detail: '不是合法的邮箱', life: 3000 });
                 }
             }
         };
 
         const sendCode = (email: string) => {
 
-            getEmailCode({ receiver: email, type: "register-code" }).then((res: ApiResponse<string>) => {
+            getEmailCode({ receiver: email, type: "sign-up-code" }).then((res: ApiResponse<string>) => {
                 // 发送成功
                 if (res.code >= 200) {
                     toast?.current?.show({ severity: 'success', summary: 'success', detail: '验证码已下发', life: 3000 });
@@ -192,7 +193,19 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
                         </>
                     )}
                 />
-
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <>
+                            <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.email })}>
+                                邮箱
+                            </label>
+                            <InputText id={field.name} {...field} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error, })} />
+                            {getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
                 <Controller
                     name="code"
                     control={control}

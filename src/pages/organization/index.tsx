@@ -8,7 +8,19 @@ import CreatePanel from "../setting/organization-manager/dialog-panel.tsx"
 export default function index() {
   const [data, setData] = useState<Array<OrganizationVO>>([])
 
-  const [editRecord, setEditRecord] = useState<Organization>({} as Organization)
+  const [editRecord, setEditRecord] = useState<Organization>({
+    id: "-1", name: "",
+    avatar: "",// 组织头像
+    img: "",// 宣传图
+    description: "",//组织介绍
+    location: "",// 组织地址 省区级
+    address: "",//详细地址
+    type: "",//组织类型
+    status: "OrgAudit",//组织状态
+    positions: [],
+    features: [],
+    userPositions: []
+  } as Organization)
   return (
 
     <main className="flex flex-wrap justify-center items-center gap-2 w-full h-screen overflow-hidden relative">

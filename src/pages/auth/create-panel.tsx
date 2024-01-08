@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import Step2, { FormType as Step1FormType } from './create-step2.tsx';
 import Step1, { FormType as Step2FormType } from './create-step1.tsx';
 import Step3 from './create-step3.tsx';
-
+import JSEncrypt from 'jsencrypt'
 type FormType = Step1FormType & Step2FormType
 
 

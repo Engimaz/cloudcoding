@@ -6,8 +6,9 @@
  * @LastEditors: AICHEN
  * @LastEditTime: 2023-10-22 01:45:26
  */
+import { AxiosRequestConfig } from 'axios';
 import request from '../index.ts';
-import type { RegisterUser, TokenRes, UpdateUser, User } from './types.ts'
+import type { License, RegisterUser, TokenRes, UpdateUser, User } from './types.ts'
 const context = "cloud-coding-auth";
 
 export type Grant_Type = "password" | "phone" | "gitee" | "email";
@@ -26,20 +27,26 @@ export const logout = () => {
     return request<string>(url, method);
 }
 
+export const license = () => {
+    const url = `${context}/oauth/license`;
+    const method = "get";
+    return request<License>(url, method);
+}
+
 // 注册用户
-export const addUser = (data: RegisterUser) => {
+export const addUser = (data: RegisterUser, config: AxiosRequestConfig = {}) => {
     const url = `${context}/user/new`;
     const method = "post";
-    return request<User>(url, method, data);
+    return request<User>(url, method, data, config);
 }
 // 更新用户
-export const updateUser=(data:UpdateUser)=>{
+export const updateUser = (data: UpdateUser) => {
     const url = `${context}/user/update`;
     const method = "put";
     return request<User>(url, method, data);
 }
 // 查询用户信息
-export const getUserInfo=(id:string)=>{
+export const getUserInfo = (id: string) => {
     const url = `${context}/user/${id}`;
     const method = "get";
     return request<User>(url, method);

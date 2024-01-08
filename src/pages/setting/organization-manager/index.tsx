@@ -31,6 +31,9 @@ const App: React.FC = () => {
         address: "",//详细地址
         type: "",//组织类型
         status: "",//组织状态
+        positions: [],
+        features: [],
+        userPositions: []
     } as Organization);
 
 

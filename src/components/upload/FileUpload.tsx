@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef, ReactNode } from "react";
 
-const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (files: File[]) => void, hasContent: ReactNode, emptyContent: ReactNode }> = ({ count, accepts, onUpload, hasContent, emptyContent }) => {
+const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (files: File[]) => void, hasContent: ReactNode, emptyContent?: ReactNode }> = ({ count, accepts, onUpload, hasContent, emptyContent }) => {
     const [dragging, setDragging] = useState(false);
     const [message, setMessage] = useState({ show: false, text: "", type: "" });
     const drop = useRef<HTMLDivElement>(null);
-    const drag = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        // useRef 的 drop.current 取代了 ref 的 this.drop
         drop.current?.addEventListener('dragover', handleDragOver);
         drop.current?.addEventListener('drop', handleDrop);
         drop.current?.addEventListener('dragenter', handleDragEnter);
@@ -28,7 +26,11 @@ const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (
         e.stopPropagation();
         setDragging(false)
         const files = [...e.dataTransfer?.files || []];
+        handle(files)
 
+    };
+
+    const handle = (files: Array<File>) => {
         if (count && count < files.length) {
             showMessage(`抱歉，每次最多只能上传${count} 文件。`, 'error', 2000);
             return;
@@ -43,19 +45,17 @@ const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (
             showMessage('成功上传！', 'success', 1000);
             onUpload(files);
         }
-    };
+    }
 
     const handleDragEnter = (e: Event) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("进入");
         setDragging(true)
     };
 
     const handleDragLeave = (e: Event) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("离开");
         setDragging(false)
     };
 
@@ -70,9 +70,7 @@ const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (
             ref={drop}
         >
             {message.show && (
-                <div
-
-                >
+                <div>
                     {message.text}
                     <span
                         role='img'
@@ -84,6 +82,25 @@ const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (
             )}
             {dragging && hasContent}
             {!dragging && emptyContent}
+            {!dragging && !emptyContent && <div className='w-full rounded-3xl !h-80 flex justify-center items-center border-dashed  border'>
+                拖拽文件上传
+                <span
+                    role='img'
+                    aria-label='emoji'
+                >
+                    &#128526;
+                </span>
+                <label id='selectFileForUpload'>
+                    <span className=" cursor-pointer text-blue-800">选择文件</span>
+                    <input type="file" name="image" onChange={(e) => {
+                        handle([...e.target.files || []])
+                    }}
+                        style={{ display: 'none' }}
+                    />
+                </label>
+
+            </div>}
+
         </div>
     );
 }

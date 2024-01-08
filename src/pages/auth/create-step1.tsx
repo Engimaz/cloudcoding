@@ -16,7 +16,7 @@ import { RootState } from '@/store/index.ts';
 import { Toast } from 'primereact/toast';
 import { RadioButton } from 'primereact/radiobutton';
 
-export type FormType = Pick<RegisterUser, 'nickname' | "avatar" | "sex" | "idnumber" | 'email'>;
+export type FormType = Pick<RegisterUser, 'nickname' | "avatar" | "sex" | "idnumber">;
 interface PropsType {
     onNext: (data: FormType) => void;
     defaultValues?: FormType
@@ -27,7 +27,6 @@ const defaultProps: PropsType = {
         nickname: "",
         avatar: "",
         sex: 0,
-        email: "",
         idnumber: ""
     },
 };
@@ -40,9 +39,6 @@ const schema = z.object({
     idnumber: z.string().length(18, { message: "身份证长度为18" }),
     avatar: z.string().min(1, { message: "头像不能为空" }),
     sex: z.number().min(1, { message: "性别是必填的" }),
-    email: z.string().email({ message: "不是合法的邮箱" }).nonempty({ message: "邮箱不能为空" }),
-
-
 });
 
 
@@ -71,10 +67,9 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
         const handleDeleteClick = () => {
             setValue("avatar", '')
         };
-        const userid = useAppSelector((state: RootState) => state.userInfo.userId);
         const toast = useRef<Toast>(null);
         const handleUpload = async (files: File[]) => {
-            uploadResource(files[0], userid).then((res: ApiResponse<Resource>) => {
+            uploadResource(files[0], "-1").then((res: ApiResponse<Resource>) => {
                 if (res.code >= 200) {
                     toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Message Content', life: 3000 });
                     setValue("avatar", `${CLOUD_CODING_GATEWAY}/cloud-coding-resource/resource/${res.result.id}`)
@@ -208,19 +203,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
                         )}
                     />
 
-                    <Controller
-                        name="email"
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <>
-                                <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.email })}>
-                                    邮箱
-                                </label>
-                                <InputText id={field.name} {...field} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error, })} />
-                                {getFormErrorMessage(field.name)}
-                            </>
-                        )}
-                    />
+
 
 
                     <button type="submit" ref={btnRef} style={{ visibility: 'hidden' }} >提交</button>

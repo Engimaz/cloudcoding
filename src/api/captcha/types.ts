@@ -3,4 +3,4 @@ export interface Captcha {
     type: CodeType
 }
 
-export type CodeType = "sign-up-code" | 'register-code';
+export type CodeType = "sign-up-code" | 'reset-code';

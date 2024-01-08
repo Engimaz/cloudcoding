@@ -9,7 +9,7 @@ export interface TokenRes {
 }
 
 export interface User {
-    id: string,
+    id?: string,
     email: string,
     nickname: string;
     password: string;
@@ -22,9 +22,13 @@ export interface RegisterUser extends User {
     email: string;
     phone: string;
     code: string;
-    repassword: string;
     idnumber: string;// 身份证号码
 
+}
+
+export interface License {
+    appid: string;// 加密id
+    pubKey: string;// 公钥
 }
 
 export interface UpdateUser extends User {

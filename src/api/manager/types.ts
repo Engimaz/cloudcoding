@@ -49,6 +49,14 @@ export interface UserPosition {
   position: string;
 }
 
+export interface UserPositionVO {
+  userId: string;
+  position: {
+    code: string,
+    name: string
+  };
+}
+
 export interface Organization {
   id: string | null;
   name: string;

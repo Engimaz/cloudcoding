@@ -3,7 +3,7 @@ import { Dialog } from 'primereact/dialog';
 
 
 import { Button } from 'primereact/button';
-import { Feature, FeatureVO, Organization, UserPosition } from '@/api/manager/types.ts';
+import { Feature, FeatureVO, Organization, UserPosition, UserPositionVO } from '@/api/manager/types.ts';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -44,9 +44,7 @@ const schema = z.object({
     location: z.string().nonempty({ message: "组织地址省区不能为空" }),
     address: z.string().nonempty({ message: "详细地址不能为空" }),
     features: z.array(z.object({
-        name: z.string().nonempty({ message: "功能名称不能为空" }),
-        value: z.string().nonempty({ message: "功能值不能为空" }),
-        status: z.string().nonempty({ message: "状态值不能为空" })
+        id: z.string().nonempty({ message: "功能不能为空" }),
     })),
     positions: z.array(z.object({
         name: z.string().nonempty({ message: "职位名称不能为空" }),
@@ -77,19 +75,9 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
             status: values.status ? values.status : "",
             location: values.location ? values.location : "",
             address: values.address ? values.address : "",
-            positions: [
-                {
-                    name: "社长",
-                    value: "master",
-                    status: "PosNormal"
-                }
-            ],
-            userPositions: [
-                {
-                    userId: userid,
-                    position: "master"
-                }
-            ]
+            features: values.features ? values.features : [],
+            positions: values.positions ? values.positions : [],
+            userPositions: values.userPositions ? values.userPositions : []
         } as Organization
 
         console.log(data)
@@ -115,12 +103,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
         defaultValues: editRecord,
         resolver: zodResolver(schema)
     });
-
-
-
-
-
-
 
     const [isHovered, setHovered] = useState(false);
 
@@ -166,8 +148,8 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
 
     const [nodes, setNodes] = useState<Array<TreeNode>>([]);
 
-    const [userSource, setUserSource] = useState<Array<UserPosition>>([]);
-    const [userTarget, setUserTarget] = useState<Array<UserPosition>>([]);
+    const [userSource, setUserSource] = useState<Array<UserPositionVO>>([]);
+    const [userTarget, setUserTarget] = useState<Array<UserPositionVO>>([]);
 
     useEffect(() => {
 
@@ -190,15 +172,14 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
         initCity()
         getAllFeature().then((res: ApiResponse<QueryListResult<FeatureVO>>) => {
             if (res.code >= 200) {
-                setFeatureSource(res.result.list.filter(f => !editRecord.features.map(i => i.id).includes(f.id)))
-                setFeatureTarget(res.result.list.filter(f => editRecord.features.map(i => i.id).includes(f.id)))
+                setFeatureSource(res.result.list.filter(f => !editRecord.features?.map(i => i.id).includes(f.id)))
+                setFeatureTarget(res.result.list.filter(f => editRecord.features?.map(i => i.id).includes(f.id)))
             }
         })
 
         const _d = generateMockUsers(4)
-        console.log(_d)
         setUsers(_d)
-        setUserSource(_d.map(u => ({ userId: u.id, position: "" } as UserPosition)))
+        setUserSource(_d.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
     }, [])
 
 
@@ -209,7 +190,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
         const streets = await axios.get("/json/streets.json");
         const _d: Array<TreeNode> = []
         if (provinces.status == 200 && cities.status == 200 && areas.status == 200 && streets.status == 200) {
-            console.log(streets.data)
             provinces.data.forEach((province: { code: string, name: string }) => {
                 _d.push({
                     id: province.code,
@@ -261,6 +241,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
     const onChange = (event: PickListChangeEvent) => {
         setFeatureSource(event.source);
         setFeatureTarget(event.target);
+        console.log(event.target)
         setValue("features", event.target)
     };
 
@@ -322,11 +303,16 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                 </div>
                 <div>
                     <Dropdown value={dd.position} onChange={(e) => {
-                        console.log(e.target.value)
-                        const arr = userTarget.filter(it => it.userId != dd.userId)
-                        arr.push({ userId: dd.userId, position: e.target.value })
-                        setUserTarget(arr)
-                        setValue("userPositions", arr)
+                        const _userTarget: Array<UserPositionVO> = JSON.parse(JSON.stringify(userTarget))
+                        _userTarget.forEach(it => {
+                            if (it.userId == dd.userId) {
+                                it.position = e.target.value
+                            }
+                        })
+                        console.log(_userTarget)
+                        const _userTargetValue = _userTarget.map(item => ({ userId: item.userId, position: item.position.code }))
+                        setUserTarget(_userTarget)
+                        setValue("userPositions", _userTargetValue)
                     }} options={getValues("positions").map(item => {
                         return {
                             code: item.value,
@@ -412,7 +398,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                             <img src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
-
                                                     className=' absolute top-0 left-0 w-full h-48 bg-[rgba(0,0,0,0.5)] flex justify-center items-center hover:cursor-pointer'
                                                     onClick={() => handleDeleteClick("img")}
                                                 >
@@ -420,7 +405,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                                 </div>
                                             )}
                                         </div>
-
                                     )
                                 }
 
@@ -486,7 +470,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                         </>
                     )}
                 />
-                
+
                 <Controller
                     name="address"
                     control={control}
