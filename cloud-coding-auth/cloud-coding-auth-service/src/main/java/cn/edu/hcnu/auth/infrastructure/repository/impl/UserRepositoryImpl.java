@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author aichen
@@ -27,50 +27,5 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserRepositoryImpl extends ServiceImpl<UserMapper, UserPO> implements UserRepository {
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Override
-    public UserPO getUserByNickname(String nickname) {
-        // 使用mybatis-plus的wrapper 查找字段为 nickname 的记录
-        return  this.getOne(new LambdaQueryWrapper<UserPO>().eq(UserPO::getNickname, nickname));
-    }
-
-
-
-
-
-    @Override
-    public List<PositionPO> getPositionByUserId(Long userId) {
-
-        return null;
-    }
-
-    @Override
-    public Page<User> query(Integer page, Integer size, String keyword) {
-        Page<UserPO> pageOption = new Page<>(page, size);
-        LambdaQueryWrapper<UserPO> lqw = new LambdaQueryWrapper<UserPO>();
-        Optional.ofNullable(keyword)
-                .ifPresent(k -> lqw.like(UserPO::getNickname, "%" + k + "%"));
-
-        Page<UserPO> groupPOPage = this.getBaseMapper().selectPage(pageOption, lqw);
-        List<User> groups = getUsers(groupPOPage.getRecords());
-        Page<User> res = new Page();
-        res.setRecords(groups);
-        res.setTotal(groupPOPage.getTotal());
-        return res;
-    }
-
-    @NotNull
-    private List<User> getUsers(List<UserPO> list) {
-        return list.stream().map(item -> {
-            User bean = applicationContext.getBean(User.class);
-            bean.setId(item.getId());
-            bean.render();
-            return bean;
-        }).collect(Collectors.toList());
-    }
-
 
 }

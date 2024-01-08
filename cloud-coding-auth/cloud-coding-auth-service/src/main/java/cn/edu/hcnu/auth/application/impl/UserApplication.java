@@ -3,18 +3,22 @@ package cn.edu.hcnu.auth.application.impl;
 import cn.edu.hcnu.auth.application.IUserApplication;
 import cn.edu.hcnu.auth.assembler.UserToUserDTOMapping;
 import cn.edu.hcnu.auth.domain.service.authorization.Authorization;
-import cn.edu.hcnu.auth.domain.service.authorization.AuthorizationDomainService;
 import cn.edu.hcnu.auth.domain.service.user.User;
+import cn.edu.hcnu.auth.infrastructure.repository.AuthorizationRepository;
 import cn.edu.hcnu.auth.infrastructure.repository.UserRepository;
 import cn.edu.hcnu.auth.model.comand.AddUserCommand;
 import cn.edu.hcnu.auth.model.comand.ResetPasswordCommand;
 import cn.edu.hcnu.auth.model.enums.LoginType;
+import cn.edu.hcnu.auth.model.po.AuthorizationPO;
+import cn.edu.hcnu.auth.model.po.UserPO;
 import cn.edu.hcnu.auth.model.security.UserDTO;
 import cn.edu.hcnu.base.model.CommonQuery;
 import cn.edu.hcnu.base.model.PageDTO;
 import cn.edu.hcnu.captcha.model.CodeType;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -25,33 +29,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserApplication implements IUserApplication {
 
 
-
-    @Autowired
-    private UserToUserDTOMapping userToUserDTOMapping;
+    private final UserToUserDTOMapping userToUserDTOMapping;
 
 
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthorizationDomainService authorizationDomainService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    private final AuthorizationRepository authorizationRepository;
 
     @Autowired
     @Qualifier("snowflake")
     private IDGenerator idGenerator;
 
+    @Autowired
+    @Lazy
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public UserDTO getUserById(String id) {
@@ -61,7 +66,15 @@ public class UserApplication implements IUserApplication {
         UserDTO userDTO = userToUserDTOMapping.sourceToTarget(bean);
 
         // 查询邮箱
-        List<Authorization> byUserId = authorizationDomainService.getByUserId(bean.getId());
+        List<Authorization> byUserId = authorizationRepository.list(new LambdaQueryWrapper<AuthorizationPO>().eq(AuthorizationPO::getUserId, bean.getId())).stream().map(item -> {
+            Authorization authorization = applicationContext.getBean(Authorization.class);
+            authorization.setIdentifier(item.getIdentifier());
+            authorization.setUserId(item.getUserId());
+            authorization.setId(item.getId());
+            authorization.setIdentityType(item.getIdentityType());
+            authorization.setCredential(item.getCredential());
+            return authorization;
+        }).collect(Collectors.toList());
         byUserId.forEach(item -> {
             if (item.getIdentityType().equals(LoginType.EMAIL.getValue())) {
                 userDTO.setEmail(item.getIdentifier());
@@ -74,9 +87,6 @@ public class UserApplication implements IUserApplication {
         return userDTO;
     }
 
-    @Autowired
-    @Lazy
-    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public UserDTO addUser(AddUserCommand addUserCommand) {
@@ -89,9 +99,9 @@ public class UserApplication implements IUserApplication {
 
         User bean = applicationContext.getBean(User.class);
         bean.setAvatar(addUserCommand.getAvatar());
-        bean.setStatus(Long.valueOf(addUserCommand.getSex()));
+        bean.setSex(Long.valueOf(addUserCommand.getSex()));
         bean.setNickname(addUserCommand.getNickname());
-        bean.setStatus(addUserCommand.getStatus());
+        bean.setStatus(0L);
         bean.setId(Long.valueOf(idGenerator.nextID()));
         bean.save();
 
@@ -99,38 +109,39 @@ public class UserApplication implements IUserApplication {
         String sa = passwordEncoder.encode(addUserCommand.getPassword());
         // 构造昵称
         if (addUserCommand.getNickname() != null && !addUserCommand.getNickname().isEmpty()) {
-            Authorization authorization = new Authorization();
+            Authorization authorization = applicationContext.getBean(Authorization.class);
             authorization.setCredential(sa);
             authorization.setUserId(bean.getId());
             authorization.setIdentityType(LoginType.ACCOUNT.getValue());
             authorization.setIdentifier(addUserCommand.getNickname());
-            authorizationDomainService.addAuthorization(authorization);
+            authorization.save();
         }
 
         // 构造邮箱
         if (addUserCommand.getEmail() != null && !addUserCommand.getEmail().isEmpty()) {
-            Authorization authorization = new Authorization();
+            Authorization authorization = applicationContext.getBean(Authorization.class);
             authorization.setCredential(sa);
             authorization.setUserId(bean.getId());
             authorization.setIdentityType(LoginType.EMAIL.getValue());
             authorization.setIdentifier(addUserCommand.getEmail());
-            authorizationDomainService.addAuthorization(authorization);
+            authorization.save();
         }
 
         // 构造手机
         if (addUserCommand.getPhone() != null && !addUserCommand.getPhone().isEmpty()) {
-            Authorization authorization = new Authorization();
+            Authorization authorization = applicationContext.getBean(Authorization.class);
             authorization.setCredential(sa);
             authorization.setUserId(bean.getId());
             authorization.setIdentityType(LoginType.PHONE.getValue());
             authorization.setIdentifier(addUserCommand.getPhone());
-            authorizationDomainService.addAuthorization(authorization);
+            authorization.save();
         }
 
 
         return userToUserDTOMapping.sourceToTarget(bean);
 
     }
+
 
     @Override
     public UserDTO resetPassword(ResetPasswordCommand resetPasswordCommand) {
@@ -140,14 +151,16 @@ public class UserApplication implements IUserApplication {
         if (!Objects.equals(resetPasswordCommand.getCode(), realCode)) {
             return null;
         }
+        Authorization authorization = applicationContext.getBean(Authorization.class);
+        authorization.setIdentifier(resetPasswordCommand.getEmail());
+        authorization.renderByEmail();
 
-        // 用户id 进行更新
-        Authorization authorization = authorizationDomainService.getAuthorizationByEmail(resetPasswordCommand.getEmail());
 
-        Authorization updateData = new Authorization();
-        updateData.setCredential(passwordEncoder.encode(resetPasswordCommand.getPassword()));
-        updateData.setUserId(authorization.getUserId());
-        boolean b = authorizationDomainService.updatePassword(updateData);
+        AuthorizationPO authorizationPO = new AuthorizationPO();
+        authorizationPO.setUserId(authorization.getUserId());
+        authorizationPO.setCredential(passwordEncoder.encode(resetPasswordCommand.getPassword()));
+        boolean b = authorizationRepository.update(authorizationPO,
+                new LambdaQueryWrapper<AuthorizationPO>().eq(AuthorizationPO::getUserId, authorization.getUserId()));
         if (b) {
             User bean = applicationContext.getBean(User.class);
             bean.setId(authorization.getId());
@@ -159,10 +172,25 @@ public class UserApplication implements IUserApplication {
 
     @Override
     public PageDTO<UserDTO, CommonQuery> query(CommonQuery query) {
-        Page<User> page = userRepository.query(query.getPage(), query.getSize(), query.getKeyword());
 
-        return new PageDTO<>(userToUserDTOMapping.sourceToTarget(page.getRecords()), page.getTotal(),query);
 
+        Page<UserPO> page = new Page<>(query.getPage(), query.getSize());
+        LambdaQueryWrapper<UserPO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(query.getKeyword() != null, UserPO::getNickname, query.getKeyword());
+
+        Page<UserPO> res = userRepository.page(page, queryWrapper);
+
+        List<User> collect = res.getRecords().stream().map(po -> {
+            User bean = applicationContext.getBean(User.class);
+            bean.setId(po.getId());
+            bean.setNickname(po.getNickname());
+            bean.setStatus(po.getStatus());
+            bean.setAvatar(po.getAvatar());
+            bean.setUpdateTime(po.getUpdateTime());
+            bean.setCrateTime(po.getCreateTime());
+            return bean;
+        }).collect(Collectors.toList());
+        return new PageDTO<>(userToUserDTOMapping.sourceToTarget(collect), page.getTotal(), query);
 
     }
 }

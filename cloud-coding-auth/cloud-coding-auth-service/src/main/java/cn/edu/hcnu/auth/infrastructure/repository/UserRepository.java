@@ -18,23 +18,6 @@ import java.util.List;
  */
 public interface UserRepository extends IService<UserPO> {
 
-    /**
-     * 根据昵称获取用户信息
-     *
-     * @param nickname 昵称
-     * @return {@link UserPO}
-     */
-    UserPO getUserByNickname(String nickname);
 
-    /**
-     * 根据用户id获取用户的职位信息
-     *
-     * @param userId 用户id
-     * @return {@link List}<{@link PositionPO}>
-     */
-    List<PositionPO> getPositionByUserId(Long userId);
-
-
-    Page<User> query(Integer page, Integer size, String keyword);
 
 }

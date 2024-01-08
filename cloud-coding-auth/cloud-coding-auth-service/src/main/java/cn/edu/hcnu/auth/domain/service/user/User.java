@@ -44,8 +44,8 @@ public class User {
         userPO.setAvatar(this.getAvatar());
         userPO.setSex(this.getSex());
         userPO.setNickname(this.getNickname());
-        userPO.setStatus(0L);
-        userPO.setId(Long.valueOf(this.getId()));
+        userPO.setStatus(this.status);
+        userPO.setId(this.getId());
         userRepository.save(userPO);
 
     }

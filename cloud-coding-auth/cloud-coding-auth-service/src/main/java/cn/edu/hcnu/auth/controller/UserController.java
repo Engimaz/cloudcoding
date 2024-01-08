@@ -65,7 +65,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    @GetMapping("query")
+    @GetMapping("list")
     @Operation(summary = "查询一页用户信息")
     public RestResponse list(@Valid CommonQuery commonQuery) {
         PageDTO<UserDTO, CommonQuery> query = userApplication.query(commonQuery);
