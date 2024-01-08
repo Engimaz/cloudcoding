@@ -130,18 +130,12 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
 
 
 
-
-
-
         // 在子组件中暴露方法或属性给父组件使用
         useImperativeHandle(ref, () => ({
             submit: () => {
                 btnRef.current?.click()
             }
         }));
-
-
-
 
 
         const btnRef = useRef<HTMLButtonElement>(null)

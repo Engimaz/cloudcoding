@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Dialog } from 'primereact/dialog';
 import { Steps } from 'primereact/steps';
 
@@ -38,10 +38,19 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void }> = 
 
     const step1Ref = useRef<{ submit: () => void; }>(null)
     const step2Ref = useRef<{ submit: () => void; }>(null)
+    const step3Ref = useRef<{ submit: () => void; }>(null)
+
 
 
 
     const [data, setData] = useState<FormType>({} as FormType)
+
+
+    useEffect(() => {
+        if (step == 2) {
+            step3Ref.current?.submit()
+        }
+    }, [step])
 
     return (
         <Dialog header="注册" visible={open} style={{ width: '80vw' }} onHide={() => setOpen(false)} footer={
@@ -85,7 +94,7 @@ const CreatePanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void }> = 
                         }} />
                 }
                 {
-                    step == 2 && <Step3 data={data} />
+                    step == 2 && <Step3 ref={step3Ref} data={data} />
                 }
 
             </main>
