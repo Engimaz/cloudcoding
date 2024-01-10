@@ -30,7 +30,7 @@ const App: React.FC = () => {
         location: "",// 组织地址 省区级
         address: "",//详细地址
         type: "",//组织类型
-        status: "",//组织状态
+        status: "OrgAudit",//组织状态
         positions: [],
         features: [],
         userPositions: []
@@ -161,7 +161,7 @@ const App: React.FC = () => {
             <section className='flex w-full  justify-center items-center gap-2'>
                 <Button label="编辑" severity="info" text onClick={() => setEditRecord(rowData)} />
                 <ConfirmPopup target={buttonEl.current || undefined} visible={deleteId == rowData.id} onHide={() => setDeleteId("")}
-                    message="确定删除这个字典吗?" accept={() => confirm(deleteId)} />
+                    message="确定删除这个组织吗?" accept={() => confirm(deleteId)} />
                 <Button ref={buttonEl} onClick={() => setDeleteId(rowData.id ? rowData.id : "")} severity="danger" label="删除" text />
             </section>
         )
@@ -180,7 +180,20 @@ const App: React.FC = () => {
         <main className='p-5 h-full bg-white flex flex-col gap-2'>
 
             <section className='w-full flex gap-2'>
-                <Button onClick={() => setEditRecord({ id: "new-dictionary" } as OrganizationVO)}>添加接口</Button>
+                <Button onClick={() => setEditRecord({
+                    id: "new-organization",
+                    name: "",
+                    avatar: "",// 组织头像
+                    img: "",// 宣传图
+                    description: "",//组织介绍
+                    location: "",// 组织地址 省区级
+                    address: "",//详细地址
+                    type: "",//组织类型
+                    status: "OrgAudit",//组织状态
+                    positions: [],
+                    features: [],
+                    userPositions: []
+                })}>添加组织</Button>
                 <div className="card flex flex-wrap justify-content-center gap-3 hover:cursor-pointer">
                     <span className="p-input-icon-left">
                         <i className="iconfont icon-sousuo" onClick={fetchData} />
@@ -205,16 +218,30 @@ const App: React.FC = () => {
             <DataTable value={data} tableStyle={{ minWidth: '50rem' }}  >
                 <Column field="id" header="ID" align="center"></Column>
                 <Column field="name" header="名称" align="center"></Column>
-                <Column field="description" align="center" header="接口描述"></Column>
-                <Column field="value" align="center" header="接口地址"></Column>
+                <Column field="description" align="center" header="组织描述"></Column>
                 <Column field="location" align="center" header="组织地址" body={locationTemplate} />
                 <Column field="status" align="center" header="组织状态" body={statusStatusTemplate} />
-                <Column field="type" align="center" header="接口可见性" body={statusTypeTemplate} />
+                <Column field="type" align="center" header="组织类型" body={statusTypeTemplate} />
                 <Column header="操作" align="center" body={actionBodyTemplate} />
             </DataTable>
             <Paginator first={first} rows={pageSize} totalRecords={count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
 
-            <DialogPanel editRecord={editRecord as OrganizationVO} onSussess={() => { fetchData(); setEditRecord({ id: "-1" } as OrganizationVO); }} key={editRecord.id} />
+            <DialogPanel editRecord={editRecord as OrganizationVO} onSussess={() => {
+                fetchData(); setEditRecord({
+                    id: "-1",
+                    name: "",
+                    avatar: "",// 组织头像
+                    img: "",// 宣传图
+                    description: "",//组织介绍
+                    location: "",// 组织地址 省区级
+                    address: "",//详细地址
+                    type: "OrgAudit",//组织类型
+                    status: "",//组织状态
+                    positions: [],
+                    features: [],
+                    userPositions: []
+                });
+            }} key={editRecord.id} />
 
 
         </main >

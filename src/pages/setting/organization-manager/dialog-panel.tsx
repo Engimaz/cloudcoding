@@ -28,8 +28,8 @@ import { TreeNode } from 'primereact/treenode';
 import { PickList, PickListChangeEvent } from 'primereact/picklist';
 import idGenerate from '@/features/id-generate/index.ts';
 import { User } from '@/api/auth/types.ts';
-import { generateMockUsers } from '@/api/auth/mock.ts';
 import { Avatar } from 'primereact/avatar';
+import { listUser } from '@/api/auth/index.ts';
 
 const schema = z.object({
     name: z
@@ -152,7 +152,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
     const [userTarget, setUserTarget] = useState<Array<UserPositionVO>>([]);
 
     useEffect(() => {
-
+        console.log(editRecord)
         queryGroupDictionaryByName("PositionStatus").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
                 setPositionStatus(res.result.list)
@@ -177,9 +177,12 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
             }
         })
 
-        const _d = generateMockUsers(4)
-        setUsers(_d)
-        setUserSource(_d.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
+        listUser(1, 10, "").then((res: ApiResponse<QueryListResult<User>>) => {
+            const _d = res.result.list
+            setUsers(_d)
+            setUserSource(_d.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
+        })
+
     }, [])
 
 
@@ -241,7 +244,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
     const onChange = (event: PickListChangeEvent) => {
         setFeatureSource(event.source);
         setFeatureTarget(event.target);
-        console.log(event.target)
         setValue("features", event.target)
     };
 
@@ -451,7 +453,32 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                     )}
                 />
 
+                {
+                    editRecord.id !== "new-organization" &&
+                    <Controller
+                        name="status"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <>
+                                <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.status })}>
+                                    组织状态
+                                </label>
+                                <Dropdown
+                                    id={field.name}
+                                    {...field}
+                                    ref={field.ref}
+                                    value={field.value}
+                                    placeholder="选择组织状态"
+                                    options={status}
+                                    onChange={(e) => { field.onChange(e.value); }}
+                                    className={classNames({ 'p-invalid': fieldState.error })}
+                                />
 
+                                {formState.errors.status && getFormErrorMessage(field.name)}
+                            </>
+                        )}
+                    />
+                }
                 <Controller
                     name="location"
                     control={control}

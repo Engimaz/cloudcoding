@@ -9,6 +9,7 @@
 import { AxiosRequestConfig } from 'axios';
 import request from '../index.ts';
 import type { License, RegisterUser, TokenRes, UpdateUser, User } from './types.ts'
+import { QueryListResult } from '../types.ts';
 const context = "cloud-coding-auth";
 
 export type Grant_Type = "password" | "phone" | "gitee" | "email";
@@ -34,6 +35,13 @@ export const license = () => {
 }
 
 // 注册用户
+export const listUser = (page: number, size: number, keyword: string) => {
+    const url = `${context}/user/list`;
+    const method = "get";
+    return request<QueryListResult<User>>(url, method, { page, size, keyword });
+}
+
+// 注册用户
 export const addUser = (data: RegisterUser, config: AxiosRequestConfig = {}) => {
     const url = `${context}/user/new`;
     const method = "post";
@@ -47,7 +55,7 @@ export const updateUser = (data: UpdateUser) => {
 }
 // 查询用户信息
 export const getUserInfo = (id: string) => {
-    const url = `${context}/user/${id}`;
+    const url = `${context}/user/info/${id}`;
     const method = "get";
     return request<User>(url, method);
 }

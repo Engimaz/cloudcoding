@@ -64,8 +64,9 @@ export default function index() {
 
 
     useEffect(() => {
-        console.log(userid)
-        dispatch(fetchUser(userid))
+        if (userid) {
+            dispatch(fetchUser(userid))
+        }
     }, [userid])
 
     const [user, setUser] = useState<User>();
@@ -93,6 +94,7 @@ export default function index() {
         {
             label: '退出登录',
             command: () => {
+                dispatch(resetUserInfo())
                 dispatch(doLogout())
                 // 跳转到登录页
                 // navigate("/login")
