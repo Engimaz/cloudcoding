@@ -44,10 +44,12 @@ public class UserPO implements Serializable {
      * 状态 0 正常 1 异常
      */
     private Long status;
+
+    private String idnumber;
+
     @TableField(fill = FieldFill.INSERT)
-
     private LocalDateTime createTime;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

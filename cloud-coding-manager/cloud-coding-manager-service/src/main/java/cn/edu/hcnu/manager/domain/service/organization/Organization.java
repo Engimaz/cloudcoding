@@ -6,19 +6,22 @@ import cn.edu.hcnu.manager.domain.service.feature.Feature;
 import cn.edu.hcnu.manager.domain.service.position.Position;
 import cn.edu.hcnu.manager.domain.service.relation.OrganizationRecord;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
-import cn.edu.hcnu.manager.infrastructure.repository.OrganizationRepository;
-import cn.edu.hcnu.manager.model.po.OrganizationPO;
+import cn.edu.hcnu.manager.infrastructure.repository.*;
+import cn.edu.hcnu.manager.model.po.*;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -50,6 +53,19 @@ public class Organization {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private PositionRepository positionRepository;
+    @Autowired
+    private FeatureRepository featureRepository;
+    @Autowired
+    private UserPositionRepository userPositionRepository;
+
+    @Autowired
+    private FeatureOrganizationRepository featureOrganizationRepository;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @DubboReference(group = "dictionary")
     private DictionaryService dictionaryService;
@@ -102,6 +118,42 @@ public class Organization {
         this.setAddress(byId.getAddress());
         this.setLocation(byId.getLocation());
         this.setType(dictionaryService.getDictionaryById(byId.getType()).getValue());
+        LambdaQueryWrapper<PositionPO> eq = new LambdaQueryWrapper<PositionPO>().eq(PositionPO::getOrganizationId, this.id);
+        List<PositionPO> list = positionRepository.list(eq);
+        List<Position> positionList = list.stream().map(item -> {
+            Position bean = applicationContext.getBean(Position.class);
+            bean.setOrganizationId(item.getOrganizationId());
+            bean.setId(item.getId());
+            bean.setName(item.getName());
+            bean.setStatus(dictionaryService.getDictionaryById(item.getStatus()).getValue());
+            bean.setValue(item.getValue());
+            return bean;
+        }).collect(Collectors.toList());
+        this.setPositions(positionList);
+        LambdaQueryWrapper<FeatureOrganizationPO> featureOrganizationPOLambdaQueryWrapper = new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getOrganizationId, this.id);
+        List<FeatureOrganizationPO> list1 = featureOrganizationRepository.list(featureOrganizationPOLambdaQueryWrapper);
+        List<Long> featureIds = list1.stream().map(FeatureOrganizationPO::getFeatureId).collect(Collectors.toList());
+        List<Feature> featureList = featureRepository.listByIds(featureIds).stream().map(item -> {
+            Feature bean = applicationContext.getBean(Feature.class);
+            bean.setId(item.getId());
+            bean.setDescription(item.getDescription());
+            bean.setStatus(dictionaryService.getDictionaryById(item.getStatus()).getValue());
+            bean.setValue(item.getValue());
+            return bean;
+        }).collect(Collectors.toList());
+
+        this.setFeatures(featureList);
+        List<Long> positionIds = positionList.stream().map(Position::getId).collect(Collectors.toList());
+        LambdaQueryWrapper<UserPositionPO> in = new LambdaQueryWrapper<UserPositionPO>().in(UserPositionPO::getPositionId, positionIds);
+        List<UserPositionPO> userPositionPOS = userPositionRepository.list(in);
+        List<UserPosition> userPositionList = userPositionPOS.stream().map(item -> {
+            UserPosition bean = applicationContext.getBean(UserPosition.class);
+            bean.setId(item.getId());
+            bean.setUserId(item.getUserId());
+            bean.setPositionId(item.getPositionId());
+            return bean;
+        }).collect(Collectors.toList());
+        this.setUserPositions(userPositionList);
     }
 
     public void remove() {

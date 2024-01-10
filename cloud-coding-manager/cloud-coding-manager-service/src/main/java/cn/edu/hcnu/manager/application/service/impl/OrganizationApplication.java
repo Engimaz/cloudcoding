@@ -4,23 +4,26 @@ import cn.edu.hcnu.base.model.CommonQuery;
 import cn.edu.hcnu.base.model.PageDTO;
 import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
-import cn.edu.hcnu.manager.application.assembler.*;
+import cn.edu.hcnu.manager.application.assembler.FeatureToDTOMapping;
+import cn.edu.hcnu.manager.application.assembler.OrganizationToOrganizationDTOMapping;
+import cn.edu.hcnu.manager.application.assembler.UserPositionToUserPositionDTOMapping;
 import cn.edu.hcnu.manager.application.service.IOrganizationApplication;
 import cn.edu.hcnu.manager.domain.service.feature.Feature;
 import cn.edu.hcnu.manager.domain.service.organization.Organization;
 import cn.edu.hcnu.manager.domain.service.position.Position;
 import cn.edu.hcnu.manager.domain.service.relation.FeatureOrganization;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
-import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.OrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import cn.edu.hcnu.manager.infrastructure.repository.UserPositionRepository;
 import cn.edu.hcnu.manager.model.command.AddOrganizationCommand;
 import cn.edu.hcnu.manager.model.command.UpdateOrganizationCommand;
 import cn.edu.hcnu.manager.model.dto.OrganizationDTO;
 import cn.edu.hcnu.manager.model.dto.PositionDTO;
 import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.OrganizationPO;
+import cn.edu.hcnu.manager.model.po.UserPositionPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -31,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
@@ -55,6 +60,12 @@ public class OrganizationApplication implements IOrganizationApplication {
 
     @Autowired
     private PositionRepository positionRepository;
+
+    @Autowired
+    private UserPositionRepository userPositionRepository;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     public OrganizationDTO queryById(Long id) {
@@ -82,7 +93,16 @@ public class OrganizationApplication implements IOrganizationApplication {
 
                             // 查询职位与成员之间的关系
                             List<UserPosition> userPositions = positions.stream()
-                                    .map(position -> userPositionDomainService.queryByPositionId(position.getId()))
+                                    .map(position -> {
+                                        List<UserPositionPO> list = userPositionRepository.list(new LambdaQueryWrapper<UserPositionPO>().eq(UserPositionPO::getPositionId, position.getId()));
+                                        return list.stream().map(item -> {
+                                            UserPosition bean1 = applicationContext.getBean(UserPosition.class);
+                                            bean1.setPositionId(item.getPositionId());
+                                            bean1.setUserId(item.getUserId());
+                                            bean1.setId(item.getId());
+                                            return bean1;
+                                        }).collect(Collectors.toList());
+                                    })
                                     .flatMap(List::stream)
                                     .collect(Collectors.toList());
 
@@ -102,7 +122,7 @@ public class OrganizationApplication implements IOrganizationApplication {
         }).collect(Collectors.toList());
 
         // 查询社团有的功能
-        Optional.ofNullable(collect)
+        Optional.of(collect)
                 .ifPresent(featureOrganizations -> {
                     // 查询这个功能
                     List<Feature> features = featureOrganizations.stream().map(featureOrganization -> {
@@ -126,12 +146,6 @@ public class OrganizationApplication implements IOrganizationApplication {
     }
 
 
-    @Autowired
-    private UserPositionDomainService userPositionDomainService;
-
-
-    @Autowired
-    private ApplicationContext applicationContext;
     @Qualifier("snowflake")
     @Autowired
     private IDGenerator idGenerator;
@@ -152,19 +166,24 @@ public class OrganizationApplication implements IOrganizationApplication {
         bean.setAddress(command.getAddress());
         bean.setLocation(command.getLocation());
         bean.setType(command.getType());
+
+        Map<String, Long> positionIds = new ConcurrentHashMap<>();
         bean.setPositions(command.getPositions().stream().map(item -> {
+            Long s = Long.valueOf(idGenerator.nextID());
             Position position = applicationContext.getBean(Position.class);
             position.setOrganizationId(bean.getId());
             position.setName(item.getName());
             position.setValue(item.getValue());
             position.setStatus(item.getStatus());
-            position.setId(Long.valueOf(idGenerator.nextID()));
+            position.setId(s);
+            positionIds.put(item.getValue(), s);
             return position;
         }).collect(Collectors.toList()));
         bean.setUserPositions(command.getUserPositions().stream().map(item -> {
             UserPosition userPosition = applicationContext.getBean(UserPosition.class);
             userPosition.setUserId(Long.valueOf(item.getUserId()));
             userPosition.setPosition(item.getPosition());
+            userPosition.setPositionId(positionIds.get(item.getPosition()));
             userPosition.setId(Long.valueOf(idGenerator.nextID()));
             return userPosition;
         }).collect(Collectors.toList()));
@@ -214,16 +233,10 @@ public class OrganizationApplication implements IOrganizationApplication {
         List<Organization> collect = res.getRecords().stream().map(po -> {
             Organization bean = applicationContext.getBean(Organization.class);
             bean.setId(po.getId());
-            bean.setName(po.getName());
-            bean.setStatus(dictionaryService.getDictionaryById(po.getStatus()).getValue());
-            bean.setAvatar(po.getAvatar());
-            bean.setImg(po.getImg());
-            bean.setDescription(po.getDescription());
-            bean.setAddress(po.getAddress());
-            bean.setLocation(po.getLocation());
-            bean.setType(dictionaryService.getDictionaryById(po.getType()).getValue());
+            bean.render();
             return bean;
         }).collect(Collectors.toList());
+
         return new PageDTO<>(organizationToOrganizationDTOMapping.sourceToTarget(collect), res.getTotal(), commonQuery);
     }
 

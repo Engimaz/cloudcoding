@@ -7,7 +7,7 @@ import cn.edu.hcnu.auth.domain.service.user.User;
 import cn.edu.hcnu.auth.infrastructure.repository.AuthorizationRepository;
 import cn.edu.hcnu.auth.infrastructure.repository.UserRepository;
 import cn.edu.hcnu.auth.model.comand.AddUserCommand;
-import cn.edu.hcnu.auth.model.comand.ResetPasswordCommand;
+import cn.edu.hcnu.auth.model.comand.UpdateUserCommand;
 import cn.edu.hcnu.auth.model.enums.LoginType;
 import cn.edu.hcnu.auth.model.po.AuthorizationPO;
 import cn.edu.hcnu.auth.model.po.UserPO;
@@ -102,6 +102,7 @@ public class UserApplication implements IUserApplication {
         bean.setSex(Long.valueOf(addUserCommand.getSex()));
         bean.setNickname(addUserCommand.getNickname());
         bean.setStatus(0L);
+        bean.setIdnumber(addUserCommand.getIdnumber());
         bean.setId(Long.valueOf(idGenerator.nextID()));
         bean.save();
 
@@ -144,28 +145,39 @@ public class UserApplication implements IUserApplication {
 
 
     @Override
-    public UserDTO resetPassword(ResetPasswordCommand resetPasswordCommand) {
+    public UserDTO updateUser(UpdateUserCommand updateUserCommand) {
         // 检验验证码是否正确
-        String realCode = redisTemplate.opsForValue().get(CodeType.Reset.getKey() + ":" + resetPasswordCommand.getEmail());
+        String realCode = redisTemplate.opsForValue().get(CodeType.Reset.getKey() + ":" + updateUserCommand.getEmail());
 
-        if (!Objects.equals(resetPasswordCommand.getCode(), realCode)) {
+        if (!Objects.equals(updateUserCommand.getCode(), realCode)) {
             return null;
         }
+
+        User bean = applicationContext.getBean(User.class);
+        bean.setAvatar(updateUserCommand.getAvatar());
+        bean.setSex(Long.valueOf(updateUserCommand.getSex()));
+        bean.setNickname(updateUserCommand.getNickname());
+        bean.setStatus(updateUserCommand.getStatus());
+        bean.setId(Long.valueOf(idGenerator.nextID()));
+        bean.update();
+
+
         Authorization authorization = applicationContext.getBean(Authorization.class);
-        authorization.setIdentifier(resetPasswordCommand.getEmail());
+        authorization.setIdentifier(updateUserCommand.getEmail());
         authorization.renderByEmail();
 
 
         AuthorizationPO authorizationPO = new AuthorizationPO();
         authorizationPO.setUserId(authorization.getUserId());
-        authorizationPO.setCredential(passwordEncoder.encode(resetPasswordCommand.getPassword()));
+        authorizationPO.setCredential(passwordEncoder.encode(updateUserCommand.getPassword()));
+
         boolean b = authorizationRepository.update(authorizationPO,
                 new LambdaQueryWrapper<AuthorizationPO>().eq(AuthorizationPO::getUserId, authorization.getUserId()));
         if (b) {
-            User bean = applicationContext.getBean(User.class);
-            bean.setId(authorization.getId());
-            bean.render();
-            return userToUserDTOMapping.sourceToTarget(bean);
+            User bean1 = applicationContext.getBean(User.class);
+            bean1.setId(authorization.getId());
+            bean1.render();
+            return userToUserDTOMapping.sourceToTarget(bean1);
         }
         return null;
     }
@@ -185,12 +197,20 @@ public class UserApplication implements IUserApplication {
             bean.setId(po.getId());
             bean.setNickname(po.getNickname());
             bean.setStatus(po.getStatus());
+            bean.setSex(po.getSex());
             bean.setAvatar(po.getAvatar());
+            bean.setIdnumber(po.getIdnumber());
             bean.setUpdateTime(po.getUpdateTime());
             bean.setCrateTime(po.getCreateTime());
             return bean;
         }).collect(Collectors.toList());
-        return new PageDTO<>(userToUserDTOMapping.sourceToTarget(collect), page.getTotal(), query);
+        List<UserDTO> userDTOS = userToUserDTOMapping.sourceToTarget(collect);
+        for (UserDTO userDTO : userDTOS) {
+            LambdaQueryWrapper<AuthorizationPO> eq = new LambdaQueryWrapper<AuthorizationPO>().eq(AuthorizationPO::getUserId, userDTO.getId()).eq(AuthorizationPO::getIdentityType, LoginType.EMAIL.getValue());
+            AuthorizationPO one = authorizationRepository.getOne(eq);
+            userDTO.setEmail(one.getIdentifier());
+        }
+        return new PageDTO<>(userDTOS, page.getTotal(), query);
 
     }
 }

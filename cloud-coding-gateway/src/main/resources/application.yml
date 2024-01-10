@@ -134,8 +134,9 @@ oauth2:
           - /cloud-coding-auth/oauth/check_token
           - /cloud-coding-auth/oauth/login
           - /cloud-coding-auth/oauth/license
+          - /cloud-coding-auth/user/**
           - /cloud-coding-auth/user/new
-          - /cloud-coding-auth/user/*
+          - /cloud-coding-auth/user/info/*
           - /cloud-coding-auth/user/update
           - /cloud-coding-auth/oauth/logout
           - /cloud-coding-auth/oauth/refresh_token

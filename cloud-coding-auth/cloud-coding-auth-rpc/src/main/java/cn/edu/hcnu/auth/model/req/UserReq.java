@@ -33,5 +33,6 @@ public class UserReq {
     private String avatar;
 
     private Integer sex;
+    private Long idnumber;
 
 }

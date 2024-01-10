@@ -1,13 +1,13 @@
 package cn.edu.hcnu.manager.domain.event.organization.update;
 
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
+import cn.edu.hcnu.manager.infrastructure.repository.UserPositionRepository;
 import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.PositionPO;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.domain.service.position.Position;
-import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
-import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import cn.edu.hcnu.manager.model.po.UserPositionPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,13 +29,13 @@ public class UpdateOrganizationLister {
 
 
     @Autowired
-    private UserPositionDomainService userPositionDomainService;
-
-    @Autowired
     private FeatureOrganizationRepository featureOrganizationRepository;
 
     @Autowired
     private PositionRepository positionRepository;
+
+    @Autowired
+    private UserPositionRepository userPositionRepository;
 
     @Autowired
     @Qualifier("snowflake")
@@ -46,18 +46,14 @@ public class UpdateOrganizationLister {
 
         List<Position> newPosition = new ArrayList<>(event.getOrganization().getPositions());
 
-        List<UserPosition> newUserPosition = new ArrayList<>(event.getOrganization().getUserPositions());
-        for (Position position : newPosition) {
-            String positionId = idGenerator.nextID();
-            for (UserPosition userPosition : newUserPosition) {
-                if (userPosition.getPosition().equals(position.getValue())) {
-                    userPosition.setPositionId(Long.valueOf(positionId));
-                }
-            }
-            position.setId(Long.valueOf(positionId));
-            position.setOrganizationId(event.getOrganization().getId());
-        }
 
+        List<UserPositionPO> newUserPosition = event.getOrganization().getUserPositions().stream().map(item -> {
+            UserPositionPO userPositionPO = new UserPositionPO();
+            userPositionPO.setPositionId(item.getPositionId());
+            userPositionPO.setUserId(item.getUserId());
+            userPositionPO.setId(item.getId());
+            return userPositionPO;
+        }).collect(Collectors.toList());
 
         // 删除所有的职位
         Optional.ofNullable(positionRepository.removeByOrganizationId(event.getOrganization().getId()))
@@ -66,7 +62,7 @@ public class UpdateOrganizationLister {
                     List<Long> positionIds = positions.stream()
                             .map(PositionPO::getId)
                             .collect(Collectors.toList());
-                    userPositionDomainService.removeByPositionId(positionIds);
+                    userPositionRepository.remove(new LambdaQueryWrapper<UserPositionPO>().in(UserPositionPO::getPositionId, positionIds));
                 });
         List<PositionPO> newPoData = newPosition.stream().map(item -> {
             PositionPO positionPO = new PositionPO();
@@ -81,8 +77,7 @@ public class UpdateOrganizationLister {
         //  添加新职位
         positionRepository.saveBatch(newPoData);
         // 添加新职位和用户的关系
-        userPositionDomainService.save(newUserPosition);
-
+        userPositionRepository.saveBatch(newUserPosition);
 
         //删除组织的功能
         featureOrganizationRepository.remove(new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getOrganizationId, event.getOrganization().getId()));

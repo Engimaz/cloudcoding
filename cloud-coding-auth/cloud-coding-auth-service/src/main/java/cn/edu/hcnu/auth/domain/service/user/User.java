@@ -20,6 +20,7 @@ public class User {
     private String avatar;
     private Long sex;
     private Long status;
+    private String idnumber;
     private LocalDateTime crateTime;
     private LocalDateTime updateTime;
 
@@ -35,18 +36,31 @@ public class User {
         setSex(byId.getSex());
         setStatus(byId.getStatus());
         setCrateTime(byId.getCreateTime());
+        setIdnumber(byId.getIdnumber());
         setUpdateTime(byId.getUpdateTime());
 
     }
 
     public  void save() {
         UserPO userPO = new UserPO();
-        userPO.setAvatar(this.getAvatar());
-        userPO.setSex(this.getSex());
-        userPO.setNickname(this.getNickname());
+        userPO.setAvatar(this.avatar);
+        userPO.setSex(this.sex);
+        userPO.setNickname(this.nickname);
         userPO.setStatus(this.status);
-        userPO.setId(this.getId());
+        userPO.setId(this.id);
+        userPO.setIdnumber(this.idnumber);
         userRepository.save(userPO);
 
+    }
+
+    public void update() {
+        UserPO userPO = new UserPO();
+        userPO.setAvatar(this.avatar);
+        userPO.setSex(this.sex);
+        userPO.setNickname(this.nickname);
+        userPO.setStatus(this.status);
+        userPO.setId(this.id);
+        userPO.setIdnumber(this.idnumber);
+        userRepository.updateById(userPO);
     }
 }

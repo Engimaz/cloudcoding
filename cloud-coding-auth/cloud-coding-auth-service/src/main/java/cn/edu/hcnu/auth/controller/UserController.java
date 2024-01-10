@@ -4,10 +4,10 @@ import cn.edu.hcnu.auth.application.IUserApplication;
 import cn.edu.hcnu.auth.assembler.PageDTOToUserQueryResMapping;
 import cn.edu.hcnu.auth.assembler.UserDTOToUserResMapping;
 import cn.edu.hcnu.auth.assembler.UserReqToAddUserCommandMapping;
-import cn.edu.hcnu.auth.assembler.UserReqToResetPasswordCommandMapping;
+import cn.edu.hcnu.auth.assembler.UserReqToUpdateUserCommandMapping;
 import cn.edu.hcnu.auth.interfaces.UserApi;
 import cn.edu.hcnu.auth.model.comand.AddUserCommand;
-import cn.edu.hcnu.auth.model.comand.ResetPasswordCommand;
+import cn.edu.hcnu.auth.model.comand.UpdateUserCommand;
 import cn.edu.hcnu.auth.model.req.UserReq;
 import cn.edu.hcnu.auth.model.res.UserRes;
 import cn.edu.hcnu.auth.model.security.UserDTO;
@@ -34,10 +34,11 @@ public class UserController implements UserApi {
     private UserReqToAddUserCommandMapping userReqToAddUserCommandMapping;
 
     @Autowired
-    private UserReqToResetPasswordCommandMapping userReqToResetPasswordCommandMapping;
+    private UserReqToUpdateUserCommandMapping userReqToUpdateUserCommandMapping;
     @Autowired
     private PageDTOToUserQueryResMapping pageDTOToUserQueryResMapping;
-    @GetMapping("{id}")
+
+    @GetMapping("info/{id}")
     @PermitAll
     @Override
     public RestResponse<UserRes> getUserInfo(@PathVariable("id") String id) {
@@ -75,9 +76,9 @@ public class UserController implements UserApi {
 
     @Override
     @PutMapping("update")
-    public RestResponse<UserRes> resetPassword(@RequestBody @Valid UserReq req) {
-        ResetPasswordCommand resetPasswordCommand = userReqToResetPasswordCommandMapping.sourceToTarget(req);
-        UserDTO userDTO = userApplication.resetPassword(resetPasswordCommand);
+    public RestResponse<UserRes> update(@RequestBody @Valid UserReq req) {
+        UpdateUserCommand updateUserCommand = userReqToUpdateUserCommandMapping.sourceToTarget(req);
+        UserDTO userDTO = userApplication.updateUser(updateUserCommand);
 
         if (userDTO != null) {
             UserRes userRes = userDTOToUserResMapping.sourceToTarget(userDTO);

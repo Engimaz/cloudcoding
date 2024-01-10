@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 注销的接口需要放行
-                .antMatchers("/oauth/logout","/oauth/license", "/**/logout", "/**/user/new","/**/user/*","/**/user/update", "/**/login", "**/check_token", "**/v3/api-docs/**","/v3/api-docs/**").permitAll()
+                .antMatchers("/oauth/logout", "/oauth/license", "/**/logout", "/**/user/new", "/**/user/info/*", "/**/user/update", "/**/user/list", "/**/login", "**/check_token", "**/v3/api-docs/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf()

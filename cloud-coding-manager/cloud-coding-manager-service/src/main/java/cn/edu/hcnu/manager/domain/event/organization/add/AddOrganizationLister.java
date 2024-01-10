@@ -4,11 +4,12 @@ import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.manager.domain.service.position.Position;
 import cn.edu.hcnu.manager.domain.service.relation.UserPosition;
-import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import cn.edu.hcnu.manager.infrastructure.repository.UserPositionRepository;
 import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
 import cn.edu.hcnu.manager.model.po.PositionPO;
+import cn.edu.hcnu.manager.model.po.UserPositionPO;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,19 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @description:
- * @author: Administrator
- * @time: 2023/9/13 14:49
- */
 @Component
 public class AddOrganizationLister {
 
 
     @Autowired
     private PositionRepository positionRepository;
-    @Autowired
-    private UserPositionDomainService userPositionDomainService;
+
 
     @Autowired
     private FeatureOrganizationRepository featureOrganizationRepository;
@@ -42,6 +37,9 @@ public class AddOrganizationLister {
 
     @DubboReference(group = "dictionary")
     private DictionaryService dictionaryService;
+
+    @Autowired
+    private UserPositionRepository userPositionRepository;
 
     @EventListener
     public void handleCustomEvent(AddOrganizationEvent event) {
@@ -75,8 +73,19 @@ public class AddOrganizationLister {
         positionRepository.saveBatch(newPoData);
 
         // 添加新职位和用户的关系
-        userPositionDomainService.save(newUserPosition);
+        List<UserPositionPO> collect1 = newUserPosition.stream().map(item -> {
+            UserPositionPO userPositionPO = new UserPositionPO();
+            if (item.getId() != null) {
+                userPositionPO.setId(item.getId());
+            } else {
+                userPositionPO.setId(Long.valueOf(idGenerator.nextID()));
+            }
+            userPositionPO.setUserId(item.getUserId());
+            userPositionPO.setPositionId(item.getPositionId());
+            return userPositionPO;
+        }).collect(Collectors.toList());
 
+        userPositionRepository.saveBatch(collect1);
         if (event.getOrganization().getFeatures() != null) {
             //添加组织的功能
             List<FeatureOrganizationPO> collect = event.getOrganization().getFeatures().stream().map(f -> {

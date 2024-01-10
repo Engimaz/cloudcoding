@@ -1,8 +1,10 @@
 package cn.edu.hcnu.manager.domain.event.organization.remove;
 
+import cn.edu.hcnu.manager.infrastructure.repository.UserPositionRepository;
 import cn.edu.hcnu.manager.model.po.PositionPO;
-import cn.edu.hcnu.manager.domain.service.relation.UserPositionDomainService;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
+import cn.edu.hcnu.manager.model.po.UserPositionPO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,7 @@ public class RemoveOrganizationLister {
     private PositionRepository positionRepository;
 
     @Autowired
-    private UserPositionDomainService userPositionDomainService;
+    private UserPositionRepository userPositionRepository;
 
     @EventListener
     public void handleCustomEvent(RemoveOrganizationEvent event) {
@@ -30,6 +32,6 @@ public class RemoveOrganizationLister {
         List<PositionPO> positions = positionRepository.removeByOrganizationId(event.getId());
 
         // 删除这个公司职位对应的用户
-        userPositionDomainService.removeByPositionId(positions.stream().map(f -> f.getId()).collect(Collectors.toList()));
+        userPositionRepository.remove(new LambdaQueryWrapper<UserPositionPO>().in(UserPositionPO::getPositionId, positions.stream().map(PositionPO::getId).collect(Collectors.toList())));
     }
 }

@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddUserCommand {
+public class UpdateUserCommand {
+    private String id;
     private String nickname;
     private String avatar;
     private Integer sex;

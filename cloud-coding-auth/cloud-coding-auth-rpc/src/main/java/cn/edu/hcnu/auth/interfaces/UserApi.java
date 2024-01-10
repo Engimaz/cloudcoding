@@ -15,9 +15,8 @@ public interface UserApi {
 
     RestResponse<UserRes> registerUser(UserReq req);
 
-    @GetMapping("query")
-    @Operation(summary = "查询一页用户信息")
+
     RestResponse list(@Valid CommonQuery groupQueryReq);
 
-    RestResponse<UserRes> resetPassword(UserReq req);
+    RestResponse<UserRes> update(UserReq req);
 }
