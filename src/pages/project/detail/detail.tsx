@@ -10,6 +10,8 @@ import Info from "./info.tsx";
 import { editor } from 'monaco-editor';
 import { saveFile, updateFileAjax } from "@/features/program/programSlice.ts";
 import Console from "./console.tsx";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 export default function detail() {
     const openfile = useAppSelector((state: RootState) => state.programSlice.openfile)
     const dispatch = useAppDispatch()
@@ -20,13 +22,22 @@ export default function detail() {
     }
     const handleCtrls = () => {
         const _file = JSON.parse(JSON.stringify(openfile))
-        console.log("保存")
         dispatch(updateFileAjax(_file))
     }
+    const [projectId, setProjectId] = useState<string>("");
+    const param = useParams();
+
+    useEffect(() => {
+        if (param.id) {
+            setProjectId(param.id)
+        }
+    }, [param.id])
     return (
         <PanelGroup direction="horizontal" className='detail-container'>
             <Panel defaultSizePercentage={20} maxSizePercentage={40} minSizePercentage={16}>
-                <FileManager projectId='1' />
+                {
+                    projectId != "" && <FileManager projectId={projectId} />
+                }
             </Panel>
             <PanelResizeHandle />
             <Panel defaultSizePercentage={80}>

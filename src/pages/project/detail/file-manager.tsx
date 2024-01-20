@@ -27,7 +27,7 @@ const FOLDER_MENU_ID = "folder-menu-id";
 const FILE_MENU_ID = "file-menu-id";
 
 
-const FileManager = (props: PropType = { projectId: "1728470211704786944" }) => {
+const FileManager = (props: PropType) => {
 
     const items = useAppSelector((state: RootState) => state.programSlice.filemanager)
 
@@ -37,15 +37,18 @@ const FileManager = (props: PropType = { projectId: "1728470211704786944" }) => 
     const [menu, setMenu] = useState<Array<MenuItem>>([])
 
     useEffect(() => {
-        const d: MenuItem[] = dataAdapter(items)
-        setMenu(d)
+        if (items.length > 0) {
+            const d: MenuItem[] = dataAdapter(items)
+            setMenu(d)
+        }
+
     }, [items, openKeys])
 
 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(initFileManger("1728470211704786944"))
+        dispatch(initFileManger(props.projectId))
     }, [])
 
     useEffect(() => {
@@ -153,13 +156,13 @@ const FileManager = (props: PropType = { projectId: "1728470211704786944" }) => 
         };
 
         const result: MenuItem[] = data.map(mapFolderToMenuItem);
-        console.log("装换结果", result);
 
         return result;
     };
 
     const handleSaveFile = () => {
         if (inputName != '') {
+            console.log('保存新文件')
             const file: File = {
                 id: idGenerate(),
                 name: inputName,
@@ -235,6 +238,7 @@ const FileManager = (props: PropType = { projectId: "1728470211704786944" }) => 
         switch (p.id) {
 
             case 'new-file':
+                console.log('创建新文件')
                 // 没有展开的需要展开菜单
                 if (!openKeys.includes(contextItem.id)) {
                     const _openkeys = JSON.parse(JSON.stringify(openKeys))

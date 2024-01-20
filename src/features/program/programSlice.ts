@@ -15,7 +15,6 @@ import {
   queryTopFolderByProgramId,
 } from "@/api/folder/index.ts";
 import idGenerate from "../id-generate/index.ts";
-import { generateFolders } from "./mock.ts";
 import { updateFile as updateFileReq } from "@/api/file/index.ts";
 import { ApiResponse } from "@/api/types.ts";
 
@@ -30,7 +29,7 @@ interface ProgramStateType {
 }
 const initialState: ProgramStateType = {
   // 文件管理器
-  filemanager: generateFolders(1),
+  filemanager: [],
   // 当前打开的文件
   openfile: {
     id: "",
@@ -276,7 +275,7 @@ export const projectSlice = createSlice({
         id: "new-folder",
         name: "",
         parentId: action.payload,
-        programId: state.projectId,
+        projectId: state.projectId,
         folders: [],
         files: [],
       };
@@ -424,7 +423,7 @@ export const projectSlice = createSlice({
     },
     // 打开文件
     open: (state, action: PayloadAction<string | null>) => {
-      if(action.payload==null){
+      if (action.payload == null) {
         return
       }
       const _filemanager = JSON.parse(JSON.stringify(state.filemanager));
@@ -432,7 +431,7 @@ export const projectSlice = createSlice({
       const _openfile = JSON.parse(JSON.stringify(state.openfile));
       if (_filemanager) {
         _filemanager.forEach((item: Folder) => {
-          const _file = queryFileById(item, action.payload);
+          const _file = queryFileById(item, action.payload!);
           if (_file) {
             // 记录到历史文件中
             // 检查是否存在于历史文件
