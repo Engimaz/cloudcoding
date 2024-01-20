@@ -11,10 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddProgramCommand {
+
     private String name;
-    private String id;
     private String description;
     private String language;
+    private String avatar;
     private String sdk;
     private List<ProgramUserDTO> relations;
 }

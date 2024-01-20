@@ -8,8 +8,8 @@ import cn.edu.hcnu.program.domain.service.docker.DockerDomainService;
 import cn.edu.hcnu.program.domain.service.program.Program;
 import cn.edu.hcnu.program.model.dto.ExecutionInfoDTO;
 import cn.edu.hcnu.program.util.ExecuteCommand;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,26 +17,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * @description:
- * @author: Administrator
- * @time: 2023/6/7 17:39
- */
+
 @Service("javaProgramingExecutor")
 @Slf4j
+@RequiredArgsConstructor
 public class JavaPrograming implements ProgrammingLanguage {
-    @Autowired
-    JavaConfig javaConfig;
+    private final JavaConfig javaConfig;
 
-    @Autowired
-    CodeStoreConfig codeStoreConfig;
+    private final CodeStoreConfig codeStoreConfig;
 
+    private final DockerConfig dockerConfig;
 
-    @Autowired
-    DockerConfig dockerConfig;
-
-    @Autowired
-    private DockerDomainService dockerDomainService;
+    private final DockerDomainService dockerDomainService;
 
     @Override
     public ExecutionInfoDTO execute(Program program) {
@@ -69,7 +61,6 @@ public class JavaPrograming implements ProgrammingLanguage {
             log.debug("这个应该做善后工作 或者 使用 aop 操作 或者定时操作 删除本次产生的文件");
         }
     }
-
 
 
     private ExecutionInfoDTO runProgram(String containerID, String programPath, String inName) {

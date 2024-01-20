@@ -245,7 +245,7 @@ public class OrganizationApplication implements IOrganizationApplication {
     public PageDTO<OrganizationDTO, CommonQuery> list(CommonQuery commonQuery, String status) {
         Long stateId = null;
         if (status != null) {
-            stateId = dictionaryService.getDictionaryByLabel(status).getId();
+            stateId = dictionaryService.getDictionaryByValue(status).getId();
         }
 
         LambdaQueryWrapper<OrganizationPO> eq = new LambdaQueryWrapper<OrganizationPO>().eq(stateId != null, OrganizationPO::getStatus, stateId);

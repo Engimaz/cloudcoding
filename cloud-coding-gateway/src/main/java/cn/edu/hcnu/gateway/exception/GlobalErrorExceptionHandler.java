@@ -37,17 +37,19 @@ public class GlobalErrorExceptionHandler implements ErrorWebExceptionHandler {
         // 默认是系统异常
         RestResponse<Object> restResponse = RestResponse.fail(ResultCode.ERROR);
 
+        HttpStatus status;
 
         // 微服务没有启动或者连接超时
         if (ex instanceof NotFoundException) {
             restResponse = RestResponse.fail(ResultCode.NOT_FOUND);
-            response.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+            status = (HttpStatus.SERVICE_UNAVAILABLE);
         }
-
         //处理TOKEN失效的异常
         else if (ex instanceof InvalidTokenException) {
             restResponse = RestResponse.fail(ResultCode.INVALID_TOKEN);
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            status = (HttpStatus.UNAUTHORIZED);
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
 
@@ -59,7 +61,7 @@ public class GlobalErrorExceptionHandler implements ErrorWebExceptionHandler {
         return response.writeWith(Mono.fromSupplier(() -> {
             DataBufferFactory bufferFactory = response.bufferFactory();
             try {
-                response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                response.setStatusCode(status);
                 return bufferFactory.wrap(new ObjectMapper().writeValueAsBytes(finalRestResponse));
             } catch (Exception e) {
                 log.error("Error writing response", ex);

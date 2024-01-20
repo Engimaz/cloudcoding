@@ -16,5 +16,6 @@ public class ProgramRes {
     private String description;
     private String language;
     private String sdk;
+    private String avatar;
     private List<ProgramUserDTO> relations;
 }

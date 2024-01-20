@@ -1,7 +1,9 @@
 package cn.edu.hcnu.program.domain.event.program.remove;
 
 import cn.edu.hcnu.program.domain.service.folder.FolderDomainService;
-import cn.edu.hcnu.program.domain.service.relation.ProgramUserDomainService;
+import cn.edu.hcnu.program.infrastructure.repository.ProgramUserRepository;
+import cn.edu.hcnu.program.model.po.ProgramUserPO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -17,17 +19,17 @@ import org.springframework.stereotype.Service;
 public class RemoveProgramListener {
 
 
-    @Autowired
-    private ProgramUserDomainService programUserDomainService;
 
     @Autowired
     private FolderDomainService folderDomainService;
 
+    @Autowired
+    private ProgramUserRepository programUserRepository;
 
     @EventListener
     public void handleCustomEvent(RemoveProgramEvent event) {
         // 删除所有关系
-        boolean b = programUserDomainService.removeProgramAllUser(Long.valueOf(event.getProgramId()));
+        boolean b = programUserRepository.remove(new LambdaQueryWrapper<ProgramUserPO>().eq(ProgramUserPO::getProgramId, event.getProgramId()));
         // 删除所有文件夹
         boolean b1 = folderDomainService.removeProgramFolderByProgramId(event.getProgramId());
 

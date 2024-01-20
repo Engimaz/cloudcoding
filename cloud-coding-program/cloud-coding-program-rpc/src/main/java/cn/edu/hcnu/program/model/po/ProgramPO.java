@@ -39,6 +39,7 @@ public class ProgramPO implements Serializable {
 
 
     private String sdk;
+    private String avatar;
 
     /**
      * 创建时间

@@ -59,7 +59,7 @@ public class Position {
     }
 
     // 删除职位
-    public void removeById() {
+    public void remove() {
         positionRepository.removeById(id);
     }
 

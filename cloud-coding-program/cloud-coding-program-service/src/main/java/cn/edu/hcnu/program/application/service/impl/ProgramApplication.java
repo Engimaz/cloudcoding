@@ -1,8 +1,7 @@
 package cn.edu.hcnu.program.application.service.impl;
 
-import cn.edu.hcnu.program.application.assembler.AddProgramCommandToProgramMapping;
+import cn.edu.hcnu.id.domain.service.IDGenerator;
 import cn.edu.hcnu.program.application.assembler.ProgramToProgramDTOMapping;
-import cn.edu.hcnu.program.application.assembler.UpdateProgramCommandToProgramMapping;
 import cn.edu.hcnu.program.application.service.IProgramApplication;
 import cn.edu.hcnu.program.domain.config.CodeStoreConfig;
 import cn.edu.hcnu.program.domain.service.code.ProgrammingLanguage;
@@ -12,94 +11,155 @@ import cn.edu.hcnu.program.domain.service.file.FileDomainService;
 import cn.edu.hcnu.program.domain.service.folder.Folder;
 import cn.edu.hcnu.program.domain.service.folder.FolderDomainService;
 import cn.edu.hcnu.program.domain.service.program.Program;
-import cn.edu.hcnu.program.domain.service.program.ProgramDomainService;
 import cn.edu.hcnu.program.domain.service.relation.ProgramUser;
-import cn.edu.hcnu.program.domain.service.relation.ProgramUserDomainService;
+import cn.edu.hcnu.program.infrastructure.repository.ProgramRepository;
+import cn.edu.hcnu.program.infrastructure.repository.ProgramUserRepository;
 import cn.edu.hcnu.program.model.command.AddProgramCommand;
 import cn.edu.hcnu.program.model.command.ExecuteCommand;
 import cn.edu.hcnu.program.model.command.UpdateProgramCommand;
 import cn.edu.hcnu.program.model.dto.ExecutionInfoDTO;
 import cn.edu.hcnu.program.model.dto.ProgramDTO;
+import cn.edu.hcnu.program.model.dto.ProgramUserDTO;
+import cn.edu.hcnu.program.model.po.ProgramPO;
+import cn.edu.hcnu.program.model.po.ProgramUserPO;
 import cn.edu.hcnu.program.util.FileUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component("programApplicationImpl")
+@RequiredArgsConstructor
 public class ProgramApplication implements IProgramApplication {
 
 
-    @Autowired
-    private AddProgramCommandToProgramMapping addProgramCommandToProgramMapping;
+    private final ProgramToProgramDTOMapping programToProgramDTOMapping;
+
+
+    private final FolderDomainService folderDomainService;
+
+    private final FileDomainService fileDomainService;
+
+    private final CodeStoreConfig codeStoreConfig;
+
+    private final DockerDomainService dockerDomainService;
+
+    private final ApplicationContext applicationContext;
+
+    private final ProgramRepository programRepository;
+
+    private final ProgramUserRepository programUserRepository;
 
     @Autowired
-    private UpdateProgramCommandToProgramMapping updateProgramCommandToProgramMapping;
-
-
-    @Autowired
-    private ProgramDomainService programDomainService;
-
-
-    @Autowired
-    private ProgramToProgramDTOMapping programToProgramDTOMapping;
-
-    @Autowired
-    private ProgramUserDomainService programUserDomainService;
-
-    @Autowired
-    private FolderDomainService folderDomainService;
-
-    @Autowired
-    private FileDomainService fileDomainService;
-
-    @Autowired
-    private CodeStoreConfig codeStoreConfig;
-
-    @Autowired
-    private DockerDomainService dockerDomainService;
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
+    @Qualifier("snowflake")
+    private IDGenerator idGenerator;
 
     @Override
     public ProgramDTO save(AddProgramCommand addProgramCommand) {
-        Program program = addProgramCommandToProgramMapping.sourceToTarget(addProgramCommand);
-        Program save = programDomainService.save(program);
-        if (save == null) {
-            return null;
-        }
-        return programToProgramDTOMapping.sourceToTarget(save);
+        Program program = applicationContext.getBean(Program.class);
+        program.setName(addProgramCommand.getName());
+        program.setId(idGenerator.nextID());
+        program.setDescription(addProgramCommand.getDescription());
+        program.setLanguage(addProgramCommand.getLanguage());
+        program.setSdk(addProgramCommand.getSdk());
+        program.setAvatar(addProgramCommand.getAvatar());
+        List<ProgramUser> collect = addProgramCommand.getRelations().stream().map(
+                f -> {
+                    ProgramUser bean = applicationContext.getBean(ProgramUser.class);
+                    bean.setRole(f.getRole());
+                    bean.setProgramId(f.getProgramId());
+                    bean.setId(Long.valueOf(idGenerator.nextID()));
+                    bean.setUserId(f.getUserId());
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        program.setRelations(collect);
+        program.save();
+
+        return programToProgramDTOMapping.sourceToTarget(program);
 
     }
 
     @Override
     public ProgramDTO update(UpdateProgramCommand updateProgramCommand) {
-        Program program = updateProgramCommandToProgramMapping.sourceToTarget(updateProgramCommand);
-        Program update = programDomainService.update(program);
-        if (update == null) {
-            return null;
-        }
-        return programToProgramDTOMapping.sourceToTarget(update);
+        Program program = applicationContext.getBean(Program.class);
+        program.setName(updateProgramCommand.getName());
+        program.setId(updateProgramCommand.getId());
+        program.setDescription(updateProgramCommand.getDescription());
+        program.setLanguage(updateProgramCommand.getLanguage());
+        program.setSdk(updateProgramCommand.getSdk());
+        program.setAvatar(updateProgramCommand.getAvatar());
+        List<ProgramUser> collect = updateProgramCommand.getRelations().stream().map(
+                f -> {
+                    ProgramUser bean = applicationContext.getBean(ProgramUser.class);
+                    bean.setRole(f.getRole());
+                    bean.setProgramId(f.getProgramId());
+                    bean.setId(Long.valueOf(idGenerator.nextID()));
+                    bean.setUserId(f.getUserId());
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        program.setRelations(collect);
+        program.update();
+
+        return programToProgramDTOMapping.sourceToTarget(program);
     }
 
     @Override
     public List<ProgramDTO> queryProgramByUserId(String userId) {
         // 查询用户的项目
-        List<ProgramUser> users = programUserDomainService.queryRelationByUserId(userId);
-        if (users == null || users.isEmpty()) {
-            return null;
+        List<ProgramUserPO> list1 = programUserRepository.list(new LambdaQueryWrapper<ProgramUserPO>().eq(ProgramUserPO::getUserId, Long.valueOf(userId)));
+        List<ProgramUser> users = list1.stream().map(
+                programUserPO -> {
+                    ProgramUser programUser = applicationContext.getBean(ProgramUser.class);
+                    programUser.setId(programUserPO.getId());
+                    programUser.setUserId(String.valueOf(programUserPO.getUserId()));
+                    programUser.setProgramId(String.valueOf(programUserPO.getProgramId()));
+                    programUser.setRole(programUserPO.getRole());
+                    return programUser;
+                }
+        ).collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            return new ArrayList<>();
         }
         List<String> programIds = users.stream().map(ProgramUser::getProgramId).collect(Collectors.toList());
-        List<Program> programs = programDomainService.queryProgramByProgramIds(programIds);
+        List<ProgramPO> programPOS = programRepository.listByIds(programIds);
+        List<Program> programs = programPOS.stream().map(
+                programPO -> {
+                    Program program = applicationContext.getBean(Program.class);
+                    program.setId(String.valueOf(programPO.getId()));
+                    program.setName(programPO.getName());
+                    program.setLanguage(programPO.getLanguage());
+                    program.setSdk(programPO.getSdk());
+                    program.setAvatar(programPO.getAvatar());
+                    program.setDescription(programPO.getDescription());
+                    return program;
+                }
+        ).collect(Collectors.toList());
 
         // 查出项目的人
         for (Program program : programs) {
-            program.setRelations(programUserDomainService.getProgramUserByProgramId(Long.valueOf(program.getId())));
+            List<ProgramUserPO> list = programUserRepository.list(new LambdaQueryWrapper<ProgramUserPO>().eq(ProgramUserPO::getProgramId, program.getId()));
+            List<ProgramUser> collect = list.stream().map(
+                    programUserPO -> {
+                        ProgramUser programUser = applicationContext.getBean(ProgramUser.class);
+                        programUser.setId(programUserPO.getId());
+                        programUser.setUserId(String.valueOf(programUserPO.getUserId()));
+                        programUser.setProgramId(String.valueOf(programUserPO.getProgramId()));
+                        programUser.setRole(programUserPO.getRole());
+                        return programUser;
+                    }
+            ).collect(Collectors.toList());
+            program.setRelations(collect);
         }
 
         return programToProgramDTOMapping.sourceToTarget(programs);
@@ -108,8 +168,10 @@ public class ProgramApplication implements IProgramApplication {
 
     @Override
     public ExecutionInfoDTO execute(ExecuteCommand executeCommand) {
+        Program program = applicationContext.getBean(Program.class);
+        program.setId(executeCommand.getId());
         // 查询项目
-        Program program = programDomainService.queryById(executeCommand.getId());
+        program.render();
 
         // 项目写盘
         writePath(program);
@@ -119,11 +181,8 @@ public class ProgramApplication implements IProgramApplication {
 
         // 选择语言交给对应的代码执行器
         ProgrammingLanguage bean = applicationContext.getBean(program.getLanguage() + "ProgramingExecutor", ProgrammingLanguage.class);
-        if (bean != null) {
-            return bean.execute(program);
-        }
+        return bean.execute(program);
 
-        return null;
     }
 
     @Override
