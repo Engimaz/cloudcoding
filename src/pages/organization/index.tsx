@@ -1,12 +1,20 @@
-import { generateMockOrganizations } from "@/api/manager/mock.ts"
-import { Fragment, useState } from "react"
+import { useEffect, useState } from "react"
 import OrganizationCard from './organization-card.tsx'
 import { Organization, OrganizationVO } from "@/api/manager/types.ts"
 import { Button } from "primereact/button"
 import CreatePanel from "../setting/organization-manager/dialog-panel.tsx"
+import { getOrganizationList } from "@/api/manager/index.ts"
 
 export default function index() {
   const [data, setData] = useState<Array<OrganizationVO>>([])
+
+  useEffect(() => {
+    getOrganizationList(1, 10, "", "OrgPass").then(res => {
+      if (res.code >= 200) {
+        setData(res.result.list)
+      }
+    })
+  }, [])
 
   const [editRecord, setEditRecord] = useState<Organization>({
     id: "-1", name: "",

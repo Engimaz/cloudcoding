@@ -16,10 +16,11 @@ import { generateMockUsers } from '../../../api/auth/mock.ts';
 import { Avatar } from 'primereact/avatar';
 import { Project } from '@/api/project/types.ts';
 import Upload from '@/components/upload/index.tsx';
-import { ApiResponse } from '@/api/types.ts';
+import { ApiResponse, QueryListResult } from '@/api/types.ts';
 import { Resource } from '@/api/resource/types.ts';
 import { Dropdown } from 'primereact/dropdown';
 import { SelectItemOptionsType } from 'primereact/selectitem';
+import { listUser } from '@/api/auth/index.ts';
 
 const schema = z.object({
     name: z
@@ -83,7 +84,7 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
                     setValue("avatar", `${CLOUD_CODING_GATEWAY}/cloud-coding-resource/resource/${res.result.id}`)
 
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 if (files[0]) {
                     // 创建FileReader对象
                     const reader = new FileReader();
@@ -115,10 +116,11 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
         const [users, setUsers] = useState<Array<User>>([])
 
         useEffect(() => {
-            const _d = generateMockUsers(4)
-            console.log(_d)
-            setUsers(_d)
-            setSource(_d.map(u => ({ userId: u.id, role: {} } as ProjectUserAdater)))
+            listUser(1, 10, "").then((res: ApiResponse<QueryListResult<User>>) => {
+                const _d = res.result.list
+                setUsers(_d)
+                setSource(_d.map(u => ({ userId: u.id, role: {} } as ProjectUserAdater)))
+            })
         }, [])
 
         const sourceMemberTemplate = (pu: ProjectUserAdater) => {

@@ -17,6 +17,7 @@
     background-size: cover;
     background-position: center;
     transition: 1s;
+    box-shadow: 0 30px 50px #505050;
 }
 
 .item:nth-child(1),
@@ -40,15 +41,9 @@
 
 .item:nth-child(5) {
     left: calc(70% + 500px);
-
 }
 
 .item:nth-child(n+6) {
     left: calc(70% + 750px);
     opacity: 0;
 }
-
-.item {
-    box-shadow: 0 30px 50px #505050;
-}
-
