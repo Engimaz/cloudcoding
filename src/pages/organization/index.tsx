@@ -1,5 +1,5 @@
 import { generateMockOrganizations } from "@/api/manager/mock.ts"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import OrganizationCard from './organization-card.tsx'
 import { Organization, OrganizationVO } from "@/api/manager/types.ts"
 import { Button } from "primereact/button"
@@ -23,11 +23,14 @@ export default function index() {
   } as Organization)
   return (
 
-    <main className="flex flex-wrap justify-center items-center gap-2 w-full h-screen overflow-hidden relative">
-      {
-        data.map((item: OrganizationVO) => (<OrganizationCard key={item.id} data={item}></OrganizationCard>))
-      }
-      <div className=' absolute bottom-50 right-10'>
+    <main className="w-full h-screen flex flex-wrap justify-center items-center gap-2  overflow-hidden relative">
+      <section className="w-full h-screen flex flex-wrap justify-center items-center gap-2 ">
+        {
+          data.map((item: OrganizationVO) => (<OrganizationCard key={item.id} data={item}></OrganizationCard>))
+        }
+      </section>
+
+      <div className='absolute bottom-20 right-10'>
         <div className="flex flex-wrap justify-content-center gap-3 mb-4">
           <Button icon="iconfont icon-plus" rounded aria-label="Filter" onClick={() => setEditRecord({
             id: "new-organization",

@@ -47,6 +47,7 @@ export interface Position {
 export interface UserPosition {
   userId: string;
   position: string;
+  positionId: string;
 }
 
 export interface UserPositionVO {

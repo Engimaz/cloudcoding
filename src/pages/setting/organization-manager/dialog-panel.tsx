@@ -117,9 +117,8 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
             if (res.code >= 200) {
                 toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Message Content', life: 3000 });
                 setValue(name, `${CLOUD_CODING_GATEWAY}/cloud-coding-resource/resource/${res.result.id}`)
-
             }
-        }).catch((err) => {
+        }).catch(() => {
             if (files[0]) {
                 // 创建FileReader对象
                 const reader = new FileReader();
@@ -152,7 +151,6 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
     const [userTarget, setUserTarget] = useState<Array<UserPositionVO>>([]);
 
     useEffect(() => {
-        console.log(editRecord)
         queryGroupDictionaryByName("PositionStatus").then((res: ApiResponse<DictionaryGroup>) => {
             if (res.code >= 200) {
                 setPositionStatus(res.result.list)
@@ -179,13 +177,27 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
 
         listUser(1, 10, "").then((res: ApiResponse<QueryListResult<User>>) => {
             const _d = res.result.list
+
+            const _ud = res.result.list.filter(f => !(editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
+            const _td = res.result.list.filter(f => (editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
+
             setUsers(_d)
-            setUserSource(_d.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
+            setUserSource(_ud.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
+            setUserTarget(_td.map(u => ({
+                userId: u.id, position: {
+                    code: editRecord.userPositions.find(item => u.id == item.userId)?.position,
+                    name: editRecord.positions.find(
+                        item => item.id == editRecord.userPositions.find(item => u.id == item.userId)?.positionId
+                    )?.name
+                }
+            } as UserPositionVO)))
+
         })
 
     }, [])
 
 
+    // 初始化城市数据
     const initCity = async () => {
         const provinces = await axios.get("/json/provinces.json");
         const cities = await axios.get("/json/cities.json");
