@@ -53,7 +53,9 @@ const schema = z.object({
     })),
     userPositions: z.array(z.object({
         userId: z.string().nonempty({ message: "用户不能为空" }),
-        position: z.string().nonempty({ message: "职位不能为空" })
+        position: z.string().nonempty({ message: "职位不能为空" }),
+        positionId: z.string().nonempty({ message: "职位不能为空" }),
+
     }))
 });
 
@@ -324,7 +326,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                             }
                         })
                         console.log(_userTarget)
-                        const _userTargetValue = _userTarget.map(item => ({ userId: item.userId, position: item.position.code }))
+                        const _userTargetValue = _userTarget.map(item => ({ userId: item.userId, position: item.position.code, positionId: "-1" }))
                         setUserTarget(_userTarget)
                         setValue("userPositions", _userTargetValue)
                     }} options={getValues("positions").map(item => {
