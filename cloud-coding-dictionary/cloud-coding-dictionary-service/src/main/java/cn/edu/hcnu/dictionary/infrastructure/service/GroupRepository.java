@@ -12,5 +12,4 @@ public interface GroupRepository extends IService<GroupPO> {
 
     Page<Group> query(Integer page, Integer size, String keyword);
 
-    List<Group> listAll();
 }

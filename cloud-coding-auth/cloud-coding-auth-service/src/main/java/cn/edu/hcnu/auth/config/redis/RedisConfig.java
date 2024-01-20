@@ -21,6 +21,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.Arrays;
  */
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
+@Service("authRedisConfig")
 public class RedisConfig {
 	@Value("${spring.redis.host:127.0.0.1}")
 	private String host;

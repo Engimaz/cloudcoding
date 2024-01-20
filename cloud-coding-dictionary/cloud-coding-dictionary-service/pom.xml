@@ -39,13 +39,11 @@
             <groupId>cn.edu.hcnu.cloud-coding</groupId>
             <artifactId>cloud-coding-dictionary-rpc</artifactId>
             <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cn.edu.hcnu.cloud-coding</groupId>
             <artifactId>cloud-coding-id-domain</artifactId>
             <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
 
 

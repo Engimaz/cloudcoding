@@ -4,6 +4,7 @@ import cn.edu.hcnu.base.assembler.IMapping;
 import cn.edu.hcnu.manager.domain.service.organization.Organization;
 import cn.edu.hcnu.manager.model.command.UpdateOrganizationCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,9 +33,12 @@ public class UpdateOrganizationCommandToOrganizationMapping implements IMapping<
     @Autowired
     private FeatureToDTOMapping featureToDTOMapping;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Override
     public Organization sourceToTarget(UpdateOrganizationCommand var1) {
-        Organization organization = new Organization();
+        Organization organization = applicationContext.getBean(Organization.class);
         organization.setId(var1.getId());
         organization.setName(var1.getName());
         organization.setStatus(var1.getStatus());

@@ -16,11 +16,15 @@ import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +35,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Scope("prototype")
 public class Organization {
     private Long id;
@@ -51,27 +54,28 @@ public class Organization {
     // 组织的用户关系
     private List<UserPosition> userPositions;
 
-    @Autowired
-    private OrganizationRepository organizationRepository;
 
-    @Autowired
-    private PositionRepository positionRepository;
-    @Autowired
-    private FeatureRepository featureRepository;
-    @Autowired
-    private UserPositionRepository userPositionRepository;
+    private final OrganizationRepository organizationRepository;
 
-    @Autowired
-    private FeatureOrganizationRepository featureOrganizationRepository;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final PositionRepository positionRepository;
+
+    private final FeatureRepository featureRepository;
+
+    private final UserPositionRepository userPositionRepository;
+
+
+    private final FeatureOrganizationRepository featureOrganizationRepository;
+
+
+    private final ApplicationContext applicationContext;
+
+    private final OrganizationPublisher organizationPublisher;
 
     @DubboReference(group = "dictionary")
+    @Lazy
     private DictionaryService dictionaryService;
 
-    @Autowired
-    private OrganizationPublisher organizationPublisher;
 
     public void save() {
         OrganizationPO p = new OrganizationPO();
@@ -120,6 +124,8 @@ public class Organization {
         this.setType(dictionaryService.getDictionaryById(byId.getType()).getValue());
         LambdaQueryWrapper<PositionPO> eq = new LambdaQueryWrapper<PositionPO>().eq(PositionPO::getOrganizationId, this.id);
         List<PositionPO> list = positionRepository.list(eq);
+        Map<Long, String> names = new ConcurrentHashMap<>();
+
         List<Position> positionList = list.stream().map(item -> {
             Position bean = applicationContext.getBean(Position.class);
             bean.setOrganizationId(item.getOrganizationId());
@@ -127,30 +133,37 @@ public class Organization {
             bean.setName(item.getName());
             bean.setStatus(dictionaryService.getDictionaryById(item.getStatus()).getValue());
             bean.setValue(item.getValue());
+            names.put(item.getId(), item.getValue());
+
             return bean;
         }).collect(Collectors.toList());
         this.setPositions(positionList);
         LambdaQueryWrapper<FeatureOrganizationPO> featureOrganizationPOLambdaQueryWrapper = new LambdaQueryWrapper<FeatureOrganizationPO>().eq(FeatureOrganizationPO::getOrganizationId, this.id);
         List<FeatureOrganizationPO> list1 = featureOrganizationRepository.list(featureOrganizationPOLambdaQueryWrapper);
         List<Long> featureIds = list1.stream().map(FeatureOrganizationPO::getFeatureId).collect(Collectors.toList());
+
+
         List<Feature> featureList = featureRepository.listByIds(featureIds).stream().map(item -> {
             Feature bean = applicationContext.getBean(Feature.class);
             bean.setId(item.getId());
+            bean.setName(item.getName());
             bean.setDescription(item.getDescription());
             bean.setStatus(dictionaryService.getDictionaryById(item.getStatus()).getValue());
             bean.setValue(item.getValue());
+            bean.setUrls(new ArrayList<>());
             return bean;
         }).collect(Collectors.toList());
 
         this.setFeatures(featureList);
         List<Long> positionIds = positionList.stream().map(Position::getId).collect(Collectors.toList());
-        LambdaQueryWrapper<UserPositionPO> in = new LambdaQueryWrapper<UserPositionPO>().in(UserPositionPO::getPositionId, positionIds);
+        LambdaQueryWrapper<UserPositionPO> in = new LambdaQueryWrapper<UserPositionPO>().in(!positionIds.isEmpty(), UserPositionPO::getPositionId, positionIds);
         List<UserPositionPO> userPositionPOS = userPositionRepository.list(in);
         List<UserPosition> userPositionList = userPositionPOS.stream().map(item -> {
             UserPosition bean = applicationContext.getBean(UserPosition.class);
             bean.setId(item.getId());
             bean.setUserId(item.getUserId());
             bean.setPositionId(item.getPositionId());
+            bean.setPosition(names.get(item.getPositionId()));
             return bean;
         }).collect(Collectors.toList());
         this.setUserPositions(userPositionList);

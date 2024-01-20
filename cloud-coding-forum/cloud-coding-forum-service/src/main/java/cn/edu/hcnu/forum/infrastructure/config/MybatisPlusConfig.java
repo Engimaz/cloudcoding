@@ -5,13 +5,15 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * @description:
  * @author: Administrator
  * @time: 2023/8/13 22:42
  */
-@Configuration
+@Configuration("forumMybatisPlusConfig")
+@Primary
 public class MybatisPlusConfig {
 
     /**

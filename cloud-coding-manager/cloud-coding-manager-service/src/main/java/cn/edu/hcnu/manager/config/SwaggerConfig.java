@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
 @Slf4j
-@Configuration
+@Configuration("managerSwaggerConfig")
 public class SwaggerConfig {
 
     @Bean

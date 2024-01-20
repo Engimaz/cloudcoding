@@ -9,8 +9,10 @@ import cn.edu.hcnu.manager.model.po.FeaturePO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +24,7 @@ import java.util.List;
  * @time: 2023/9/12 13:07
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 @Scope("prototype")
 public class Feature {
@@ -34,17 +35,13 @@ public class Feature {
     private String description;
     private List<String> urls;
 
-    @Autowired
-    private FeatureUrlFactory featureUrlFactory;
-    @Autowired
-    private FeaturePublisher featurePublisher;
-    @Autowired
-    private FeatureRepository featureRepository;
+    private final FeatureUrlFactory featureUrlFactory;
+    private final FeaturePublisher featurePublisher;
+    private final FeatureRepository featureRepository;
 
-    @Autowired
-    private FeatureOrganizationRepository featureOrganizationRepository;
+    private final FeatureOrganizationRepository featureOrganizationRepository;
 
-    @DubboReference(group = "dictionary")
+    @DubboReference(group = "dictionary")    @Lazy
     private DictionaryService dictionaryService;
 
     public void save() {
@@ -74,7 +71,7 @@ public class Feature {
     }
 
 
-    public void update( ) {
+    public void update() {
         FeaturePO po = new FeaturePO();
         po.setStatus(dictionaryService.getDictionaryByValue(this.status).getId());
         po.setName(this.name);

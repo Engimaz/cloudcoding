@@ -208,6 +208,31 @@ public class OrganizationApplication implements IOrganizationApplication {
         bean.setAddress(command.getAddress());
         bean.setLocation(command.getLocation());
         bean.setType(command.getType());
+        Map<String, Long> positionIds = new ConcurrentHashMap<>();
+        bean.setPositions(command.getPositions().stream().map(item -> {
+            Long s = Long.valueOf(idGenerator.nextID());
+            Position position = applicationContext.getBean(Position.class);
+            position.setOrganizationId(bean.getId());
+            position.setName(item.getName());
+            position.setValue(item.getValue());
+            position.setStatus(item.getStatus());
+            position.setId(s);
+            positionIds.put(item.getValue(), s);
+            return position;
+        }).collect(Collectors.toList()));
+        bean.setUserPositions(command.getUserPositions().stream().map(item -> {
+            UserPosition userPosition = applicationContext.getBean(UserPosition.class);
+            userPosition.setUserId(Long.valueOf(item.getUserId()));
+            userPosition.setPosition(item.getPosition());
+            userPosition.setPositionId(positionIds.get(item.getPosition()));
+            userPosition.setId(Long.valueOf(idGenerator.nextID()));
+            return userPosition;
+        }).collect(Collectors.toList()));
+        bean.setFeatures(command.getFeatures().stream().map(item -> {
+            Feature feature = applicationContext.getBean(Feature.class);
+            feature.setId(Long.valueOf(item.getId()));
+            return feature;
+        }).collect(Collectors.toList()));
         bean.update();
         return organizationToOrganizationDTOMapping.sourceToTarget(bean);
 
@@ -217,7 +242,6 @@ public class OrganizationApplication implements IOrganizationApplication {
     private DictionaryService dictionaryService;
 
     @Override
-    @GetMapping("list")
     public PageDTO<OrganizationDTO, CommonQuery> list(CommonQuery commonQuery, String status) {
         Long stateId = null;
         if (status != null) {

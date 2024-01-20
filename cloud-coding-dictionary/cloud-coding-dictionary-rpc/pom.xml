@@ -9,13 +9,13 @@
         <version>1.0.0</version>
     </parent>
     <artifactId>cloud-coding-dictionary-rpc</artifactId>
+    <packaging>jar</packaging>
     <dependencies>
 
         <dependency>
             <groupId>cn.edu.hcnu.cloud-coding</groupId>
             <artifactId>cloud-coding-base</artifactId>
             <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

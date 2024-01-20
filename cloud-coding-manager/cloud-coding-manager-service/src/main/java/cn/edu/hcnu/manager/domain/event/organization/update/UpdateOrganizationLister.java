@@ -1,5 +1,6 @@
 package cn.edu.hcnu.manager.domain.event.organization.update;
 
+import cn.edu.hcnu.dictionary.rpc.DictionaryService;
 import cn.edu.hcnu.manager.infrastructure.repository.FeatureOrganizationRepository;
 import cn.edu.hcnu.manager.infrastructure.repository.UserPositionRepository;
 import cn.edu.hcnu.manager.model.po.FeatureOrganizationPO;
@@ -9,6 +10,7 @@ import cn.edu.hcnu.manager.domain.service.position.Position;
 import cn.edu.hcnu.manager.infrastructure.repository.PositionRepository;
 import cn.edu.hcnu.manager.model.po.UserPositionPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
@@ -40,6 +42,8 @@ public class UpdateOrganizationLister {
     @Autowired
     @Qualifier("snowflake")
     private IDGenerator idGenerator;
+    @DubboReference(group = "dictionary")
+    private DictionaryService dictionaryService;
 
     @EventListener
     public void handleCustomEvent(UpdateOrganizationEvent event) {
@@ -62,7 +66,7 @@ public class UpdateOrganizationLister {
                     List<Long> positionIds = positions.stream()
                             .map(PositionPO::getId)
                             .collect(Collectors.toList());
-                    userPositionRepository.remove(new LambdaQueryWrapper<UserPositionPO>().in(UserPositionPO::getPositionId, positionIds));
+                    userPositionRepository.remove(new LambdaQueryWrapper<UserPositionPO>().in(!positionIds.isEmpty(), UserPositionPO::getPositionId, positionIds));
                 });
         List<PositionPO> newPoData = newPosition.stream().map(item -> {
             PositionPO positionPO = new PositionPO();
@@ -70,7 +74,7 @@ public class UpdateOrganizationLister {
             positionPO.setName(item.getName());
             positionPO.setValue(item.getValue());
             positionPO.setOrganizationId(item.getOrganizationId());
-            positionPO.setStatus(Long.valueOf(item.getStatus()));
+            positionPO.setStatus(dictionaryService.getDictionaryByValue(item.getStatus()).getId());
             return positionPO;
         }).collect(Collectors.toList());
 

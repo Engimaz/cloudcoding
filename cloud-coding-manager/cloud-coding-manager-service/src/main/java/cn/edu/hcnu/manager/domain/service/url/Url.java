@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,7 @@ public class Url {
     private final UrlRepository urlRepository;
 
     @DubboReference(group = "dictionary")
+    @Lazy
     private DictionaryService dictionaryService;
 
     public void save() {

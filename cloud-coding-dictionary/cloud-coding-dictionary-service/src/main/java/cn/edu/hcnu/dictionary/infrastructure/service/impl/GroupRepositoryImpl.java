@@ -45,19 +45,6 @@ public class GroupRepositoryImpl extends ServiceImpl<GroupMapper, GroupPO> imple
     }
 
 
-
-
-    /**
-     * 查询所有组
-     *
-     * @return {@link List}<{@link Group}>
-     */
-    @Override
-    public List<Group> listAll() {
-        List<GroupPO> list = this.list();
-        return getGroups(list);
-    }
-
     @NotNull
     private List<Group> getGroups(List<GroupPO> list) {
         return list.stream().map(item -> {
