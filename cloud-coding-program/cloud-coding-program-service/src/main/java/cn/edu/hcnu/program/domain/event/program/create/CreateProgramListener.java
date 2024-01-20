@@ -1,10 +1,7 @@
 package cn.edu.hcnu.program.domain.event.program.create;
 
 import cn.edu.hcnu.program.domain.service.folder.Folder;
-import cn.edu.hcnu.program.domain.service.folder.FolderDomainService;
-import cn.edu.hcnu.program.domain.service.folder.factory.FolderFactory;
 import cn.edu.hcnu.program.domain.service.relation.ProgramUser;
-import cn.edu.hcnu.program.model.po.FolderPO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -17,10 +14,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateProgramListener {
 
-
-    private final FolderDomainService folderDomainService;
-
-    private final FolderFactory folderFactory;
 
     private final ApplicationContext applicationContext;
 
@@ -45,14 +38,14 @@ public class CreateProgramListener {
             log.info("{} 项目关系添加成功 ", event.getProgram().getName());
         }
         // 为项目新建文件夹
-        FolderPO folderPo = folderFactory.createFolderPo(new Folder());
-        folderPo.setName(event.getProgram().getName());
-        folderPo.setParentId(folderPo.getId());
-        folderPo.setProgramId(Long.valueOf(event.getProgram().getId()));
-        Folder newProgramFolder = folderDomainService.save(folderFactory.createFolder(folderPo));
-        if (newProgramFolder != null) {
-            log.info("{} 项目创建文件夹成功 ", event.getProgram().getName());
-        }
+        Folder bean = applicationContext.getBean(Folder.class);
+
+        bean.setName(event.getProgram().getName());
+        bean.setParentId(event.getProgram().getId());
+        bean.setProgramId(event.getProgram().getId());
+        bean.setId(event.getProgram().getId());
+        bean.save();
+
         // 根据模板添加文件
     }
 }

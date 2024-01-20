@@ -4,22 +4,17 @@ import cn.edu.hcnu.program.domain.config.DockerConfig;
 import cn.edu.hcnu.program.model.dto.ExecutionInfoDTO;
 import cn.edu.hcnu.program.model.pojo.ExecutionInfo;
 import cn.edu.hcnu.program.util.ExecuteCommand;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * @description:
- * @author: Administrator
- * @time: 2023/10/15 13:53
- */
 
 @Component
 @Slf4j
-public class DockerDomainService {
+@RequiredArgsConstructor
+public class Docker {
 
-    @Autowired
-    private DockerConfig dockerConfig;
+    private final DockerConfig dockerConfig;
 
     /**
      * 创建容器
@@ -50,7 +45,7 @@ public class DockerDomainService {
         return ExecuteCommand.exec(command);
     }
 
-    public  ExecutionInfoDTO stopContainer(String containerName){
+    public ExecutionInfoDTO stopContainer(String containerName) {
         String[] command = dockerConfig.getStopContainer().replace("@containerName@", containerName).split(",");
         showCommand(command);
         return ExecuteCommand.exec(command);

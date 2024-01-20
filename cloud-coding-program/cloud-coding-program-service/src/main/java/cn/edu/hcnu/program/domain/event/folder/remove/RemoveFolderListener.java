@@ -1,6 +1,8 @@
 package cn.edu.hcnu.program.domain.event.folder.remove;
 
-import cn.edu.hcnu.program.domain.service.file.FileDomainService;
+import cn.edu.hcnu.program.infrastructure.repository.FileRepository;
+import cn.edu.hcnu.program.model.po.FilePO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,10 @@ public class RemoveFolderListener {
 
 
     @Autowired
-    private FileDomainService fileDomainService;
+    private FileRepository fileRepository;
 
     @EventListener
     public void handleCustomEvent(RemoveFolderEvent event) {
-        fileDomainService.removeByFolderId(String.valueOf(event.getFolderId()));
+        fileRepository.remove(new LambdaQueryWrapper<FilePO>().eq(FilePO::getFolderId, event.getFolderId()));
     }
 }

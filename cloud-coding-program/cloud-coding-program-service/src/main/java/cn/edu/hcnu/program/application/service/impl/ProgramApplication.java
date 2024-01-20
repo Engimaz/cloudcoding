@@ -5,13 +5,13 @@ import cn.edu.hcnu.program.application.assembler.ProgramToProgramDTOMapping;
 import cn.edu.hcnu.program.application.service.IProgramApplication;
 import cn.edu.hcnu.program.domain.config.CodeStoreConfig;
 import cn.edu.hcnu.program.domain.service.code.ProgrammingLanguage;
-import cn.edu.hcnu.program.domain.service.docker.DockerDomainService;
+import cn.edu.hcnu.program.domain.service.docker.Docker;
 import cn.edu.hcnu.program.domain.service.file.File;
-import cn.edu.hcnu.program.domain.service.file.FileDomainService;
 import cn.edu.hcnu.program.domain.service.folder.Folder;
-import cn.edu.hcnu.program.domain.service.folder.FolderDomainService;
 import cn.edu.hcnu.program.domain.service.program.Program;
 import cn.edu.hcnu.program.domain.service.relation.ProgramUser;
+import cn.edu.hcnu.program.infrastructure.repository.FileRepository;
+import cn.edu.hcnu.program.infrastructure.repository.FolderRepository;
 import cn.edu.hcnu.program.infrastructure.repository.ProgramRepository;
 import cn.edu.hcnu.program.infrastructure.repository.ProgramUserRepository;
 import cn.edu.hcnu.program.model.command.AddProgramCommand;
@@ -19,7 +19,8 @@ import cn.edu.hcnu.program.model.command.ExecuteCommand;
 import cn.edu.hcnu.program.model.command.UpdateProgramCommand;
 import cn.edu.hcnu.program.model.dto.ExecutionInfoDTO;
 import cn.edu.hcnu.program.model.dto.ProgramDTO;
-import cn.edu.hcnu.program.model.dto.ProgramUserDTO;
+import cn.edu.hcnu.program.model.po.FilePO;
+import cn.edu.hcnu.program.model.po.FolderPO;
 import cn.edu.hcnu.program.model.po.ProgramPO;
 import cn.edu.hcnu.program.model.po.ProgramUserPO;
 import cn.edu.hcnu.program.util.FileUtil;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component("programApplicationImpl")
 @RequiredArgsConstructor
@@ -44,13 +44,11 @@ public class ProgramApplication implements IProgramApplication {
     private final ProgramToProgramDTOMapping programToProgramDTOMapping;
 
 
-    private final FolderDomainService folderDomainService;
-
-    private final FileDomainService fileDomainService;
+    private final FolderRepository folderRepository;
 
     private final CodeStoreConfig codeStoreConfig;
 
-    private final DockerDomainService dockerDomainService;
+    private final Docker docker;
 
     private final ApplicationContext applicationContext;
 
@@ -187,13 +185,24 @@ public class ProgramApplication implements IProgramApplication {
 
     @Override
     public ExecutionInfoDTO stopContainer(String containerName) {
-        return dockerDomainService.stopContainer(containerName);
+        return docker.stopContainer(containerName);
     }
+
+
 
     private void writePath(Program program) {
         // 查询项目文件夹
-        List<Folder> folders = folderDomainService.queryAllFolderByProgramId(program.getId());
-
+        List<FolderPO> list = folderRepository.list(new LambdaQueryWrapper<FolderPO>().eq(FolderPO::getProgramId, program.getId()));
+        List<Folder> folders = list.stream().map(
+                folderPO -> {
+                    Folder folder = applicationContext.getBean(Folder.class);
+                    folder.setId(String.valueOf(folderPO.getId()));
+                    folder.setParentId(String.valueOf(folderPO.getParentId()));
+                    folder.setProgramId(String.valueOf(folderPO.getProgramId()));
+                    folder.setName(folderPO.getName());
+                    return folder;
+                }
+        ).collect(Collectors.toList());
         // 查找根id
         List<Folder> rootId = folders.stream().filter(f -> Objects.equals(f.getId(), f.getParentId())).collect(Collectors.toList());
 
@@ -202,11 +211,24 @@ public class ProgramApplication implements IProgramApplication {
 
     }
 
+    @Autowired
+    private FileRepository fileRepository;
+
     private void writePath(List<Folder> folders, List<Folder> ids, String path) {
 
         for (Folder s : ids) {
             // 他的文件直接写进去
-            List<File> files = fileDomainService.queryByFolderId(s.getId());
+            List<FilePO> list = fileRepository.list(new LambdaQueryWrapper<FilePO>().eq(FilePO::getFolderId, s.getId()));
+            List<File> files = list.stream().map(
+                    filePO -> {
+                        File file = applicationContext.getBean(File.class);
+                        file.setId(String.valueOf(filePO.getId()));
+                        file.setName(filePO.getName());
+                        file.setContent(filePO.getContent());
+                        file.setFolderId(String.valueOf(filePO.getFolderId()));
+                        return file;
+                    }
+            ).collect(Collectors.toList());
             for (File file : files) {
                 String fileName = path + "/" + s.getName() + "/" + file.getName();
                 FileUtil.saveStringToFile(fileName, file.getContent());

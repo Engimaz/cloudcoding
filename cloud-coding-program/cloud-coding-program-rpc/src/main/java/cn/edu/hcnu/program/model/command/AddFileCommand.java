@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class AddFileCommand {
     private String name;
     private String folderId;
+    private String content;
 }
