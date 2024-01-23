@@ -11,8 +11,6 @@ import { InputText } from 'primereact/inputtext';
 import { uploadResource } from '@/api/resource/index.ts';
 import { Resource } from '@/api/resource/types.ts';
 import { CLOUD_CODING_GATEWAY } from '@/config/base-url.ts';
-import { useAppSelector } from '@/hooks/useStore.ts';
-import { RootState } from '@/store/index.ts';
 import { Toast } from 'primereact/toast';
 import { RadioButton } from 'primereact/radiobutton';
 
@@ -22,7 +20,7 @@ interface PropsType {
     defaultValues?: FormType
 }
 const defaultProps: PropsType = {
-    onNext: (data: FormType) => { },
+    onNext: (data: FormType) => { console.log(data); },
     defaultValues: {
         nickname: "",
         avatar: "",
@@ -75,7 +73,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
                     setValue("avatar", `${CLOUD_CODING_GATEWAY}/cloud-coding-resource/resource/${res.result.id}`)
 
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 if (files[0]) {
                     // 创建FileReader对象
                     const reader = new FileReader();

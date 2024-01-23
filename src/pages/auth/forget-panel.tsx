@@ -6,9 +6,11 @@ import { Steps } from 'primereact/steps';
 import { Button } from 'primereact/button';
 
 import Step2, { FormType as Step2FormType } from './create-step2.tsx';
+import { FormType as Step1FormType } from './create-step1.tsx';
+
 import Step3 from './create-step3.tsx';
 
-type FormType = Step2FormType
+type FormType = Step2FormType & Step1FormType
 
 
 const ForgetPanel: React.FC<{ open: boolean, setOpen: (v: boolean) => void }> = ({ open, setOpen }) => {

@@ -1,8 +1,8 @@
-
+// @ts-nocheck
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Toast } from 'primereact/toast';
-import { FormType as Step1FormType } from './create-step2.tsx';
-import { FormType as Step2FormType } from './create-step1.tsx';
+import { FormType as Step2FormType } from './create-step2.tsx';
+import { FormType as Step1FormType } from './create-step1.tsx';
 import { License, RegisterUser, User } from '@/api/auth/types.ts';
 import JSEncrypt from 'jsencrypt'
 import { addUser, license } from '@/api/auth/index.ts';

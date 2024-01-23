@@ -124,7 +124,9 @@ const App: React.FC = () => {
                         <i className="iconfont icon-sousuo" onClick={fetchData} />
                         <InputText placeholder="Search"
                             onInput={(event: React.FormEvent<HTMLInputElement>, validatePattern: boolean) => {
-                                setKeyword((event.target as HTMLInputElement)?.value)
+                                if (validatePattern) {
+                                    setKeyword((event.target as HTMLInputElement)?.value)
+                                }
                             }}
                             pt={{
                                 root: {

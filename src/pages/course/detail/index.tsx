@@ -53,8 +53,8 @@ const defaultProps: PropsType = {
     },
 };
 
-const Components = forwardRef<{}, PropsType>((props = defaultProps, ref) => {
-    const [data, setData] = useState<Course>(generateMockCourse)
+const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
+    const [data] = useState<Course>(generateMockCourse)
     const [menu, setMenu] = useState<Array<MenuItem>>([])
     const [openKeys, setOpenKeys] = useState<Array<string>>([])
     const handleClick = (p: MenuItem) => {
@@ -87,7 +87,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps, ref) => {
         return result;
     };
 
-    const { control, handleSubmit, setValue, getValues, formState } = useForm({
+    const { control, setValue, getValues, formState } = useForm({
         defaultValues: props.defaultValues,
         resolver: zodResolver(schema)
     });
@@ -102,7 +102,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps, ref) => {
                 setValue("url", `${CLOUD_CODING_GATEWAY}/cloud-coding-resource/resource/${res.result.id}`)
 
             }
-        }).catch((err) => {
+        }).catch(() => {
             if (files[0]) {
                 // 创建FileReader对象
                 const reader = new FileReader();
@@ -170,7 +170,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps, ref) => {
     const [color, setColor] = useState<string>('');
     const confirm1 = (event: React.MouseEvent) => {
         confirmPopup({
-            target: event.currentTarget,
+            target: event.target as HTMLElement,
             message: <div>
                 <InputText defaultValue={tagValue} onChange={(e) => setTagValue(e.target.value)} />  <ColorPicker value={color} onChange={(e: ColorPickerChangeEvent) => setColor(e.value + '')} />
             </div>,
@@ -282,7 +282,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps, ref) => {
                                 <main className="flex flex-col gap-2 justify-between h-full w-full" >
                                     <div className=" bg-[rgb(245,245,245)] rounded-lg flex flex-col px-3 py-1 items-center w-full ">
                                         <Controller
-                                            name="title"
+                                            name="name"
                                             control={control}
                                             render={({ field, fieldState }) => (
                                                 <>

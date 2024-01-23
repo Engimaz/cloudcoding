@@ -13,7 +13,7 @@ import Reply from './reply.tsx'
 
 export default function SortingDemo() {
     // 评论数据
-    const [data, setData] = useState<Array<Comment>>(new Array(10).fill(generateFakeComment(1)));
+    const [data] = useState<Array<Comment>>(new Array(10).fill(generateFakeComment(1)));
 
 
     const userCeneterData = useAppSelector((state: RootState) => state.userCenterSlice.data)

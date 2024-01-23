@@ -33,7 +33,7 @@ interface PropsType {
 }
 
 const defaultProps: PropsType = {
-    onNext: (data: FormType) => { },
+    onNext: (data: FormType) => { console.log(data); },
     defaultValues: {
         password: "",
         repassword: "",

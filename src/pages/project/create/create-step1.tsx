@@ -12,7 +12,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
 import { Toast } from 'primereact/toast';
-import { generateMockUsers } from '../../../api/auth/mock.ts';
 import { Avatar } from 'primereact/avatar';
 import { Project } from '@/api/project/types.ts';
 import Upload from '@/components/upload/index.tsx';
@@ -47,7 +46,7 @@ interface PropsType {
 }
 
 const defaultProps: PropsType = {
-    onNext: (data: FormType) => { },
+    onNext: (data: FormType) => { console.log(data); },
     defaultValues: {
         name: '',
         description: '',

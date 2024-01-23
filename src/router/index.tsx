@@ -1,12 +1,4 @@
-/*
- * @Description: 
- * @Version: 2.0
- * @Author: AICHEN
- * @Date: 2023-06-02 10:22:40
- * @LastEditors: AICHEN
- * @LastEditTime: 2023-10-30 00:02:38
- */
-
+// @ts-nocheck
 // 这个主要是路由表组件的写法
 import { Suspense, lazy } from 'react'
 

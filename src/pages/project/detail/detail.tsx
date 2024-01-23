@@ -7,11 +7,10 @@ import PanelResizeHandle from '@/components/resize-line/index.tsx'
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore.ts";
 import { RootState } from "@/store/index.ts";
 import Info from "./info.tsx";
-import { editor } from 'monaco-editor';
 import { saveFile, updateFileAjax } from "@/features/program/programSlice.ts";
 import Console from "./console.tsx";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 export default function detail() {
     const openfile = useAppSelector((state: RootState) => state.programSlice.openfile)
     const dispatch = useAppDispatch()
@@ -48,7 +47,7 @@ export default function detail() {
                             <Info />
                         </section>
                         <section className={openfile.id != '' ? 'h-full' : 'hidden'}>
-                            <Editor defaultValue={openfile.content} key={openfile.id} onValueChange={(str: string | undefined, event: editor.IModelContentChangedEvent) => handleValueChange(str)} onCtrls={handleCtrls} />
+                            <Editor defaultValue={openfile.content} key={openfile.id} onValueChange={(str: string | undefined) => handleValueChange(str)} onCtrls={handleCtrls} />
                         </section>
                     </Panel>
                     <PanelResizeHandle />

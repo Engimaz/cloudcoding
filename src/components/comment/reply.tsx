@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import { Mention, MentionSearchEvent } from 'primereact/mention';
-import { User, generateMockUsers } from "@/api/auth/mock.ts";
+import { Mention } from 'primereact/mention';
+import { User } from "@/api/auth/types.ts";
 
 const Reply: React.FC<{ width?: number }> = ({ width }) => {
     const [value, setValue] = useState<string>('');
@@ -9,8 +9,8 @@ const Reply: React.FC<{ width?: number }> = ({ width }) => {
 
 
 
-    const onSearch = (event: MentionSearchEvent) => {
-        const user = generateMockUsers(10)
+    const onSearch = () => {
+        const user: Array<User> = []
         setSuggestions(user);
     }
 
@@ -30,7 +30,7 @@ const Reply: React.FC<{ width?: number }> = ({ width }) => {
 
     return (
         <div className="card flex justify-start w-full items-center">
-            <Mention pt={{ input: { className: width ? `!w-[${width}px]` : "!w-full" } }} value={value} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)} suggestions={suggestions} onSearch={onSearch} field="nickname"
+            <Mention pt={{ input: { className: width ? `!w-[${width}px]` : "!w-full" } }} value={value} onChange={(e: React.FormEvent<HTMLInputElement>) => setValue(e.currentTarget.value)} suggestions={suggestions} onSearch={onSearch} field="nickname"
                 placeholder="支持@输入" rows={5} cols={40} itemTemplate={itemTemplate} />
         </div>
     )

@@ -3,8 +3,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
 import { RootState } from '@/store/index.ts';
 import { File } from '@/api/file/types.ts';
 import { open, remove } from '@/features/program/programSlice.ts';
-import { MenuItem } from 'primereact/menuitem';
-import idGenerate from '@/features/id-generate/index.ts';
 import Nav from '@/components/tab/index.tsx'
 import { TabItem } from '@/components/tab/types.js';
 
@@ -16,7 +14,6 @@ const FileNav: React.FC = () => {
     const [items, setItems] = useState<Array<NavItem>>([]);
 
     const dispatch = useAppDispatch();
-    const [key, setKey] = useState<string>();
     const historyfile = useAppSelector((state: RootState) => state.programSlice.historyfile)
     const openfile = useAppSelector((state: RootState) => state.programSlice.openfile)
 
@@ -29,13 +26,7 @@ const FileNav: React.FC = () => {
             }
         })
         setItems(_data)
-        setKey(idGenerate())
     }, [historyfile])
-
-
-
-
-
 
 
     return (

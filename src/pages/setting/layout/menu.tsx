@@ -1,6 +1,6 @@
 import CollapsibleMenu from '@/components/collapsible-menu/index.tsx';
 import type { MenuItem } from '@/components/collapsible-menu/types.d.ts';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 

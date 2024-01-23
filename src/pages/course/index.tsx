@@ -4,7 +4,7 @@ import { useState } from "react"
 import CourseCard from './course-card.tsx'
 
 export default function index() {
-    const [data, setData] = useState<Array<Course>>(generateMockCourses(10))
+    const [data] = useState<Array<Course>>(generateMockCourses(10))
     return (
 
         <main className="flex flex-wrap justify-center items-center gap-2">

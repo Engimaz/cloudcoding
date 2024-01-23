@@ -1,4 +1,4 @@
-import { Feature, Url, UrlVO } from '@/api/manager/types.ts';
+import { Feature, UrlVO } from '@/api/manager/types.ts';
 import React, { useEffect, useState } from 'react'
 import { Dialog } from 'primereact/dialog';
 import { Controller, useForm } from 'react-hook-form';
@@ -10,7 +10,7 @@ import { classNames } from 'primereact/utils';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { getAllUrl, getUrlList, insertFeature, insertUrl, updateFeature, updateUrl } from '@/api/manager/index.ts';
+import { getAllUrl, insertFeature, updateFeature } from '@/api/manager/index.ts';
 import { Dropdown } from 'primereact/dropdown';
 import { Dictionary, DictionaryGroup } from '@/api/dictionary/types.ts';
 import { ApiResponse } from '@/api/types.ts';

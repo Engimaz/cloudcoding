@@ -17,7 +17,7 @@ import ForgetPanel from "./forget-panel.tsx";
 
 
 export default function login() {
-    const [search, setsearch] = useSearchParams()
+    const [search] = useSearchParams()
     const next: string = search.get('redirect') != null ? search.get('redirect')! : "/index"
     const navigate = useNavigate()
 

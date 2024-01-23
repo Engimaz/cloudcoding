@@ -16,7 +16,7 @@ interface PropsType {
     defaultValues?: FormType
 }
 const defaultProps: PropsType = {
-    onNext: (data: FormType) => { },
+    onNext: (data: FormType) => { console.log(data); },
     defaultValues: {
         language: "",
         sdk: "",
@@ -42,7 +42,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
             }
         }));
 
-        const { control, handleSubmit, formState, getValues } = useForm({
+        const { control, handleSubmit, formState } = useForm({
             defaultValues: props.defaultValues,
             resolver: zodResolver(schema)
         });

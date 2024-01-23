@@ -21,7 +21,7 @@ interface IEditorProps {
     defaultValue?: string;
     beforeMount?: (monaco: Monaco) => void;
     onMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
-    onValueChange?: (_value: string | undefined, event: editor.IModelContentChangedEvent) => void;
+    onValueChange?: (_value: string | undefined) => void;
     onCtrls?: () => void
 }
 
@@ -42,7 +42,8 @@ export default (props: IEditorProps) => {
     const { run } = useDebounceFn(
         (_value: string | undefined, event: editor.IModelContentChangedEvent) => {
             if (props.onValueChange) {
-                props.onValueChange(_value, event)
+                console.log(event);
+                props.onValueChange(_value)
             }
         },
         {

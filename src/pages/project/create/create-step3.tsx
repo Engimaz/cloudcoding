@@ -1,9 +1,9 @@
 
-import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { ProgressBar } from 'primereact/progressbar';
+import { useState, useRef, useImperativeHandle, forwardRef } from 'react';
+
 import { Toast } from 'primereact/toast';
-import Step1, { FormType as Step1FormType } from './create-step1.tsx';
-import Step2, { FormType as Step2FormType } from './create-step2.tsx';
+import { FormType as Step1FormType } from './create-step1.tsx';
+import { FormType as Step2FormType } from './create-step2.tsx';
 import { Project } from '@/api/project/types.ts';
 import { crateProject } from '@/api/project/index.ts';
 import { ApiResponse } from '@/api/types.ts';
