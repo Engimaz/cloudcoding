@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.edu.hcnu.cloud-coding</groupId>
+        <groupId>cc.cloudcoding</groupId>
         <artifactId>cloud-coding-comment</artifactId>
         <version>1.0.0</version>
     </parent>
@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.edu.hcnu.cloud-coding</groupId>
+            <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-comment-rpc</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
@@ -42,13 +42,13 @@
             <artifactId>spring-cloud-starter-dubbo</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.edu.hcnu.cloud-coding</groupId>
+            <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-auth-rpc</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>cn.edu.hcnu.cloud-coding</groupId>
+            <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-id-domain</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>

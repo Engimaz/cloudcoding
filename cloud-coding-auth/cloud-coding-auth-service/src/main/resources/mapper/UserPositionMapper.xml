@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.edu.hcnu.auth.infrastructure.mapper.UserPositionMapper">
+<mapper namespace="cc.cloudcoding.auth.infrastructure.mapper.UserPositionMapper">
 
-    <select id="selectUserByPositionId" resultType="cn.edu.hcnu.auth.model.po.UserPO">
+    <select id="selectUserByPositionId" resultType="cc.cloudcoding.auth.model.po.UserPO">
         select u.id,
                u.nickname,
                u.avatar,
@@ -15,7 +15,7 @@
                  right join position p on up.position_id = p.id
         where up.position_id = #{positionId}
     </select>
-    <select id="selectPositionByUserId" resultType="cn.edu.hcnu.auth.model.po.PositionPO">
+    <select id="selectPositionByUserId" resultType="cc.cloudcoding.auth.model.po.PositionPO">
         select p.id,
                p.name,
                p.create_time,

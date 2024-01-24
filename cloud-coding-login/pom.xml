@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.edu.hcnu.cloud-coding</groupId>
+        <groupId>cc.cloudcoding</groupId>
         <artifactId>cloud-coding-parent</artifactId>
            <version>1.0.0</version>
 

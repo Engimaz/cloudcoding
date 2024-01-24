@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cloudcoding.manager.infrastructure.mapper.UserPositionMapper">
+
+    <select id="selectUserByPositionId" resultType="cc.cloudcoding.manager.model.po.UserPO">
+        select u.id,
+               u.nickname,
+               u.avatar,
+               u.sex,
+               u.status,
+               u.create_time,
+               u.update_time
+        from userPO u
+                 left join user_position up on u.id = up.user_id
+                 right join positionPO p on up.position_id = p.id
+        where up.position_id = #{positionId}
+    </select>
+    <select id="selectPositionByUserId" resultType="cc.cloudcoding.manager.model.po.PositionPO">
+        select p.id,
+               p.name,
+               p.code,
+               p.create_time,
+               p.update_time
+        from positionPO p
+                 left join user_position up on p.id = up.position_id
+                 right join userPO u on up.user_id = u.id
+        where up.user_id = #{userId}
+    </select>
+</mapper>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.edu.hcnu.cloud-coding</groupId>
+        <groupId>cc.cloudcoding</groupId>
         <artifactId>cloud-coding-captcha</artifactId>
         <version>1.0.0</version>
     </parent>
@@ -16,7 +16,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>cn.edu.hcnu.cloud-coding</groupId>
+            <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-base</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -80,7 +80,7 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.edu.hcnu.cloud-coding</groupId>
+            <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-captcha-rpc</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
