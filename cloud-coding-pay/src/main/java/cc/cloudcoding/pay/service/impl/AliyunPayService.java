@@ -1,9 +1,9 @@
 package cc.cloudcoding.pay.service.impl;
 
-import cc.cloudcoding.pay.service.PayService;
-import cc.cloudcoding.id.domain.IDGenerator;
+import cc.cloudcoding.id.domain.service.IDGenerator;
 import cc.cloudcoding.pay.config.AliPayConfig;
 import cc.cloudcoding.pay.model.PayDTO;
+import cc.cloudcoding.pay.service.PayService;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
