@@ -10,7 +10,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @author: Administrator
  * @time: 2023/6/23 13:41
  */
-@SpringBootApplication(scanBasePackages = {"cn.edu.hcnu"},exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"cc.cloudcoding"},exclude = {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient
 public class CloudCodingIMApplication {
     public static void main(String[] args) {

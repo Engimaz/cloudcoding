@@ -6,7 +6,7 @@ import cc.cloudcoding.dictionary.model.dto.GroupDTO;
 import cc.cloudcoding.dictionary.model.req.GroupReq;
 import cc.cloudcoding.dictionary.rpc.GroupApi;
 import cc.cloudcoding.dictionary.application.service.impl.GroupApplication;
-import cn.edu.hcnu.dictionary.assembler.*;
+import cc.cloudcoding.dictionary.assembler.*;
 import cc.cloudcoding.dictionary.model.command.AddGroupCommand;
 import cc.cloudcoding.dictionary.model.command.UpdateGroupCommand;
 import cc.cloudcoding.dictionary.model.res.GroupRes;

@@ -53,7 +53,7 @@ public class UrlController implements UrlApi {
     /**
      * @param req 查询请求数据
      * @description: 分页查询接口
-     * @return: cn.edu.hcnu.base.model.RestResponse
+     * @return: cc.cloudcoding.base.model.RestResponse
      * @author: Administrator
      * @time: 2023/9/25 12:24
      */

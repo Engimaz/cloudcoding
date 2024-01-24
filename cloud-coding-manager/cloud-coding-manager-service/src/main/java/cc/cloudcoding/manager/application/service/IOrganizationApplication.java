@@ -14,7 +14,7 @@ public interface IOrganizationApplication {
     /**
      * @param id 接口id
      * @description: 根据id查询
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -32,7 +32,7 @@ public interface IOrganizationApplication {
     /**
      * @param addUrlCommand {@link AddUrlCommand}
      * @description: 新增接口
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -41,7 +41,7 @@ public interface IOrganizationApplication {
     /**
      * @param updateUrlCommand {@link UpdateUrlCommand}
      * @description: 更新接口
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: Administrator
      * @time: 2023/9/2 23:25
      */

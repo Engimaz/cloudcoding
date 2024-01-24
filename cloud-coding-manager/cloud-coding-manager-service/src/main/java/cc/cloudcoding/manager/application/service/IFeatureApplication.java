@@ -10,7 +10,7 @@ public interface IFeatureApplication {
     /**
      * @param id 功能id
      * @description: 根据id查询
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -28,7 +28,7 @@ public interface IFeatureApplication {
     /**
      * @param addFeatureCommand {@link AddFeatureCommand}
      * @description: 新增功能
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -37,7 +37,7 @@ public interface IFeatureApplication {
     /**
      * @param updateFeatureCommand {@link UpdateFeatureCommand}
      * @description: 更新功能
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: Administrator
      * @time: 2023/9/2 23:25
      */

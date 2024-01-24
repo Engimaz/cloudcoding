@@ -1,6 +1,6 @@
 package cc.cloudcoding.forum.infrastructure.repository;
 
-import cn.edu.hcnu.forum.model.po.ArticlePO;
+import cc.cloudcoding.forum.model.po.ArticlePO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

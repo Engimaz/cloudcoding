@@ -8,7 +8,7 @@ springdoc:
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan: cn.edu.hcnu.resource
+      packages-to-scan: cc.cloudcoding.resource
   default-flat-param-object: false
 
 spring:

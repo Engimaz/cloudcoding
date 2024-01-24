@@ -1,7 +1,7 @@
 package cc.cloudcoding.forum.domain.event.topic.add;
 
-import cn.edu.hcnu.forum.domain.service.Article;
-import cn.edu.hcnu.forum.domain.service.ArticleDomainService;
+import cc.cloudcoding.forum.domain.service.Article;
+import cc.cloudcoding.forum.domain.service.ArticleDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;

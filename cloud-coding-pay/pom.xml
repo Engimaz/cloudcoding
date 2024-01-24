@@ -4,16 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.edu.hcnu.pay</groupId>
+    <groupId>cc.cloudcoding</groupId>
     <artifactId>cloud-coding-pay</artifactId>
-       <version>1.0.0</version>
-
+    <version>1.0.0</version>
 
 
     <parent>
         <artifactId>cloud-coding-parent</artifactId>
         <groupId>cc.cloudcoding</groupId>
-           <version>1.0.0</version>
+        <version>1.0.0</version>
 
 
         <relativePath>../cloud-coding-parent</relativePath>
@@ -38,9 +37,13 @@
         <dependency>
             <groupId>cc.cloudcoding</groupId>
             <artifactId>cloud-coding-base</artifactId>
-               <version>1.0.0</version>
-
-
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cc.cloudcoding</groupId>
+            <artifactId>cloud-coding-id-domain</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -67,7 +70,6 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-dubbo</artifactId>
         </dependency>
-
 
 
     </dependencies>

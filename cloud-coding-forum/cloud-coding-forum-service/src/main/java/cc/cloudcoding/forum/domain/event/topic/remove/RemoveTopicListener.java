@@ -1,6 +1,6 @@
 package cc.cloudcoding.forum.domain.event.topic.remove;
 
-import cn.edu.hcnu.forum.domain.service.ArticleDomainService;
+import cc.cloudcoding.forum.domain.service.ArticleDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;

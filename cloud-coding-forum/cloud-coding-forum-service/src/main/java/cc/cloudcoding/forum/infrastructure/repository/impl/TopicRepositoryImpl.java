@@ -1,9 +1,9 @@
 package cc.cloudcoding.forum.infrastructure.repository.impl;
 
 
-import cn.edu.hcnu.forum.infrastructure.mapper.TopicMapper;
-import cn.edu.hcnu.forum.infrastructure.repository.TopicRepository;
-import cn.edu.hcnu.forum.model.po.TopicPO;
+import cc.cloudcoding.forum.infrastructure.mapper.TopicMapper;
+import cc.cloudcoding.forum.infrastructure.repository.TopicRepository;
+import cc.cloudcoding.forum.model.po.TopicPO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

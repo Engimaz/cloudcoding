@@ -1,9 +1,9 @@
 package cc.cloudcoding.forum.domain.service;
 
 import cc.cloudcoding.dictionary.rpc.DictionaryService;
-import cn.edu.hcnu.forum.domain.service.factory.ArticleFactory;
-import cn.edu.hcnu.forum.infrastructure.repository.ArticleRepository;
-import cn.edu.hcnu.forum.model.po.ArticlePO;
+import cc.cloudcoding.forum.domain.service.factory.ArticleFactory;
+import cc.cloudcoding.forum.infrastructure.repository.ArticleRepository;
+import cc.cloudcoding.forum.model.po.ArticlePO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboReference;

@@ -1,10 +1,10 @@
 package cc.cloudcoding.forum.domain.event.topic;
 
 
-import cn.edu.hcnu.forum.domain.event.topic.add.AddTopicEvent;
-import cn.edu.hcnu.forum.domain.event.topic.remove.RemoveTopicEvent;
-import cn.edu.hcnu.forum.domain.event.topic.update.UpdateTopicEvent;
-import cn.edu.hcnu.forum.domain.service.Topic;
+import cc.cloudcoding.forum.domain.event.topic.add.AddTopicEvent;
+import cc.cloudcoding.forum.domain.event.topic.remove.RemoveTopicEvent;
+import cc.cloudcoding.forum.domain.event.topic.update.UpdateTopicEvent;
+import cc.cloudcoding.forum.domain.service.Topic;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

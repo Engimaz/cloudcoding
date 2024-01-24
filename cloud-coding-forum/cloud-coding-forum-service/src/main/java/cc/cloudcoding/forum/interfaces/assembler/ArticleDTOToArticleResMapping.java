@@ -1,8 +1,8 @@
 package cc.cloudcoding.forum.interfaces.assembler;
 
 import cc.cloudcoding.base.assembler.IMapping;
-import cn.edu.hcnu.forum.model.dto.ArticleDTO;
-import cn.edu.hcnu.forum.model.res.ArticleRes;
+import cc.cloudcoding.forum.model.dto.ArticleDTO;
+import cc.cloudcoding.forum.model.res.ArticleRes;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

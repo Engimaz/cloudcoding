@@ -1,7 +1,7 @@
 package cc.cloudcoding.forum.rpc;
 
 import cc.cloudcoding.base.model.RestResponse;
-import cn.edu.hcnu.forum.model.req.ArticleReq;
+import cc.cloudcoding.forum.model.req.ArticleReq;
 
 public interface ArticleApi {
 

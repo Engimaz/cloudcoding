@@ -4,7 +4,7 @@ import cc.cloudcoding.base.model.RestResponse;
 import cc.cloudcoding.base.model.ResultCode;
 import cc.cloudcoding.program.application.service.IProgramApplication;
 import cc.cloudcoding.program.assembler.*;
-import cn.edu.hcnu.program.assembler.*;
+import cc.cloudcoding.program.assembler.*;
 import cc.cloudcoding.program.model.command.AddProgramCommand;
 import cc.cloudcoding.program.model.command.ExecuteCommand;
 import cc.cloudcoding.program.model.command.UpdateProgramCommand;

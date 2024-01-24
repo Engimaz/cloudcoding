@@ -2,16 +2,16 @@ package cc.cloudcoding.forum.application.service.impl;
 
 import cc.cloudcoding.base.model.CommonQuery;
 import cc.cloudcoding.base.model.PageDTO;
-import cn.edu.hcnu.forum.application.assembler.AddTopicCommandToTopicMapping;
-import cn.edu.hcnu.forum.application.assembler.TopicToTopicDTOMapping;
-import cn.edu.hcnu.forum.application.assembler.UpdateTopicCommandToTopicMapping;
-import cn.edu.hcnu.forum.application.service.ITopicApplication;
-import cn.edu.hcnu.forum.domain.service.ArticleDomainService;
-import cn.edu.hcnu.forum.domain.service.Topic;
-import cn.edu.hcnu.forum.domain.service.TopicDomainService;
-import cn.edu.hcnu.forum.model.command.AddTopicCommand;
-import cn.edu.hcnu.forum.model.command.UpdateTopicCommand;
-import cn.edu.hcnu.forum.model.dto.TopicDTO;
+import cc.cloudcoding.forum.application.assembler.AddTopicCommandToTopicMapping;
+import cc.cloudcoding.forum.application.assembler.TopicToTopicDTOMapping;
+import cc.cloudcoding.forum.application.assembler.UpdateTopicCommandToTopicMapping;
+import cc.cloudcoding.forum.application.service.ITopicApplication;
+import cc.cloudcoding.forum.domain.service.ArticleDomainService;
+import cc.cloudcoding.forum.domain.service.Topic;
+import cc.cloudcoding.forum.domain.service.TopicDomainService;
+import cc.cloudcoding.forum.model.command.AddTopicCommand;
+import cc.cloudcoding.forum.model.command.UpdateTopicCommand;
+import cc.cloudcoding.forum.model.dto.TopicDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

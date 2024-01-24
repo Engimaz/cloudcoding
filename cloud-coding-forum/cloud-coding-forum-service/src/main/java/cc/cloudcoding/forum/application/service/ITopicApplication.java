@@ -2,9 +2,9 @@ package cc.cloudcoding.forum.application.service;
 
 import cc.cloudcoding.base.model.CommonQuery;
 import cc.cloudcoding.base.model.PageDTO;
-import cn.edu.hcnu.forum.model.command.AddTopicCommand;
-import cn.edu.hcnu.forum.model.command.UpdateTopicCommand;
-import cn.edu.hcnu.forum.model.dto.TopicDTO;
+import cc.cloudcoding.forum.model.command.AddTopicCommand;
+import cc.cloudcoding.forum.model.command.UpdateTopicCommand;
+import cc.cloudcoding.forum.model.dto.TopicDTO;
 
 public interface ITopicApplication {
     TopicDTO add(AddTopicCommand addTopicCommand);

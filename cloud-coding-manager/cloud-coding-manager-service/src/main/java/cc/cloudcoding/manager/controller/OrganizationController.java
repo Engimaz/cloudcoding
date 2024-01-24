@@ -18,7 +18,7 @@ import cc.cloudcoding.manager.model.req.OrganizationReq;
 import cc.cloudcoding.manager.model.res.OrganizationRecordRes;
 import cc.cloudcoding.manager.model.res.OrganizationRes;
 import cc.cloudcoding.manager.rpc.OrganizationApi;
-import cn.edu.hcnu.manager.assembler.*;
+import cc.cloudcoding.manager.assembler.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

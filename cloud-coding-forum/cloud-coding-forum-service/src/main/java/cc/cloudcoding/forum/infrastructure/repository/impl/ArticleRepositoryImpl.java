@@ -1,8 +1,8 @@
 package cc.cloudcoding.forum.infrastructure.repository.impl;
 
-import cn.edu.hcnu.forum.infrastructure.mapper.ArticleMapper;
-import cn.edu.hcnu.forum.infrastructure.repository.ArticleRepository;
-import cn.edu.hcnu.forum.model.po.ArticlePO;
+import cc.cloudcoding.forum.infrastructure.mapper.ArticleMapper;
+import cc.cloudcoding.forum.infrastructure.repository.ArticleRepository;
+import cc.cloudcoding.forum.model.po.ArticlePO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

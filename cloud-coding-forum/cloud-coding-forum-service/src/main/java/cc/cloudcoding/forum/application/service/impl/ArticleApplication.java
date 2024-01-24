@@ -2,15 +2,15 @@ package cc.cloudcoding.forum.application.service.impl;
 
 import cc.cloudcoding.base.model.CommonQuery;
 import cc.cloudcoding.base.model.PageDTO;
-import cn.edu.hcnu.forum.application.assembler.AddArticleCommandToArticleMapping;
-import cn.edu.hcnu.forum.application.assembler.ArticleToArticleDTOMapping;
-import cn.edu.hcnu.forum.application.assembler.UpdateArticleCommandToArticleMapping;
-import cn.edu.hcnu.forum.application.service.IArticleApplication;
-import cn.edu.hcnu.forum.domain.service.Article;
-import cn.edu.hcnu.forum.domain.service.ArticleDomainService;
-import cn.edu.hcnu.forum.model.command.AddArticleCommand;
-import cn.edu.hcnu.forum.model.command.UpdateArticleCommand;
-import cn.edu.hcnu.forum.model.dto.ArticleDTO;
+import cc.cloudcoding.forum.application.assembler.AddArticleCommandToArticleMapping;
+import cc.cloudcoding.forum.application.assembler.ArticleToArticleDTOMapping;
+import cc.cloudcoding.forum.application.assembler.UpdateArticleCommandToArticleMapping;
+import cc.cloudcoding.forum.application.service.IArticleApplication;
+import cc.cloudcoding.forum.domain.service.Article;
+import cc.cloudcoding.forum.domain.service.ArticleDomainService;
+import cc.cloudcoding.forum.model.command.AddArticleCommand;
+import cc.cloudcoding.forum.model.command.UpdateArticleCommand;
+import cc.cloudcoding.forum.model.dto.ArticleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package cc.cloudcoding.forum.infrastructure.mapper;
 
-import cn.edu.hcnu.forum.model.po.TopicPO;
+import cc.cloudcoding.forum.model.po.TopicPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

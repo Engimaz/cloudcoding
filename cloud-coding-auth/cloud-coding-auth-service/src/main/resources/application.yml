@@ -46,7 +46,7 @@ dubbo:
     address: spring-cloud://localhost # 使用spring-cloud的注册中心地址
     # group: cloud-coding
   scan:
-    base-packages: cn.edu.hcnu.auth
+    base-packages: cc.cloudcoding.auth
 
 
 
@@ -62,5 +62,5 @@ springdoc:
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan: cn.edu.hcnu.auth
+      packages-to-scan: cc.cloudcoding.auth
   default-flat-param-object: false

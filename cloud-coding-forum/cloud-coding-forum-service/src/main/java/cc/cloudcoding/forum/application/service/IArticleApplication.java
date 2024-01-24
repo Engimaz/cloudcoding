@@ -2,9 +2,9 @@ package cc.cloudcoding.forum.application.service;
 
 import cc.cloudcoding.base.model.CommonQuery;
 import cc.cloudcoding.base.model.PageDTO;
-import cn.edu.hcnu.forum.model.command.AddArticleCommand;
-import cn.edu.hcnu.forum.model.command.UpdateArticleCommand;
-import cn.edu.hcnu.forum.model.dto.ArticleDTO;
+import cc.cloudcoding.forum.model.command.AddArticleCommand;
+import cc.cloudcoding.forum.model.command.UpdateArticleCommand;
+import cc.cloudcoding.forum.model.dto.ArticleDTO;
 
 public interface IArticleApplication {
     ArticleDTO save(AddArticleCommand addArticleCommand);

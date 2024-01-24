@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2023/07/01
  */
 @SpringBootApplication
-@ComponentScan({"cn.edu.hcnu"})
-@MapperScan("cn.edu.hcnu.program.*.mapper")
+@ComponentScan({"cc.cloudcoding"})
+@MapperScan("cc.cloudcoding.program.*.mapper")
 public class CloudCodingProgramApplication {
     public static void main(String[] args) {
         SpringApplication.run(CloudCodingProgramApplication.class, args);

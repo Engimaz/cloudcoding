@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
  */
 
 @SpringBootApplication
-@MapperScan("cn.edu.hcnu.forum.*.mapper")
-@ComponentScan(basePackages = {"cn.edu.hcnu"})
+@MapperScan("cc.cloudcoding.forum.*.mapper")
+@ComponentScan(basePackages = {"cc.cloudcoding"})
 public class CloudCodingForumApplication {
     public static void main(String[] args) {
         SpringApplication.run(CloudCodingForumApplication.class,args);

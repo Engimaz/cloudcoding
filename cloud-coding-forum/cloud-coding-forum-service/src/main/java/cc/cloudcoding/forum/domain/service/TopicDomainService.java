@@ -1,9 +1,9 @@
 package cc.cloudcoding.forum.domain.service;
 
-import cn.edu.hcnu.forum.domain.event.topic.TopicPublisher;
-import cn.edu.hcnu.forum.domain.service.factory.TopicFactory;
-import cn.edu.hcnu.forum.infrastructure.repository.TopicRepository;
-import cn.edu.hcnu.forum.model.po.TopicPO;
+import cc.cloudcoding.forum.domain.event.topic.TopicPublisher;
+import cc.cloudcoding.forum.domain.service.factory.TopicFactory;
+import cc.cloudcoding.forum.infrastructure.repository.TopicRepository;
+import cc.cloudcoding.forum.model.po.TopicPO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;

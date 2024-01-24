@@ -1,6 +1,6 @@
 package cc.cloudcoding.forum.domain.event.topic.add;
 
-import cn.edu.hcnu.forum.domain.service.Topic;
+import cc.cloudcoding.forum.domain.service.Topic;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

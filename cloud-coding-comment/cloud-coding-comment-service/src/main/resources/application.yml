@@ -46,7 +46,7 @@ dubbo:
     check: false
     retries: 0
   scan:
-    base-packages: cn.edu.hcnu.comment
+    base-packages: cc.cloudcoding.comment
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 
@@ -57,5 +57,5 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /v3/api-docs
-  packages-to-scan: cn.edu.hcnu.comment
+  packages-to-scan: cc.cloudcoding.comment
   default-flat-param-object: false

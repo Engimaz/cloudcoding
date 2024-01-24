@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
  * @time: 2023/8/6 23:08
  */
 @SpringBootApplication
-@MapperScan("cn.edu.hcnu.manager.*.mapper")
-@ComponentScan(basePackages = {"cn.edu.hcnu"})
+@MapperScan("cc.cloudcoding.manager.*.mapper")
+@ComponentScan(basePackages = {"cc.cloudcoding"})
 public class CloudCodingManagerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CloudCodingManagerApplication.class,args);

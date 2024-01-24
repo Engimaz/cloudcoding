@@ -14,7 +14,7 @@
     </parent>
 
 
-    <groupId>cn.edu.hcnu.login</groupId>
+    <groupId>cc.cloudcoding.login</groupId>
     <artifactId>cloud-coding-login</artifactId>
        <version>1.0.0</version>
 

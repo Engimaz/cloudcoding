@@ -58,5 +58,5 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /v3/api-docs
-  packages-to-scan: cn.edu.hcnu.manager
+  packages-to-scan: cc.cloudcoding.manager
   default-flat-param-object: false

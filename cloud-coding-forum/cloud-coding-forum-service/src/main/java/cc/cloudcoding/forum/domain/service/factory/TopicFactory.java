@@ -1,9 +1,9 @@
 package cc.cloudcoding.forum.domain.service.factory;
 
 import cc.cloudcoding.dictionary.rpc.DictionaryService;
-import cn.edu.hcnu.forum.domain.service.ArticleDomainService;
-import cn.edu.hcnu.forum.domain.service.Topic;
-import cn.edu.hcnu.forum.model.po.TopicPO;
+import cc.cloudcoding.forum.domain.service.ArticleDomainService;
+import cc.cloudcoding.forum.domain.service.Topic;
+import cc.cloudcoding.forum.model.po.TopicPO;
 import cc.cloudcoding.id.domain.service.IDGenerator;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;

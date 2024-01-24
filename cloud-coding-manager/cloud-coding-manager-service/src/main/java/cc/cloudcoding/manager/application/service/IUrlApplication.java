@@ -18,7 +18,7 @@ public interface IUrlApplication {
     /**
      * @param id 接口id
      * @description: 根据id查询
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -36,7 +36,7 @@ public interface IUrlApplication {
     /**
      * @param addUrlCommand {@link AddUrlCommand}
      * @description: 新增接口
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: 不才小马
      * @time: 2023/9/2 23:24
      */
@@ -45,7 +45,7 @@ public interface IUrlApplication {
     /**
      * @param updateUrlCommand {@link UpdateUrlCommand}
      * @description: 更新接口
-     * @return: cn.edu.hcnu.manager.model.dto.UrlDTO
+     * @return: cc.cloudcoding.manager.model.dto.UrlDTO
      * @author: Administrator
      * @time: 2023/9/2 23:25
      */
@@ -55,7 +55,7 @@ public interface IUrlApplication {
     /**
      * @param commonQuery 分页查询接口
      * @description: 分页查询接口
-     * @return: cn.edu.hcnu.base.model.PageDTO<cn.edu.hcnu.manager.model.dto.UrlDTO, cn.edu.hcnu.manager.model.query.CommonQuery>
+     * @return: cc.cloudcoding.base.model.PageDTO<cc.cloudcoding.manager.model.dto.UrlDTO, cc.cloudcoding.manager.model.query.CommonQuery>
      * @author: Administrator
      * @time: 2023/9/25 12:56
      */

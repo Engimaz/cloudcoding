@@ -20,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * spring security的安全配置
  */
 @Configuration
-@ComponentScan(basePackages = {"cn.edu.hcnu.*"})
+@ComponentScan(basePackages = {"cc.cloudcoding.*"})
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
