@@ -34,7 +34,7 @@ public class FolderPO implements Serializable {
     /**
      * 所属工程id
      */
-    private Long programId;
+    private Long projectId;
 
     /**
      * 文件夹名称

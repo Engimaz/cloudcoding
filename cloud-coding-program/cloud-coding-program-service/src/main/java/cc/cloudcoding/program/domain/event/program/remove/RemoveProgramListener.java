@@ -40,11 +40,11 @@ public class RemoveProgramListener {
         boolean b = programUserRepository.remove(new LambdaQueryWrapper<ProgramUserPO>().eq(ProgramUserPO::getProgramId, event.getProgramId()));
 
         // 属于这个项目的所有文件夹
-        List<FolderPO> list = folderRepository.list(new LambdaQueryWrapper<FolderPO>().eq(FolderPO::getProgramId, event.getProgramId()));
+        List<FolderPO> list = folderRepository.list(new LambdaQueryWrapper<FolderPO>().eq(FolderPO::getProjectId, event.getProgramId()));
         // 删除文件夹
         long count = list.stream().map(FolderPO::getId).distinct().map(String::valueOf).filter(f -> {
             Folder bean = applicationContext.getBean(Folder.class);
-            bean.setId(f);
+            bean.setId(Long.valueOf(f));
             bean.remove();
             return true;
         }).map(res -> 1).count();

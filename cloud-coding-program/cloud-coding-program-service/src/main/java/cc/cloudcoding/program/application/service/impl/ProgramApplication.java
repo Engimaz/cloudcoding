@@ -189,16 +189,15 @@ public class ProgramApplication implements IProgramApplication {
     }
 
 
-
     private void writePath(Program program) {
         // 查询项目文件夹
-        List<FolderPO> list = folderRepository.list(new LambdaQueryWrapper<FolderPO>().eq(FolderPO::getProgramId, program.getId()));
+        List<FolderPO> list = folderRepository.list(new LambdaQueryWrapper<FolderPO>().eq(FolderPO::getProjectId, program.getId()));
         List<Folder> folders = list.stream().map(
                 folderPO -> {
                     Folder folder = applicationContext.getBean(Folder.class);
-                    folder.setId(String.valueOf(folderPO.getId()));
-                    folder.setParentId(String.valueOf(folderPO.getParentId()));
-                    folder.setProgramId(String.valueOf(folderPO.getProgramId()));
+                    folder.setId(folderPO.getId());
+                    folder.setParentId(folderPO.getParentId());
+                    folder.setProjectId(folderPO.getProjectId());
                     folder.setName(folderPO.getName());
                     return folder;
                 }

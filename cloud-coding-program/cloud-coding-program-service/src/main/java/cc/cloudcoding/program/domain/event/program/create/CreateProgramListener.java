@@ -41,9 +41,9 @@ public class CreateProgramListener {
         Folder bean = applicationContext.getBean(Folder.class);
 
         bean.setName(event.getProgram().getName());
-        bean.setParentId(event.getProgram().getId());
-        bean.setProgramId(event.getProgram().getId());
-        bean.setId(event.getProgram().getId());
+        bean.setParentId(Long.valueOf(event.getProgram().getId()));
+        bean.setProjectId(Long.valueOf(event.getProgram().getId()));
+        bean.setId(Long.valueOf(event.getProgram().getId()));
         bean.save();
 
         // 根据模板添加文件

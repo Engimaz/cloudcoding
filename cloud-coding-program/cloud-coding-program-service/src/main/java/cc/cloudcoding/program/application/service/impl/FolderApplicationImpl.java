@@ -9,6 +9,7 @@ import cc.cloudcoding.program.domain.service.folder.Folder;
 import cc.cloudcoding.program.infrastructure.repository.FileRepository;
 import cc.cloudcoding.program.infrastructure.repository.FolderRepository;
 import cc.cloudcoding.program.model.command.AddFolderCommand;
+import cc.cloudcoding.program.model.command.UpdateFileCommand;
 import cc.cloudcoding.program.model.command.UpdateFolderCommand;
 import cc.cloudcoding.program.model.dto.FolderDTO;
 import cc.cloudcoding.program.model.po.FilePO;
@@ -21,8 +22,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,6 +34,7 @@ public class FolderApplicationImpl implements IFolderApplication {
 
 
     private final FolderToFolderDTOMapping folderToFolderDTOMapping;
+    private final FileRepository fileRepository;
 
     private final FileToFileDTOMapping fileToFileDTOMapping;
     private final FolderRepository folderRepository;
@@ -44,10 +48,16 @@ public class FolderApplicationImpl implements IFolderApplication {
     @Override
     public FolderDTO addFolder(AddFolderCommand addFolderCommand) {
         Folder bean = applicationContext.getBean(Folder.class);
-        bean.setId(idGenerator.nextID());
+        Long id = Long.valueOf(idGenerator.nextID());
+        bean.setId(id);
         bean.setName(addFolderCommand.getName());
-        bean.setParentId(addFolderCommand.getParentId());
-        bean.setProgramId(addFolderCommand.getProgramId());
+        bean.setParentId(Long.valueOf(addFolderCommand.getParentId()));
+        bean.setProjectId(Long.valueOf(addFolderCommand.getProjectId()));
+        List<Folder> folders = folderAdapt(addFolderCommand.getFolders(), id);
+        List<File> files = fileAdapt(addFolderCommand.getFiles(), id);
+        bean.setFolders(folders);
+        bean.setFiles(files);
+
         bean.save();
         return folderToFolderDTOMapping.sourceToTarget(bean);
     }
@@ -55,7 +65,7 @@ public class FolderApplicationImpl implements IFolderApplication {
     @Override
     public boolean removeFolder(String id) {
         Folder bean = applicationContext.getBean(Folder.class);
-        bean.setId(id);
+        bean.setId(Long.valueOf(id));
         bean.remove();
         return true;
     }
@@ -64,14 +74,14 @@ public class FolderApplicationImpl implements IFolderApplication {
     @Override
     public FolderDTO queryTopFolder(String id) {
         FolderPO folderPO = Objects.requireNonNull(Objects.requireNonNull(folderRepository.list(new LambdaQueryWrapper<FolderPO>()
-                                .eq(FolderPO::getProgramId, id))
+                                .eq(FolderPO::getProjectId, id))
                         .stream()
                         .filter(f -> Objects.equals(f.getId(), f.getParentId())))
                 .findFirst().orElse(null));
         Folder folder = applicationContext.getBean(Folder.class);
-        folder.setId(String.valueOf(folderPO.getId()));
-        folder.setParentId(String.valueOf(folderPO.getParentId()));
-        folder.setProgramId(String.valueOf(folderPO.getProgramId()));
+        folder.setId(folderPO.getId());
+        folder.setParentId((folderPO.getParentId()));
+        folder.setProjectId((folderPO.getProjectId()));
         folder.setName(folderPO.getName());
         return getChildren(folder);
     }
@@ -79,13 +89,11 @@ public class FolderApplicationImpl implements IFolderApplication {
     @Override
     public FolderDTO queryFolder(String id) {
         Folder bean = applicationContext.getBean(Folder.class);
-        bean.setId(id);
+        bean.setId(Long.valueOf(id));
         bean.render();
         return getChildren(bean);
     }
 
-    @Autowired
-    private FileRepository fileRepository;
 
     @NotNull
     private FolderDTO getChildren(Folder self) {
@@ -93,9 +101,9 @@ public class FolderApplicationImpl implements IFolderApplication {
         List<Folder> collect = list.stream().map(
                 folderPO -> {
                     Folder folder = applicationContext.getBean(Folder.class);
-                    folder.setId(String.valueOf(folderPO.getId()));
-                    folder.setParentId(String.valueOf(folderPO.getParentId()));
-                    folder.setProgramId(String.valueOf(folderPO.getProgramId()));
+                    folder.setId(folderPO.getId());
+                    folder.setParentId((folderPO.getParentId()));
+                    folder.setProjectId((folderPO.getProjectId()));
                     folder.setName(folderPO.getName());
                     return folder;
                 }
@@ -120,11 +128,56 @@ public class FolderApplicationImpl implements IFolderApplication {
     @Override
     public FolderDTO updateFolder(UpdateFolderCommand updateFolderCommand) {
         Folder bean = applicationContext.getBean(Folder.class);
-        bean.setId(updateFolderCommand.getId());
+        Long id = Long.valueOf(updateFolderCommand.getId());
+        bean.setId(id);
         bean.setName(updateFolderCommand.getName());
-        bean.setParentId(updateFolderCommand.getParentId());
-        bean.setProgramId(updateFolderCommand.getProgramId());
+        bean.setParentId(Long.valueOf(updateFolderCommand.getParentId()));
+        bean.setProjectId(Long.valueOf(updateFolderCommand.getProjectId()));
+        List<Folder> folders = folderAdapt(updateFolderCommand.getFolders(), id);
+        List<File> files = fileAdapt(updateFolderCommand.getFiles(), id);
+        bean.setFolders(folders);
+        bean.setFiles(files);
         bean.update();
         return folderToFolderDTOMapping.sourceToTarget(bean);
     }
+
+    private List<Folder> folderAdapt(List<UpdateFolderCommand> folders, Long pid) {
+        LinkedList<Folder> res = new LinkedList<>();
+        for (UpdateFolderCommand folder : folders) {
+            Long id = Long.valueOf(idGenerator.nextID());
+            Folder bean = applicationContext.getBean(Folder.class);
+            bean.setParentId(Long.valueOf(String.valueOf(pid)));
+            bean.setId(id);
+            bean.setName(folder.getName());
+            bean.setProjectId(Long.valueOf(folder.getProjectId()));
+            bean.setFolders(folderAdapt(folder.getFolders(), id));
+            bean.setFiles(fileAdapt(folder.getFiles(), id));
+            res.add(bean);
+        }
+
+        return res;
+    }
+
+    private List<File> fileAdapt(List<UpdateFileCommand> files, Long id) {
+        LinkedList<File> res = new LinkedList<>();
+        for (UpdateFileCommand file : files) {
+            File bean = applicationContext.getBean(File.class);
+            bean.setName(file.getName());
+            bean.setFolderId(String.valueOf(id));
+            if (isInteger(file.getId())) {
+                bean.setId(file.getId());
+            } else {
+                bean.setId(idGenerator.nextID());
+            }
+            bean.setContent(file.getContent());
+            res.add(bean);
+        }
+        return res;
+    }
+
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
+    }
+
 }

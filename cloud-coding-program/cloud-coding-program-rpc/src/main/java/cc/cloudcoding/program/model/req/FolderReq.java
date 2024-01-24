@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: Administrator
@@ -15,6 +17,8 @@ import lombok.NoArgsConstructor;
 public class FolderReq {
     private String name;
     private String parentId;
-    private String programId;
+    private String projectId;
     private String id;
+    private List<FolderReq> folders;
+    private List<FileReq> files;
 }

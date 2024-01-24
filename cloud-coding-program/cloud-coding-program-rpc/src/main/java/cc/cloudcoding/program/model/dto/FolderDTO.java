@@ -12,7 +12,7 @@ import java.util.List;
 public class FolderDTO {
     private String name;
     private String parentId;
-    private String programId;
+    private String projectId;
     private String id;
     private List<FolderDTO> folders;
     private List<FileDTO> files;

@@ -3,6 +3,8 @@ package cc.cloudcoding.program.infrastructure.repository;
 import cc.cloudcoding.program.model.po.FolderPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FolderRepository extends IService<FolderPO> {
 
+    List<FolderPO> getFoldersByParentId(Long id);
 }
