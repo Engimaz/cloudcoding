@@ -57,7 +57,6 @@ export default (props: IEditorProps) => {
     useKeyPress('ctrl.s', (event: KeyboardEvent) => {
         event.preventDefault();
         if (props.onCtrls) {
-            console.log("触发函数")
             props.onCtrls();
         }
     });

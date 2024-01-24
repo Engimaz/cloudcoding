@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
-import { addNewFileToFolder, addNewFolderToFolder, clearFolder, deleteFile, deleteFolder, initFileManger, renameFile, renameFolder, saveFile, saveFolderName, open } from '@/features/program/programSlice.ts';
+import { addNewFileToFolder, addNewFolderToFolder, clearFolder, deleteFile, deleteFolder, initFileManger, renameFile, renameFolder, saveFile, saveFolderName, open, init } from '@/features/program/programSlice.ts';
 import { RootState } from '@/store/index.ts';
 import { Folder } from '@/api/folder/types.ts';
+import { updateFolder } from '@/api/folder/index.ts';
+
 import { File } from '@/api/file/types.ts'
 import {
     Menu as ContextMenu,
@@ -18,6 +20,7 @@ import idGenerate from '@/features/id-generate/index.ts';
 import { InputText } from 'primereact/inputtext';
 import { MenuItem } from '../../../components/collapsible-menu/types.js';
 import CollapsibleMenu from '@/components/collapsible-menu/index.tsx';
+import { ApiResponse } from '@/api/types.ts';
 
 interface PropType {
     projectId: string
@@ -30,11 +33,24 @@ const FILE_MENU_ID = "file-menu-id";
 const FileManager = (props: PropType) => {
 
     const items = useAppSelector((state: RootState) => state.programSlice.filemanager)
+    const needUpdate = useAppSelector((state: RootState) => state.programSlice.needUpdate)
+
 
     const lastName = useAppSelector((state: RootState) => state.programSlice.lastName)
     const [openKeys, setOpenKeys] = useState<Array<string>>([])
 
     const [menu, setMenu] = useState<Array<MenuItem>>([])
+
+
+
+
+    useEffect(() => {
+        if (needUpdate) {
+            updateFolder(items[0]).then((res: ApiResponse<Folder>) => {
+                dispatch(init(res.result))
+            })
+        }
+    }, [needUpdate, items])
 
     useEffect(() => {
         if (items.length > 0) {
@@ -42,7 +58,7 @@ const FileManager = (props: PropType) => {
             setMenu(d)
         }
 
-    }, [items, openKeys])
+    }, [openKeys, items])
 
 
     const dispatch = useAppDispatch();
@@ -241,6 +257,7 @@ const FileManager = (props: PropType) => {
                 console.log('创建新文件')
                 // 没有展开的需要展开菜单
                 if (!openKeys.includes(contextItem.id)) {
+                    console.log("展开文件夹", contextItem.id)
                     const _openkeys = JSON.parse(JSON.stringify(openKeys))
                     _openkeys.push(contextItem.id)
                     setOpenKeys(_openkeys)
@@ -397,7 +414,7 @@ const FileManager = (props: PropType) => {
     return (
         <section className=' relative h-full'>
             <section className='absolute z-0 w-full h-screen top-2'>
-                <CollapsibleMenu items={menu} handleClick={handleClick} openKeys={openKeys} onOpenKeysChange={(keys: Array<string>) => setOpenKeys(keys)} />
+                <CollapsibleMenu key={openKeys.length} items={menu} handleClick={handleClick} openKeys={openKeys} onOpenKeysChange={(keys: Array<string>) => setOpenKeys(keys)} />
             </section>
 
 

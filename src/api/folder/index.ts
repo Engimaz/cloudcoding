@@ -31,4 +31,9 @@ export const createFolder = (data: Folder) => {
     const url = `${context}/folder/new`;
     const method = "post";
     return request<Folder>(url, method, data);
+}// 更新一个文件夹
+export const updateFolder = (data: Folder) => {
+    const url = `${context}/folder/update`;
+    const method = "put";
+    return request<Folder>(url, method, data);
 }
