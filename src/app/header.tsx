@@ -135,9 +135,13 @@ export default function index() {
     return (
         <main className='flex  flex-col'>
             <header className="card">
-                <MegaMenu model={menu} orientation="horizontal" start={start} end={end} breakpoint="960px" pt={{
-                    menuitem: (p: MegaMenuPassThroughMethodOptions) => ({ className: p.context.active ? 'bg-primary-200 text-white' : undefined })
-                }} />
+                <MegaMenu model={menu} orientation="horizontal" start={start} end={end} breakpoint="960px"
+
+
+                    pt={{
+                        menuitem: (p: MegaMenuPassThroughMethodOptions) => ({ className: p.context.active ? 'bg-primary-200 text-white' : undefined }),
+                        menu: (p: MegaMenuPassThroughMethodOptions) => ({ className: 'gap-2' }),
+                    }} />
             </header>
 
         </main>
