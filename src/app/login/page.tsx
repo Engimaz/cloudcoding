@@ -18,17 +18,17 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import next from "next";
 
 export default function login() {
-    const searchParams  = useSearchParams()
+    const searchParams = useSearchParams()
     const next: string = searchParams.get('redirect') != null ? searchParams.get('redirect')! : "/index"
     const router = useRouter()
     const [type, setType] = useState('password')
-    const fadeInOut = useSpring({
-        opacity: 1,
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        config: { duration: 1000 },
-    });
+    // const fadeInOut = useSpring({
+    //     opacity: 1,
+    //     from: { opacity: 0 },
+    //     enter: { opacity: 1 },
+    //     leave: { opacity: 0 },
+    //     config: { duration: 1000 },
+    // });
 
     const token = useAppSelector((state: RootState) => state.userInfo.accessToken)
     useEffect(() => {
@@ -132,7 +132,7 @@ export default function login() {
                 footer={footer}
                 header={header}
                 className="md:w-25rem w-[30rem]">
-                <animated.div style={fadeInOut}>
+                <animated.div >
                     <section className="flex justify-center item-center">
                         {
                             type == 'password' &&

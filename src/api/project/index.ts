@@ -20,6 +20,7 @@ export const crateProject = (data: Project) => {
 
 // 查询用户的所有项目
 export const queryProgramListByUserId = (userId: string) => {
+    if (!userId) return Promise.reject()
     const url = `${context}/program/list/${userId}`;
     const method = "get";
     return request<Array<Project>>(url, method);

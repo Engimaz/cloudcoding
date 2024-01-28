@@ -1,0 +1,40 @@
+"use client"
+import { useState } from "react";
+
+import Editor from "@/components/editor/editor.tsx";
+import Comment from '@/components/comment/index.tsx'
+const INITIAL_DATA = {
+  time: new Date().getTime(),
+  blocks: [
+    {
+      type: "header",
+      data: {
+        text: "This is my awesome editor!",
+        level: 1,
+      },
+    },
+  ],
+};
+
+function App() {
+  const [data, setData] = useState(INITIAL_DATA);
+  return (
+    <div className="editor">
+      <Editor data={data} onChange={setData} editorblock="editorjs-container" />
+      <button
+        className="savebtn"
+        onClick={() => {
+          alert(JSON.stringify(data));
+        }}
+      >
+        Save
+      </button>
+
+      <div className="mt-4">
+        <Comment />
+      </div>
+    </div>
+  );
+}
+
+export default App;
