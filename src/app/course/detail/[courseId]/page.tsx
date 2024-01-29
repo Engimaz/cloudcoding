@@ -1,7 +1,7 @@
 "use client"
 import { PanelGroup, Panel } from "react-resizable-panels";
 import PanelResizeHandle from '@/components/resize-line/index.tsx'
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MenuItem } from '@/components/collapsible-menu/types.d.ts';
 import CollapsibleMenu from '@/components/collapsible-menu/index.tsx';
 import { Course, Node } from "@/api/course/types.ts";
@@ -40,7 +40,7 @@ export type FormType = Pick<Node, "url" | "name" | "type" | "description" | "sta
 
 
 interface PropsType {
-    defaultValues?: FormType
+    defaultValues: FormType
 }
 
 const defaultProps: PropsType = {
@@ -51,28 +51,33 @@ const defaultProps: PropsType = {
         url: '',
         status: "",
         visibility: ""
-    },
+    } ,
 };
 
-const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
+const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
+
     const [data] = useState<Course>(generateMockCourse)
     const [menu, setMenu] = useState<Array<MenuItem>>([])
     const [openKeys, setOpenKeys] = useState<Array<string>>([])
-    const handleClick = (p: MenuItem) => {
+    const [visibilityItem, setVisibilityItem] = useState<Array<TieredMenuItem>>([])
+    const [statusItems, setStatusItems] = useState<Array<TieredMenuItem>>([])
 
-        console.log(p);
-    }
+    const userid = useAppSelector((state: RootState) => state.userInfo.userId);
+    const toast = useRef<Toast | null>(null);
+    const visibilityMenuRef = useRef<TieredMenu | null>(null);
+    const statusMenuRef = useRef<TieredMenu | null>(null);
 
     useEffect(() => {
         setMenu(dataAdapter(data))
     }, [])
 
+    const handleClick = (p: MenuItem) => {
+
+        console.log(p);
+    }
+
     const dataAdapter = (data: Course): MenuItem[] => {
-
         const result: MenuItem[] = []
-
-
-
         data.units.forEach(unit => {
             const menuItem: MenuItem = { label: unit.name, id: unit.id, type: "branch", children: [] }
             unit.nodes.forEach(node => {
@@ -93,8 +98,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
         resolver: zodResolver(schema)
     });
 
-    const userid = useAppSelector((state: RootState) => state.userInfo.userId);
-    const toast = useRef<Toast>(null);
+
 
     const handleUpload = async (files: File[]) => {
         uploadResource(files[0], userid).then((res: ApiResponse<Resource>) => {
@@ -129,8 +133,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
 
 
 
-    const [visibilityItem, setVisibilityItem] = useState<Array<TieredMenuItem>>([])
-    const [statusItems, setStatusItems] = useState<Array<TieredMenuItem>>([])
+
 
     useEffect(() => {
         const _d = ["草稿", '待审批', "审批通过"].map(item => ({
@@ -156,8 +159,7 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
         setVisibilityItem(_d)
     }, [])
 
-    const visibilityMenuRef = useRef<TieredMenu>(null);
-    const statusMenuRef = useRef<TieredMenu>(null);
+
 
     const getFormErrorMessage = (name: keyof FormType) => {
         return formState.errors[name] ? <small className="p-error">{formState.errors[name]?.message}</small> : <small className="p-error">&nbsp;</small>;
@@ -321,5 +323,5 @@ const Components = forwardRef<{}, PropsType>((props = defaultProps) => {
         </PanelGroup>
     )
 }
-)
-export default Components
+
+export default Page;
