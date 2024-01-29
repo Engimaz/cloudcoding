@@ -43,7 +43,7 @@ export type FormType = z.infer<typeof schema>
 
 
 interface PropsType {
-    defaultValues: FormType
+    defaultValues?: FormType
 }
 
 const defaultProps: PropsType = {

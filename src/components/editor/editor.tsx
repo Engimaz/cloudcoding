@@ -1,4 +1,5 @@
 // @ts-nocheck
+"use client"
 import { memo, useEffect, useRef } from "react";
 import EditorJS from "@editorjs/editorjs";
 import { EDITOR_JS_TOOLS } from "./constants.ts";
