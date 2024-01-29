@@ -34,7 +34,7 @@ const schema = z.object({
 
 const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
 
-    (props = defaultProps, ref) => {
+    function Index(props = defaultProps, ref) {
         // 在子组件中暴露方法或属性给父组件使用
         useImperativeHandle(ref, () => ({
             submit: () => {

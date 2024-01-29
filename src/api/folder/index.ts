@@ -32,3 +32,8 @@ export const createFolder = (data: Folder) => {
     const method = "post";
     return request<Folder>(url, method, data);
 }
+export const updateFolder = (data: Folder) => {
+    const url = `${context}/folder/update`;
+    const method = "put";
+    return request<Folder>(url, method, data);
+}

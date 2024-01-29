@@ -28,7 +28,7 @@ interface AccountLoginType {
     password: string,
     agree: boolean
 }
-export default () => {
+export default function NicknamePanel() {
 
     const defaultValues: AccountLoginType = { username: "fred", password: "12345678", agree: false, };
     const { control, handleSubmit, formState, reset } = useForm({

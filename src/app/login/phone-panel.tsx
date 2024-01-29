@@ -29,7 +29,7 @@ interface PhoneLoginType {
     agree: boolean
 }
 
-export default () => {
+export default function PhonePanel() {
     const onSubmit = (data: any) => {
         console.log(data)
         reset();
@@ -160,7 +160,7 @@ export default () => {
                 <Button label="登录" type="submit" icon="pi pi-check" />
             </form>
             <TermOfService visible={visible} key={visible + idGenerate()} onChange={(b) => setVisible(b)} />
-        
+
         </>
 
     )

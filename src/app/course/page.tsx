@@ -4,7 +4,7 @@ import { Course } from "@/api/course/types.ts"
 import { useState } from "react"
 import CourseCard from './components/course-card.tsx'
 
-export default function index() {
+export default function Course() {
     const [data] = useState<Array<Course>>(generateMockCourses(10))
     return (
 

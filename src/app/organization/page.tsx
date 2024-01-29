@@ -7,7 +7,7 @@ import { Button } from "primereact/button"
 import CreatePanel from "../setting/organization/dialog-panel.tsx"
 import { getOrganizationList } from "@/api/manager/index.ts"
 
-export default function index() {
+export default function Index() {
   const [data, setData] = useState<Array<OrganizationVO>>([])
 
   useEffect(() => {

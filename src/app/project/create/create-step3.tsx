@@ -1,5 +1,5 @@
 
-import { useState, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useRef, useImperativeHandle } from 'react';
 
 import { Toast } from 'primereact/toast';
 import { FormType as Step1FormType } from './create-step1.tsx';
@@ -7,6 +7,7 @@ import { FormType as Step2FormType } from './create-step2.tsx';
 import { Project } from '@/api/project/types.ts';
 import { crateProject } from '@/api/project/index.ts';
 import { ApiResponse } from '@/api/types.ts';
+import Image from 'next/image'
 
 type FormType = Step1FormType & Step2FormType
 
@@ -14,9 +15,9 @@ interface PropsType {
     data: FormType,
     onCreateSuccess: () => void
 }
-const Step3 = forwardRef<{ submit: () => void; }, PropsType>(
+const Step3 = React.forwardRef<{ submit: () => void; }, PropsType>(
 
-    ({ data, onCreateSuccess }, ref) => {
+    function Index({ data, onCreateSuccess }, ref) {
         const [value, setValue] = useState<number>(0);
         const toast = useRef<Toast>(null);
 
@@ -63,13 +64,13 @@ const Step3 = forwardRef<{ submit: () => void; }, PropsType>(
                 <Toast ref={toast}></Toast>
                 {
                     value == 1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <img src="/success.svg" alt="success" className="mb-5" width="18%" />
+                        <Image src="/success.svg" alt="success" className="mb-5" />
                         <span className=' font-bold text-4xl mt-6'>创建成功</span>
                     </div>
                 }
                 {
                     value == -1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <img src="/warn.svg" alt="warn" className="mb-5" width="18%" />
+                        <Image src="/warn.svg" alt="warn" className="mb-5" />
                         <span className=' font-bold text-4xl mt-6'>创建失败</span>
                     </div>
                 }

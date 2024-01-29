@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
-import { addNewFileToFolder, addNewFolderToFolder, clearFolder, deleteFile, deleteFolder, initFileManger, renameFile, renameFolder, saveFile, saveFolderName, open, init } from '@/features/program/programSlice.ts';
-import { RootState } from '@/store/index.ts';
+import { addNewFileToFolder, addNewFolderToFolder, clearFolder, deleteFile, deleteFolder, initFileManger, renameFile, renameFolder, saveFile, saveFolderName, open, init } from '@/redux/features/program/programSlice.ts';
+import { RootState } from '@/redux/index.ts';
 import { Folder } from '@/api/folder/types.ts';
 import { updateFolder } from '@/api/folder/index.ts';
 
@@ -41,6 +41,7 @@ const FileManager = (props: PropType) => {
 
     const [menu, setMenu] = useState<Array<MenuItem>>([])
 
+    const dispatch = useAppDispatch();
 
 
 
@@ -50,7 +51,7 @@ const FileManager = (props: PropType) => {
                 dispatch(init(res.result))
             })
         }
-    }, [needUpdate, items])
+    }, [needUpdate, dispatch, items])
 
     useEffect(() => {
         if (items.length > 0) {
@@ -61,11 +62,10 @@ const FileManager = (props: PropType) => {
     }, [openKeys, items])
 
 
-    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(initFileManger(props.projectId))
-    }, [])
+    }, [dispatch, props.projectId])
 
     useEffect(() => {
         inputName = lastName

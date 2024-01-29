@@ -13,6 +13,7 @@ import { Resource } from '@/api/resource/types.ts';
 import { CLOUD_CODING_GATEWAY } from '@/config/base-url.ts';
 import { Toast } from 'primereact/toast';
 import { RadioButton } from 'primereact/radiobutton';
+import Image from 'next/image'
 
 export type FormType = Pick<RegisterUser, 'nickname' | "avatar" | "sex" | "idnumber">;
 interface PropsType {
@@ -42,7 +43,7 @@ const schema = z.object({
 
 const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
 
-    (props = defaultProps, ref) => {
+    function Index(props = defaultProps, ref) {
         // 在子组件中暴露方法或属性给父组件使用
         useImperativeHandle(ref, () => ({
             submit: () => {
@@ -135,7 +136,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
                                                 onMouseEnter={() => setHovered(true)}
                                                 onMouseLeave={() => setHovered(false)}
                                             >
-                                                <img src={field.value} className='max-w-full max-h-full' />
+                                                <Image alt='头像' src={field.value} className='max-w-full max-h-full' />
                                                 {isHovered && (
                                                     <div
 
@@ -207,6 +208,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
                     <button type="submit" ref={btnRef} style={{ visibility: 'hidden' }} >提交</button>
                 </form ></>
         )
-    })
+    }
+)
 
 export default Step2

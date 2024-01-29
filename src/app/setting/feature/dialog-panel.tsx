@@ -68,6 +68,13 @@ const DialogPanel: React.FC<{ editRecord: Feature, onSussess: () => void }> = ({
     const [target, setTarget] = useState<Array<string>>([]);
 
     const [status, setStatus] = useState<Array<Dictionary>>([])
+    const fetchData = async () => {
+        const res = await getAllUrl();
+        if (res.code >= 200) {
+            setData(res.result.list)
+            setSource(res.result.list.map(item => item.id + "").filter(item => !editRecord.urls.includes(item)))
+        }
+    }
 
     useEffect(() => {
 
@@ -78,16 +85,9 @@ const DialogPanel: React.FC<{ editRecord: Feature, onSussess: () => void }> = ({
         })
         fetchData()
         setTarget(editRecord.urls)
-    }, [])
+    }, [editRecord.urls, fetchData])
 
     const [data, setData] = useState<UrlVO[]>([]);
-    const fetchData = async () => {
-        const res = await getAllUrl();
-        if (res.code >= 200) {
-            setData(res.result.list)
-            setSource(res.result.list.map(item => item.id + "").filter(item => !editRecord.urls.includes(item)))
-        }
-    }
 
 
 

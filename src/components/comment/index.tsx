@@ -18,7 +18,7 @@ export default function SortingDemo() {
 
     const userCeneterData = useAppSelector((state: RootState) => state.userCenterSlice.data)
 
-    const childComment = (comment: Comment) => {
+    const ChildComment = (comment: Comment) => {
         const user: User | undefined = userCeneterData.find(item => item.id == comment.userId)
         const replyuser: User | undefined = userCeneterData.find(item => item.id == comment.replyId)
 
@@ -52,7 +52,7 @@ export default function SortingDemo() {
         </div>
     }
 
-    const itemTemplate = (comment: Comment) => {
+    const ItemTemplate = (comment: Comment) => {
         const user: User | undefined = userCeneterData.find(item => item.id == comment.userId)
         const [showInput, setShowInput] = useState(false)
         const [showChildComment, setshowChildComment] = useState(false)
@@ -92,7 +92,7 @@ export default function SortingDemo() {
                 }
                 {comment.children && comment.children.length > 0 && showChildComment &&
                     <div style={{ marginLeft: ((mainBoxRef.current?.clientWidth || 0) - (midBoxRef.current?.clientWidth || 0)) - 16 }}>
-                        <DataView value={comment.children} itemTemplate={childComment} />
+                        <DataView value={comment.children} itemTemplate={ChildComment} />
                     </div>}
             </div>
         );
@@ -102,7 +102,7 @@ export default function SortingDemo() {
 
     return (
         <div className="border shadow-lg p-2 rounded-xl">
-            <DataView value={data} itemTemplate={itemTemplate} />
+            <DataView value={data} itemTemplate={ItemTemplate} />
         </div>
     )
 }

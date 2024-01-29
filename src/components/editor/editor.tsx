@@ -28,7 +28,7 @@ const Editor = ({ data, onChange, editorblock }) => {
         ref.current.destroy();
       }
     };
-  }, []);
+  }, [data]);
   return <div id={editorblock} />;
 };
 

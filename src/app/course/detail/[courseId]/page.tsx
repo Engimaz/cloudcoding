@@ -27,16 +27,19 @@ import { confirmPopup, ConfirmPopup } from "primereact/confirmpopup";
 import { InputText } from "primereact/inputtext";
 import { ColorPicker, ColorPickerChangeEvent } from "primereact/colorpicker";
 import { InputTextarea } from "primereact/inputtextarea";
+import Image from 'next/image'
 
 
 const schema = z.object({
     url: z.string().min(1, { message: "视频不能为空" }),
     name: z.string().min(1, { message: "小节名称未填" }),
     type: z.string().min(1, { message: "课程类型未选" }),
-    description: z.string().min(1, { message: "小节描述未选" })
+    description: z.string().min(1, { message: "小节描述未选" }),
+    status: z.string().nonempty(),
+    visibility: z.string().nonempty()
 })
 
-export type FormType = Pick<Node, "url" | "name" | "type" | "description" | "status" | "visibility">;
+export type FormType = z.infer<typeof schema>
 
 
 interface PropsType {
@@ -51,7 +54,7 @@ const defaultProps: PropsType = {
         url: '',
         status: "",
         visibility: ""
-    } ,
+    },
 };
 
 const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
@@ -69,7 +72,7 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
 
     useEffect(() => {
         setMenu(dataAdapter(data))
-    }, [])
+    }, [data])
 
     const handleClick = (p: MenuItem) => {
 
@@ -129,12 +132,6 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
     }
 
 
-
-
-
-
-
-
     useEffect(() => {
         const _d = ["草稿", '待审批', "审批通过"].map(item => ({
             label: item,
@@ -145,7 +142,7 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
         })
         )
         setStatusItems(_d)
-    }, [])
+    }, [setValue])
 
     useEffect(() => {
         const _d = ["公开", '私有'].map(item => ({
@@ -157,7 +154,7 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
         })
         )
         setVisibilityItem(_d)
-    }, [])
+    }, [setValue])
 
 
 
@@ -203,7 +200,7 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
                                         <div id={field.name} {...field} ref={field.ref} className={classNames()} >
 
                                             {
-                                                getValues("url") != '' && <img src={getValues("url")} className='w-4/5' />
+                                                getValues("url") != '' && <Image alt="项目封面" src={getValues("url")} className='w-4/5' />
                                             }
                                             {
                                                 getValues("url") == null && <Upload onUpload={handleUpload} />

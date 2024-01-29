@@ -54,7 +54,7 @@ export interface ProjectUserAdater {
 
 const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
 
-    (props = defaultProps, ref) => {
+    function Index(props = defaultProps, ref) {
 
         const toast = useRef<Toast>(null);
         const { control, handleSubmit, getValues, formState } = useForm<FormType>({

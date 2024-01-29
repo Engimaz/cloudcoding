@@ -8,6 +8,7 @@ import { License, RegisterUser, User } from '@/api/auth/types.ts';
 import JSEncrypt from 'jsencrypt'
 import { addUser, license } from '@/api/auth/index.ts';
 import { ApiResponse } from '@/api/types.ts';
+import Image from 'next/image'
 
 type FormType = (Step1FormType & Step2FormType)
 interface PropsType {
@@ -15,7 +16,8 @@ interface PropsType {
 }
 const Step3 = forwardRef<{ submit: () => void; }, PropsType>(
 
-    ({ data }, ref) => {
+
+    function Index({ data }, ref) {
         const [value, setValue] = useState<number>(0);
         const toast = useRef<Toast>(null);
 
@@ -65,13 +67,13 @@ const Step3 = forwardRef<{ submit: () => void; }, PropsType>(
                 <Toast ref={toast}></Toast>
                 {
                     value == 1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <img src="/success.svg" alt="success" className="mb-5" width="18%" />
+                        <Image src="/success.svg" alt="success" className="mb-5" width="18%" />
                         <span className=' font-bold text-4xl mt-6'>注册成功</span>
                     </div>
                 }
                 {
                     value == -1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <img src="/warn.svg" alt="warn" className="mb-5" width="18%" />
+                        <Image src="/warn.svg" alt="warn" className="mb-5" width="18%" />
                         <span className=' font-bold text-4xl mt-6'>注册失败</span>
                     </div>
                 }

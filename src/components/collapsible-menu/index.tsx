@@ -24,7 +24,7 @@ const CollapsibleMenu: React.FC<CollapsibleMenuType> = (props: CollapsibleMenuTy
         if (props.onOpenKeysChange) {
             props.onOpenKeysChange(openKeys)
         }
-    }, [openKeys])
+    }, [openKeys, props.onOpenKeysChange])
 
     const renderMenuItems = (menuItems: MenuItem[]) => {
         return menuItems.map(item => (

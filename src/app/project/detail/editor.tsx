@@ -25,7 +25,7 @@ interface IEditorProps {
     onCtrls?: () => void
 }
 
-export default (props: IEditorProps) => {
+export default function EditorComponent(props: IEditorProps) {
     const monacoRef = useRef<Monaco | null>(null);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
 

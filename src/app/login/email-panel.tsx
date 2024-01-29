@@ -26,7 +26,7 @@ interface EmailLoginType {
     password: string,
     agree: boolean
 }
-export default () => {
+export default function EmailPanel() {
 
     const defaultValues: EmailLoginType = { email: "", password: "", agree: false, };
     const { control, handleSubmit, formState, reset } = useForm({
@@ -50,49 +50,49 @@ export default () => {
 
         <>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-[30rem] !px-10 py-5">
-            <Controller
-                name="email"
-                control={control}
-                render={({ field, fieldState }) => (
-                    <>
-                        <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.email })}>
-                            邮箱
-                        </label>
-                        <InputText id={field.name} {...field} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error, })} />
-                        {getFormErrorMessage(field.name)}
-                    </>
-                )}
-            />
-            <Controller
-                name="password"
-                control={control}
-                render={({ field, fieldState }) => (
-                    <>
-                        <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.password })}>
-                            密码
-                        </label>
-                        <Password id={field.name} {...field} toggleMask pt={{ input: { className: 'flex-1' } }} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} feedback={false} />
-                        {getFormErrorMessage(field.name)}
-                    </>
-                )}
-            />
-            <Controller
-                name="agree"
-                control={control}
-                render={({ field, fieldState }) => (
-                    <>
-                                 <div className="flex gap-2 flex-row-reverse justify-end w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-[30rem] !px-10 py-5">
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <>
+                            <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.email })}>
+                                邮箱
+                            </label>
+                            <InputText id={field.name} {...field} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error, })} />
+                            {getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
+                <Controller
+                    name="password"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <>
+                            <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.password })}>
+                                密码
+                            </label>
+                            <Password id={field.name} {...field} toggleMask pt={{ input: { className: 'flex-1' } }} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} feedback={false} />
+                            {getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
+                <Controller
+                    name="agree"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <>
+                            <div className="flex gap-2 flex-row-reverse justify-end w-full">
                                 <label htmlFor={field.name} className={classNames({ 'p-error': formState.errors.agree })}> 我已阅读并同意语雀 <a className="text-blue-400 hover:cursor-pointer" onClick={() => setVisible(true)}>服务协议</a> 和 <a className="text-blue-400 hover:cursor-pointer" onClick={() => setVisible(true)}>隐私权政策</a>.</label>
                                 <Checkbox inputId={field.name} checked={field.value} ref={field.ref} className={classNames({ 'p-invalid': fieldState.error })} onChange={(e) => field.onChange(e.checked)} />
                             </div>
-                        {getFormErrorMessage(field.name)}
-                    </>
-                )}
-            />
-            <Button label="登录" type="submit" icon="pi pi-check" />
-        </form>
-        <TermOfService visible={visible} key={visible + idGenerate()} onChange={(b) => setVisible(b)} />
+                            {getFormErrorMessage(field.name)}
+                        </>
+                    )}
+                />
+                <Button label="登录" type="submit" icon="pi pi-check" />
+            </form>
+            <TermOfService visible={visible} key={visible + idGenerate()} onChange={(b) => setVisible(b)} />
 
         </>
 

@@ -3,7 +3,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { PickList, PickListChangeEvent } from 'primereact/picklist';
 import { User } from '@/api/auth/types.ts';
 import { useAppSelector } from '@/hooks/useStore.ts';
-import { RootState } from '@/store/index.ts';
+import { RootState } from '@/redux/index.ts';
 import { uploadResource } from '@/api/resource/index.ts';
 import { CLOUD_CODING_GATEWAY } from '@/config/base-url.ts';
 import { InputText } from 'primereact/inputtext';
@@ -20,6 +20,7 @@ import { Resource } from '@/api/resource/types.ts';
 import { Dropdown } from 'primereact/dropdown';
 import { SelectItemOptionsType } from 'primereact/selectitem';
 import { listUser } from '@/api/auth/index.ts';
+import Image from 'next/image'
 
 const schema = z.object({
     name: z
@@ -65,7 +66,7 @@ export interface ProjectUserAdater {
 
 const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
 
-    (props = defaultProps, ref) => {
+    function Index(props = defaultProps, ref) {
         const [source, setSource] = useState<Array<ProjectUserAdater>>([]);
         const [target, setTarget] = useState<Array<ProjectUserAdater>>([]);
         const userid = useAppSelector((state: RootState) => state.userInfo.userId);
@@ -258,7 +259,7 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
                                             onMouseEnter={() => setHovered(true)}
                                             onMouseLeave={() => setHovered(false)}
                                         >
-                                            <img src={field.value} className='max-w-full max-h-full' />
+                                            <Image alt='项目封面' src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
 
@@ -288,6 +289,7 @@ const Step1 = forwardRef<{ submit: () => void; }, PropsType>(
                             </label>
                             <div id={field.name} {...field} ref={field.ref} className='w-full overflow-auto' >
                                 <PickList
+                                    dataKey='id'
                                     source={source}
                                     target={target}
                                     onChange={onChange}

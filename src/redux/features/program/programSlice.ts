@@ -14,9 +14,9 @@ import {
   queryFolderById,
   queryTopFolderByProgramId,
 } from "@/api/folder/index.ts";
-import idGenerate from "../../../features/id-generate/index.ts";
 import { updateFile as updateFileReq } from "@/api/file/index.ts";
 import { ApiResponse } from "@/api/types.ts";
+import idGenerate from "@/features/id-generate";
 
 interface ProgramStateType {
   filemanager: Array<Folder>;
@@ -26,6 +26,7 @@ interface ProgramStateType {
   name: string;
   projectId: string; // 项目id
   lastName: string; // 重命名时的上一个名字
+  needUpdate: boolean;// 需要向后端同步
 }
 const initialState: ProgramStateType = {
   // 文件管理器
@@ -44,6 +45,7 @@ const initialState: ProgramStateType = {
   name: "",
   projectId: "",
   lastName: "",
+  needUpdate: false
 };
 export const initFileManger = createAsyncThunk(
   "project/initFileManger",
@@ -62,7 +64,6 @@ export const updateFileAjax = createAsyncThunk(
   "project/saveFile",
   async (file: File) => {
     const res: ApiResponse<File> = await updateFileReq(file);
-
     return { file: res.result };
   }
 );
@@ -83,7 +84,6 @@ const addNewFileToFolderById = (
   folderId: string
 ) => {
   if (folder.id == folderId) {
-    console.log("添加成功");
     if (folder.files == null) {
       folder.files = [];
     }
@@ -106,6 +106,7 @@ const updateFile = (folder: Folder, file: File, fileId: string) => {
         f.id = file.id;
         f.content = file.content;
         isUpdate = true;
+        console.log('更新成功')
       }
     });
   }
@@ -315,6 +316,7 @@ export const projectSlice = createSlice({
       return {
         ...state,
         filemanager: _filemanager,
+        needUpdate: true,
         openfile: _openfile,
         historyfile: _historyfile,
       };
@@ -327,6 +329,7 @@ export const projectSlice = createSlice({
       });
       return {
         ...state,
+        needUpdate: true,
         filemanager: _filemanager,
       };
     },
@@ -338,6 +341,7 @@ export const projectSlice = createSlice({
       });
       return {
         ...state,
+        needUpdate: true,
         filemanager: _filemanager,
       };
     },
@@ -349,6 +353,7 @@ export const projectSlice = createSlice({
       });
       return {
         ...state,
+        needUpdate: true,
         filemanager: _filemanager,
       };
     },
@@ -360,6 +365,7 @@ export const projectSlice = createSlice({
       });
       return {
         ...state,
+        needUpdate: true,
         filemanager: _filemanager,
       };
     },
@@ -372,7 +378,6 @@ export const projectSlice = createSlice({
       if (_filemanager) {
         _filemanager.forEach((item: Folder) => {
           const _file = queryFileById(item, action.payload);
-          console.log(_file);
           if (_file) {
             _file.id = "rename-file";
             lastName = _file.name;
@@ -392,6 +397,7 @@ export const projectSlice = createSlice({
       return {
         ...state,
         lastName,
+        needUpdate: true,
         filemanager: _filemanager,
         historyfile: _historyfile,
       };
@@ -418,6 +424,7 @@ export const projectSlice = createSlice({
       return {
         ...state,
         lastName,
+        needUpdate: true,
         filemanager: _filemanager,
       };
     },
@@ -483,6 +490,17 @@ export const projectSlice = createSlice({
         historyfile: _historyfile,
       };
     },
+    // 初始化文件夹
+    init: (state, action: PayloadAction<Folder>) => {
+      if (action.payload == null) {
+        return
+      }
+      return {
+        ...state,
+        needUpdate: false,
+        filemanager: [action.payload],
+      };
+    }
   },
 
   extraReducers: (builder) => {
@@ -501,6 +519,13 @@ export const projectSlice = createSlice({
           (item) => item === action.payload.file.id
         );
         state.unSaveIds = newSaveIds;
+        // 更新文件
+        if (state.filemanager) {
+          state.filemanager.forEach((folder: Folder) => {
+            updateFile(folder, action.payload.file, action.payload.file.id);
+          });
+        }
+        console.log("更新文件")
       }
     });
   },
@@ -517,6 +542,7 @@ export const {
   renameFile,
   renameFolder,
   open,
+  init,
   remove,
 } = projectSlice.actions;
 

@@ -4,10 +4,11 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Course } from '@/api/course/types.ts';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'
 
 const CourseCard: React.FC<{ data: Course }> = ({ data }) => {
     const header = (
-        <img alt="Card" src={data.avatar} />
+        <Image alt="Card" src={data.avatar} />
     );
 
 

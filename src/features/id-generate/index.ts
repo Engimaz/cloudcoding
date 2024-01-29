@@ -6,6 +6,6 @@
  * @LastEditors: AICHEN
  * @LastEditTime: 2023-06-01 16:05:40
  */
-export default (): string => {
+export default function idGenerate(): string {
     return Number(Math.random().toString().substr(3, 5) + Date.now()).toString(36)
 }

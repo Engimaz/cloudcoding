@@ -1,4 +1,4 @@
-export default (previousTime: Date): string => {
+export default function useTimeAgo(previousTime: Date): string {
     const currentTime = new Date();
     const timeDifferenceInSeconds = Math.floor((currentTime.getTime() - previousTime.getTime()) / 1000);
 

@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, [first, pageSize])
+    }, [first, pageSize, fetchData])
 
 
     const confirm = (id: string) => {
@@ -67,14 +67,13 @@ const App: React.FC = () => {
     const [deleteId, setDeleteId] = useState("");
 
 
-    const actionBodyTemplate = (rowData: DictionaryGroup) => {
-        const buttonEl = useRef(null);
+    const ActionBodyTemplate = (rowData: DictionaryGroup) => {
         return (
             <section className='flex w-full  justify-center items-center gap-2'>
                 <Button label="编辑" severity="info" text onClick={() => setEditRecord(rowData)} />
-                <ConfirmPopup target={buttonEl.current || undefined} visible={deleteId == rowData.id} onHide={() => setDeleteId("")}
+                <ConfirmPopup visible={deleteId == rowData.id} onHide={() => setDeleteId("")}
                     message="确定删除这个字典吗?" accept={() => confirm(deleteId)} />
-                <Button ref={buttonEl} onClick={() => setDeleteId(rowData.id ? rowData.id : "")} severity="danger" label="删除" text />
+                <Button onClick={() => setDeleteId(rowData.id ? rowData.id : "")} severity="danger" label="删除" text />
             </section>
         )
     }
@@ -119,7 +118,7 @@ const App: React.FC = () => {
                 <Column field="name" header="名称" align="center"></Column>
                 <Column field="description" align="center" header="描述"></Column>
                 <Column field="list" align="center" header="字典项" body={statusBodyTemplate} />
-                <Column header="操作" align="center" body={actionBodyTemplate} />
+                <Column header="操作" align="center" body={ActionBodyTemplate} />
             </DataTable>
             <Paginator first={first} rows={pageSize} totalRecords={count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
 

@@ -30,6 +30,7 @@ import idGenerate from '@/features/id-generate/index.ts';
 import { User } from '@/api/auth/types.ts';
 import { Avatar } from 'primereact/avatar';
 import { listUser } from '@/api/auth/index.ts';
+import Image from 'next/image'
 
 const schema = z.object({
     name: z
@@ -375,7 +376,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                             onMouseEnter={() => setHovered(true)}
                                             onMouseLeave={() => setHovered(false)}
                                         >
-                                            <img src={field.value} className='max-w-full max-h-full' />
+                                            <Image priority alt='组织头像' src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
 
@@ -411,7 +412,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                             onMouseEnter={() => setHovered(true)}
                                             onMouseLeave={() => setHovered(false)}
                                         >
-                                            <img src={field.value} className='max-w-full max-h-full' />
+                                            <Image priority alt='组织背景图' src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
                                                     className=' absolute top-0 left-0 w-full h-48 bg-[rgba(0,0,0,0.5)] flex justify-center items-center hover:cursor-pointer'

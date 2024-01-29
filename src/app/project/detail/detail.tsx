@@ -5,13 +5,14 @@ import Editor from './editor.tsx'
 import { PanelGroup, Panel } from "react-resizable-panels";
 import PanelResizeHandle from '@/components/resize-line/index.tsx'
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore.ts";
-import { RootState } from "@/store/index.ts";
+import { RootState } from "@/redux/index.ts";
 import Info from "./info.tsx";
-import { saveFile, updateFileAjax } from "@/features/program/programSlice.ts";
+import { saveFile, updateFileAjax } from "@/redux/features/program/programSlice.ts";
 import Console from "./console.tsx";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-export default function detail() {
+import { useRouter } from 'next/router'
+
+export default function Detail() {
     const openfile = useAppSelector((state: RootState) => state.programSlice.openfile)
     const dispatch = useAppDispatch()
     const handleValueChange = (_value: string | undefined) => {
@@ -24,13 +25,14 @@ export default function detail() {
         dispatch(updateFileAjax(_file))
     }
     const [projectId, setProjectId] = useState<string>("");
-    const param = useParams();
+
+    const router = useRouter()
 
     useEffect(() => {
-        if (param.id) {
-            setProjectId(param.id)
+        if (router.query.id) {
+            setProjectId(router.query.id as string)
         }
-    }, [param.id])
+    }, [router.query.id])
     return (
         <PanelGroup direction="horizontal" className='detail-container'>
             <Panel defaultSizePercentage={20} maxSizePercentage={40} minSizePercentage={16}>

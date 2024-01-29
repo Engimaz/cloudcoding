@@ -45,7 +45,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, [first, pageSize])
+    }, [first, pageSize, fetchData])
 
 
     const confirm = (id: string | number) => {
@@ -94,7 +94,7 @@ const App: React.FC = () => {
     const [deleteId, setDeleteId] = useState<string | number>("");
 
 
-    const actionBodyTemplate = (rowData: UrlVO) => {
+    const ActionBodyTemplate = (rowData: UrlVO) => {
         const buttonEl = useRef(null);
         return (
             <section className='flex w-full  justify-center items-center gap-2'>
@@ -150,7 +150,7 @@ const App: React.FC = () => {
                 <Column field="value" align="center" header="接口地址"></Column>
                 <Column field="status" align="center" header="接口状态" body={statusStatusTemplate} />
                 <Column field="scope" align="center" header="接口可见性" body={statusScopeTemplate} />
-                <Column header="操作" align="center" body={actionBodyTemplate} />
+                <Column header="操作" align="center" body={ActionBodyTemplate} />
             </DataTable>
             <Paginator first={first} rows={pageSize} totalRecords={count} rowsPerPageOptions={[10, 20, 30]} onPageChange={onPageChange} />
 

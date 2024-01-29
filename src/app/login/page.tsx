@@ -15,9 +15,9 @@ import PhonePanel from "./phone-panel.tsx";
 import CreatePanel from "./create-panel.tsx";
 import ForgetPanel from "./forget-panel.tsx";
 import { useRouter, useSearchParams } from 'next/navigation'
-import next from "next";
+import Image from 'next/image'
 
-export default function login() {
+export default function Login() {
     const searchParams = useSearchParams()
     const next: string = searchParams.get('redirect') != null ? searchParams.get('redirect')! : "/index"
     const router = useRouter()
@@ -36,14 +36,14 @@ export default function login() {
             router.push(next)
             console.log("登录成功")
         }
-    }, [token])
+    }, [token, next, router])
 
-    const header = (
+    const Header = (
         <div className='w-full  flex justify-center items-center mt-5' >
             <Avatar label="V" size="large" style={{ backgroundColor: '#2196F3', color: '#ffffff' }} shape="circle" image='https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4wyTr?ver=ecf5' />
         </div>
     );
-    const footer = (
+    const Footer = (
         <section>
             <div className='w-full flex justify-center items-center mt-10'>
                 <div className="w-4/5 text-black flex justify-center">
@@ -116,7 +116,7 @@ export default function login() {
 
         <div className="card flex flex-col gap-6 justify-center items-center w-screen h-screen">
             <div className='w-full  flex justify-center items-center ' >
-                <img src='/logo.png' className='w-14 h-14 mt-1' />
+                <Image alt='logo' src='/logo.png' className='w-14 h-14 mt-1' />
             </div>
 
 
@@ -129,8 +129,8 @@ export default function login() {
                         <span className="text-black text-sm ">登录以继续</span>
                     </div>
                 }
-                footer={footer}
-                header={header}
+                footer={Footer}
+                header={Header}
                 className="md:w-25rem w-[30rem]">
                 <animated.div >
                     <section className="flex justify-center item-center">

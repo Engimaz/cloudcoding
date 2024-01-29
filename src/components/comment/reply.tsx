@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Mention } from 'primereact/mention';
 import { User } from "@/api/auth/types.ts";
+import Image from 'next/image'
 
 const Reply: React.FC<{ width?: number }> = ({ width }) => {
     const [value, setValue] = useState<string>('');
@@ -19,7 +20,7 @@ const Reply: React.FC<{ width?: number }> = ({ width }) => {
 
         return (
             <div className="flex align-items-center">
-                <img alt={user.nickname} src={user.avatar} width="32" />
+                <Image priority alt={user.nickname} src={user.avatar} width="32" />
                 <span className="flex flex-column ml-2">
                     {user.nickname}
                     <small style={{ fontSize: '.75rem', color: 'var(--text-color-secondary)' }}>@{user.nickname}</small>

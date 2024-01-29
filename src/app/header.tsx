@@ -15,7 +15,7 @@ import { Avatar } from 'primereact/avatar';
 import { TieredMenu } from 'primereact/tieredmenu';
 import { useRouter } from 'next/navigation'
 import Image from 'next/image';
-export default function index() {
+export default function Header() {
     // const navigate = useNavigate()
 
     const router = useRouter()
@@ -70,7 +70,7 @@ export default function index() {
         if (userid) {
             dispatch(fetchUser(userid))
         }
-    }, [userid])
+    }, [userid, dispatch])
 
     const [user, setUser] = useState<User>();
 
@@ -79,7 +79,7 @@ export default function index() {
         if (u) {
             setUser(u)
         }
-    }, [userCeneterData])
+    }, [userCeneterData, userid])
 
 
 
@@ -106,7 +106,7 @@ export default function index() {
         }
     ];
     const menuRef = useRef<TieredMenu>(null);
-    const start = <Image alt="logo" priority src="/logo.png" height="40" width="40" className="mr-2"></Image>;
+    const start = <Image alt="logo" priority src="/logo.png" height="40" width="40" className="mr-2" />;
     const end = <section>
         {
             (userid == null || userid == "") ?

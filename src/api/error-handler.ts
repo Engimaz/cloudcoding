@@ -9,7 +9,7 @@
 
 
 
-export default (status: number) => {
+export default function Error(status: number) {
 	let message = '系统繁忙，请稍后再试';
 	switch (status) {
 		case 400:
@@ -48,6 +48,6 @@ export default (status: number) => {
 			break;
 		default:
 			message = `连接出错( ${message})!`;
-	
+
 	}
 }
