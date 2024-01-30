@@ -42,23 +42,30 @@ const schema = z.object({
 export type FormType = z.infer<typeof schema>
 
 
-interface PropsType {
-    defaultValues?: FormType
-}
+// interface PropsType {
+//     defaultValues?: FormType
+// }
 
-const defaultProps: PropsType = {
-    defaultValues: {
+// const defaultProps: PropsType = {
+//     defaultValues: {
+//         name: '',
+//         description: '',
+//         type: '',
+//         url: '',
+//         status: "",
+//         visibility: ""
+//     }
+// };
+
+function Page() {
+    const defaultValues: FormType = {
         name: '',
         description: '',
         type: '',
         url: '',
         status: "",
         visibility: ""
-    },
-};
-
-const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
-
+    }
     const [data] = useState<Course>(generateMockCourse)
     const [menu, setMenu] = useState<Array<MenuItem>>([])
     const [openKeys, setOpenKeys] = useState<Array<string>>([])
@@ -97,7 +104,7 @@ const Page: React.FC<PropsType> = (props: PropsType = defaultProps) => {
     };
 
     const { control, setValue, getValues, formState } = useForm({
-        defaultValues: props.defaultValues,
+        defaultValues: defaultValues,
         resolver: zodResolver(schema)
     });
 

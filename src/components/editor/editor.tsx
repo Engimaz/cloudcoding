@@ -17,6 +17,7 @@ const Editor = ({ data, onChange, editorblock }) => {
         data: data,
         async onChange(api, event) {
           const data = await api.saver.save();
+          console.log("数据变化 editor", data);
           onChange(data);
         },
       });
@@ -29,7 +30,7 @@ const Editor = ({ data, onChange, editorblock }) => {
         ref.current.destroy();
       }
     };
-  }, [data]);
+  }, []);
   return <div id={editorblock} />;
 };
 

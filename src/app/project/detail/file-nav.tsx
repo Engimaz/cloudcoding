@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
-import { RootState } from '@/store/index.ts';
+import { RootState } from '@/redux/index.ts';
 import { File } from '@/api/file/types.ts';
-import { open, remove } from '@/features/program/programSlice.ts';
+import { open, remove } from '@/redux/features/program/programSlice.ts';
 import Nav from '@/components/tab/index.tsx'
 import { TabItem } from '@/components/tab/types.js';
 

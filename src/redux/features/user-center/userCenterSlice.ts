@@ -10,7 +10,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { User } from '@/api/auth/types.ts';
 import { getUserInfo } from '@/api/auth/index.ts';
 import { ApiResponse } from '@/api/types.ts';
-import { RootState } from '@/store/index.ts';
+import { RootState } from '@/redux/index.ts';
 
 interface UserCenterState {
     data: Array<User>,

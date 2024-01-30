@@ -11,7 +11,6 @@ import { useRef } from 'react';
 import { Editor, Monaco } from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 import { useKeyPress, useDebounceFn } from 'ahooks';
-;
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 interface IEditorProps {

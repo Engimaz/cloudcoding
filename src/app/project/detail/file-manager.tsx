@@ -52,27 +52,6 @@ const FileManager = (props: PropType) => {
             })
         }
     }, [needUpdate, dispatch, items])
-
-    useEffect(() => {
-        if (items.length > 0) {
-            const d: MenuItem[] = dataAdapter(items)
-            setMenu(d)
-        }
-
-    }, [openKeys, items])
-
-
-
-    useEffect(() => {
-        dispatch(initFileManger(props.projectId))
-    }, [dispatch, props.projectId])
-
-    useEffect(() => {
-        inputName = lastName
-    }, [lastName])
-
-    // 新文件名
-    let inputName = ""
     const dataAdapter = (data: Array<Folder>): MenuItem[] => {
 
         const mapFolderToMenuItem = (folder: Folder): MenuItem => {
@@ -175,6 +154,27 @@ const FileManager = (props: PropType) => {
 
         return result;
     };
+    useEffect(() => {
+        if (items.length > 0) {
+            const d: MenuItem[] = dataAdapter(items)
+            setMenu(d)
+        }
+
+    }, [openKeys, items, dataAdapter])
+
+
+
+    useEffect(() => {
+        dispatch(initFileManger(props.projectId))
+    }, [dispatch, props.projectId])
+
+    useEffect(() => {
+        inputName = lastName
+    }, [lastName])
+
+    // 新文件名
+    let inputName = ""
+
 
     const handleSaveFile = () => {
         if (inputName != '') {

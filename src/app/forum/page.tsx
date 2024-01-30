@@ -1,8 +1,16 @@
 "use client"
 import { useState } from "react";
 
-import Editor from "@/components/editor/editor.tsx";
-import Comment from '@/components/comment/index.tsx'
+// import Editor from "@/components/editor/editor.tsx";
+import Comment from '@/components/comment/index.tsx';
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import("../../components/editor/editor"), {
+  ssr: false
+});
+
+
+
 const INITIAL_DATA = {
   time: new Date().getTime(),
   blocks: [

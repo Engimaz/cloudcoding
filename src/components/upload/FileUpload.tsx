@@ -25,8 +25,12 @@ const FilesDragAndDrop: React.FC<{ count: number, accepts: string[], onUpload: (
         e.preventDefault();
         e.stopPropagation();
         setDragging(false)
-        const files = [...e.dataTransfer?.files || []];
-        handle(files)
+        e.dataTransfer?.files
+        if(e.dataTransfer?.files){
+            const files:Array<File> = [...e.dataTransfer?.files || []];
+            handle(files)
+        }
+     
 
     };
 
