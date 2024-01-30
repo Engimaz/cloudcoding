@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
@@ -18,7 +19,7 @@ import {
 import "react-contexify/dist/ReactContexify.css";
 import idGenerate from '@/features/id-generate/index.ts';
 import { InputText } from 'primereact/inputtext';
-import { MenuItem } from '../../../components/collapsible-menu/types.js';
+import { MenuItem } from '../../../../components/collapsible-menu/types.js';
 import CollapsibleMenu from '@/components/collapsible-menu/index.tsx';
 import { ApiResponse } from '@/api/types.ts';
 
@@ -51,7 +52,7 @@ const FileManager = (props: PropType) => {
                 dispatch(init(res.result))
             })
         }
-    }, [needUpdate, dispatch, items])
+    }, [needUpdate, items])
     const dataAdapter = (data: Array<Folder>): MenuItem[] => {
 
         const mapFolderToMenuItem = (folder: Folder): MenuItem => {
@@ -160,7 +161,7 @@ const FileManager = (props: PropType) => {
             setMenu(d)
         }
 
-    }, [openKeys, items, dataAdapter])
+    }, [openKeys, items])
 
 
 

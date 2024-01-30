@@ -54,7 +54,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, [first, pageSize, fetchData])
+    }, [first, pageSize])
 
 
     const confirm = (id: string | number) => {

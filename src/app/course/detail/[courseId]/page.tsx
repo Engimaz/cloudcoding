@@ -207,7 +207,7 @@ function Page() {
                                         <div id={field.name} {...field} ref={field.ref} className={classNames()} >
 
                                             {
-                                                getValues("url") != '' && <Image alt="项目封面" src={getValues("url")} className='w-4/5' />
+                                                getValues("url") != '' && <img alt="项目封面" src={getValues("url")} className='w-4/5' />
                                             }
                                             {
                                                 getValues("url") == null && <Upload onUpload={handleUpload} />

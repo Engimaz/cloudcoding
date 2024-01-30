@@ -106,7 +106,7 @@ export default function Header() {
         }
     ];
     const menuRef = useRef<TieredMenu>(null);
-    const start = <Image alt="logo" priority src="/logo.png" height="40" width="40" className="mr-2" />;
+    const start = <img alt="logo"  src="/logo.png" height="40" width="40" className="mr-2" />;
     const end = <section>
         {
             (userid == null || userid == "") ?

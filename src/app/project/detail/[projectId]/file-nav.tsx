@@ -1,3 +1,4 @@
+"use client"
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore.ts';
 import { RootState } from '@/redux/index.ts';

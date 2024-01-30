@@ -6,6 +6,7 @@
  * @LastEditors: AICHEN
  * @LastEditTime: 2023-11-04 21:51:44
  */
+"use client"
 import { useRef } from 'react';
 
 import { Editor, Monaco } from '@monaco-editor/react';

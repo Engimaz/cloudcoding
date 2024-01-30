@@ -8,7 +8,7 @@ import Image from 'next/image'
 
 const CourseCard: React.FC<{ data: Course }> = ({ data }) => {
     const header = (
-        <Image alt="Card" src={data.avatar} />
+        <img alt="Card" src={data.avatar} />
     );
 
 

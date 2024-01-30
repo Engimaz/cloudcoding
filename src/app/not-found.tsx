@@ -11,7 +11,7 @@ const ErrorPage = () => {
     return (
         <div className="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
             <div className="flex flex-column align-items-center justify-content-center">
-                <Image src="/logo-error.svg" alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
+                <img src="/logo-error.svg" alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
                 <div
                     style={{
                         borderRadius: '56px',
@@ -25,7 +25,7 @@ const ErrorPage = () => {
                         </div>
                         <h1 className="text-900 font-bold text-5xl mb-2">Error Occured</h1>
                         <div className="text-600 mb-5">Something went wrong.</div>
-                        <Image src="/asset-error.svg" alt="Error" className="mb-5" width="80" height="80" />
+                        <img src="/asset-error.svg" alt="Error" className="mb-5" width="80" height="80" />
                         <Button icon="pi pi-arrow-left" label="Go to Dashboard" text onClick={() => router.push('/')} />
                     </div>
                 </div>

@@ -116,7 +116,7 @@ export default function Login() {
 
         <div className="card flex flex-col gap-6 justify-center items-center w-screen h-screen">
             <div className='w-full  flex justify-center items-center ' >
-                <Image alt='logo' src='/logo.png' className='w-14 h-14 mt-1' />
+                <img alt='logo' src='/logo.png' className='w-14 h-14 mt-1' />
             </div>
 
 

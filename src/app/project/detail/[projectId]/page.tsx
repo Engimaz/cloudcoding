@@ -1,3 +1,4 @@
+"use client"
 import "./detail.scss"
 import FileManager from './file-manager.tsx'
 import FileNav from './file-nav.tsx'
@@ -9,10 +10,11 @@ import { RootState } from "@/redux/index.ts";
 import Info from "./info.tsx";
 import { saveFile, updateFileAjax } from "@/redux/features/program/programSlice.ts";
 import Console from "./console.tsx";
-import { useEffect, useState } from "react";
-import { useRouter } from 'next/router'
+import { useEffect, useState } from "react"
 
-export default function Detail() {
+export default function Detail(props: { params: { projectId: string } }) {
+    console.log(props)
+    const projectId = props.params.projectId
     const openfile = useAppSelector((state: RootState) => state.programSlice.openfile)
     const dispatch = useAppDispatch()
     const handleValueChange = (_value: string | undefined) => {
@@ -24,15 +26,7 @@ export default function Detail() {
         const _file = JSON.parse(JSON.stringify(openfile))
         dispatch(updateFileAjax(_file))
     }
-    const [projectId, setProjectId] = useState<string>("");
 
-    const router = useRouter()
-
-    useEffect(() => {
-        if (router.query.id) {
-            setProjectId(router.query.id as string)
-        }
-    }, [router.query.id])
     return (
         <PanelGroup direction="horizontal" className='detail-container'>
             <Panel defaultSizePercentage={20} maxSizePercentage={40} minSizePercentage={16}>

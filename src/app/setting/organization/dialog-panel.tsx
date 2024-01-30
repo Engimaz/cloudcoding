@@ -181,8 +181,8 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
         listUser(1, 10, "").then((res: ApiResponse<QueryListResult<User>>) => {
             const _d = res.result.list
 
-            const _ud = res.result.list.filter(f => !(editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
-            const _td = res.result.list.filter(f => (editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
+            const _ud = res.result.list.filter(f => editRecord.userPositions && !(editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
+            const _td = res.result.list.filter(f => editRecord.userPositions && (editRecord.userPositions.map((item: UserPosition) => item.userId)).includes(f?.id + ""))
 
             setUsers(_d)
             setUserSource(_ud.map(u => ({ userId: u.id, position: { code: '', name: "" } } as UserPositionVO)))
@@ -286,7 +286,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
         name: 'positions',
     });
 
-    const sourceMemberTemplate = (dd: UserPosition) => {
+    const SourceMemberTemplate = (dd: UserPosition) => {
         const item = users.find(u => u.id == dd.userId) || {} as User
 
         return (
@@ -305,7 +305,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
     };
     const [users, setUsers] = useState<Array<User>>([])
 
-    const targetMemberTemplate = (dd: UserPosition) => {
+    const TargetMemberTemplate = (dd: UserPosition) => {
         const item = users.find(u => u.id == dd.userId) || {} as User
 
         return (
@@ -376,7 +376,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                             onMouseEnter={() => setHovered(true)}
                                             onMouseLeave={() => setHovered(false)}
                                         >
-                                            <Image priority alt='组织头像' src={field.value} className='max-w-full max-h-full' />
+                                            <img  alt='组织头像' src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
 
@@ -412,7 +412,7 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                             onMouseEnter={() => setHovered(true)}
                                             onMouseLeave={() => setHovered(false)}
                                         >
-                                            <Image priority alt='组织背景图' src={field.value} className='max-w-full max-h-full' />
+                                            <img  alt='组织背景图' src={field.value} className='max-w-full max-h-full' />
                                             {isHovered && (
                                                 <div
                                                     className=' absolute top-0 left-0 w-full h-48 bg-[rgba(0,0,0,0.5)] flex justify-center items-center hover:cursor-pointer'
@@ -619,8 +619,8 @@ const CreatePanel: React.FC<{ editRecord: Organization, onSussess: () => void }>
                                     source={userSource}
                                     target={userTarget}
                                     onChange={onMemberChange}
-                                    sourceItemTemplate={sourceMemberTemplate}
-                                    targetItemTemplate={targetMemberTemplate}
+                                    sourceItemTemplate={SourceMemberTemplate}
+                                    targetItemTemplate={TargetMemberTemplate}
                                     filter
                                     filterBy="name"
                                     showSourceControls={false}  // 取消源列表的上下按钮组

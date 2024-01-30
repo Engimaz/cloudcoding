@@ -136,7 +136,7 @@ const Step2 = forwardRef<{ submit: () => void; }, PropsType>(
                                                 onMouseEnter={() => setHovered(true)}
                                                 onMouseLeave={() => setHovered(false)}
                                             >
-                                                <Image alt='头像' src={field.value} className='max-w-full max-h-full' />
+                                                <img alt='头像' src={field.value} className='max-w-full max-h-full' />
                                                 {isHovered && (
                                                     <div
 

@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, [first, pageSize, fetchData])
+    }, [first, pageSize])
 
 
     const confirm = (id: string) => {
@@ -114,7 +114,6 @@ const App: React.FC = () => {
                 </div>
             </section>
             <DataTable value={data} tableStyle={{ minWidth: '50rem' }}  >
-                <Column field="id" header="ID" align="center"></Column>
                 <Column field="name" header="名称" align="center"></Column>
                 <Column field="description" align="center" header="描述"></Column>
                 <Column field="list" align="center" header="字典项" body={statusBodyTemplate} />

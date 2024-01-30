@@ -64,13 +64,13 @@ const Step3 = React.forwardRef<{ submit: () => void; }, PropsType>(
                 <Toast ref={toast}></Toast>
                 {
                     value == 1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <Image src="/success.svg" alt="success" className="mb-5" />
+                        <img src="/success.svg" alt="success" className="mb-5" />
                         <span className=' font-bold text-4xl mt-6'>创建成功</span>
                     </div>
                 }
                 {
                     value == -1 && <div className=' flex justify-center items-center flex-col mt-10'>
-                        <Image src="/warn.svg" alt="warn" className="mb-5" />
+                        <img src="/warn.svg" alt="warn" className="mb-5" />
                         <span className=' font-bold text-4xl mt-6'>创建失败</span>
                     </div>
                 }
